@@ -81,7 +81,7 @@ Response on success:
 
 Possible modes of failure:
 
-  - If the request body is invalid, the server SHOULD be accompanied by a body detailing the error(s) as precisely as possible.
+  - If the request body is invalid, the response MUST have a status code of 400 and SHOULD be accompanied by a body detailing the error(s) as precisely as possible.
 
         HTTP/1.1 400 Bad Request
         
@@ -93,6 +93,21 @@ Possible modes of failure:
         | The name provided must have a length between 1 and 64, but has length 69.
         | The name provided must consist only of printable characters, but an unprintable
           character was found at index 42.)
+
+#### Retrieve a list of guilds
+
+A request for a collection of guilds may be modified with the following query string parameters:
+
+  - [0..1] `before=<snowflake>`: return only guilds created before the timestamp in the snowflake
+  - [0..1] `after=<snowflake>`: return only guilds created after the timestamp in the snowflake
+  - [0..n] `name=<string>`: return only guilds whose names include the string
+
+Request:
+
+    GET /api/v1/guilds HTTP/1.1
+    GET /api/v1/guilds?before=<snowflake>&after=<snowflake>&name=<string>
+
+Response on success
 
 ### A specific guild
 

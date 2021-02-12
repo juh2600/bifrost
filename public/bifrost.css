@@ -1,0 +1,128 @@
+:root {
+  --color-bg-1: #121213;
+  --color-bg-2: #202225;
+  --color-bg-3: #292b2f;
+  --color-bg-4: #40444b;
+  --color-accent: #7148ff;
+  --color-success: #28a745;
+  --color-danger: #dc3545;
+}
+
+.btn-purple {
+  display: inline-block;
+  background-color: var(--color-accent);
+  padding: 10px;
+  color: white;
+  border: 2px solid var(--color-accent);
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+/* .btn-purple:active {
+
+    have actives a slight shade darker?
+
+} */
+
+.btn-outline-purple {
+  display: inline-block;
+  padding: 10px;
+  color: var(--color-accent);
+  border: 2px solid var(--color-accent);
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.btn-outline-purple:hover {
+  display: inline-block;
+  background-color: var(--color-accent);
+  padding: 10px;
+  color: white;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.btn-outline-red {
+  display: inline-block;
+  padding: 10px;
+  color: var(--color-danger);
+  border: 2px solid var(--color-danger);
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.btn-outline-red:hover {
+  display: inline-block;
+  background-color: var(--color-danger);
+  padding: 10px;
+  color: white;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.btn-green {
+  display: inline-block;
+  background-color: var(--color-success);
+  padding: 10px;
+  color: white;
+  border: 2px solid var(--color-success);
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.error-message {
+  color: var(--color-danger);
+}
+
+/* Use on div wrapping img */
+.img-circle {
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.img-small {
+  height: 100px;
+  width: 100px;
+}
+
+.img-medium {
+  height: 150px;
+  width: 150px;
+}
+
+.img-large {
+  height: 200px;
+  width: 200px;
+}
+
+.img {
+  height: 100%;
+  width: 100%;
+}
+
+label {
+  display: inline-block;
+  padding-left: 10px;
+  margin-bottom: 0.25rem;
+}
+
+input {
+  display: block;
+  border-radius: 20px;
+  /* border: 2px solid var(--color-accent); */
+  padding: 5px 10px;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+}
+
+/* Div wrap each label and input */
+.label-input {
+  margin-bottom: 1rem;
+}

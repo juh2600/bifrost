@@ -100,14 +100,25 @@ A request for a collection of guilds may be modified with the following query st
 
   - [0..1] `before=<snowflake>`: return only guilds created before the timestamp in the snowflake
   - [0..1] `after=<snowflake>`: return only guilds created after the timestamp in the snowflake
-  - [0..n] `name=<string>`: return only guilds whose names include the string
+  - [0..n] `name=<uri-string>`: return only guilds whose names include the string
 
 Request:
 
     GET /api/v1/guilds HTTP/1.1
-    GET /api/v1/guilds?before=<snowflake>&after=<snowflake>&name=<string>
+    GET /api/v1/guilds?<query-string-parameters> HTTP/1.1
 
 Response on success
+
+This response may contain any number of guild description objects.
+
+    HTTP/1.1 200 OK
+    
+    [
+    	{
+    		"id": "<guild-snowflake>",
+    		"name": "Sam Ramaham's Auto Zone and Stripper Dome"
+    	}
+    ]
 
 ### A specific guild
 

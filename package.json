@@ -18,5 +18,14 @@
   "bugs": {
     "url": "https://github.com/josephreed2600/pro150-sb2/issues"
   },
-  "homepage": "https://github.com/josephreed2600/pro150-sb2#readme"
+  "homepage": "https://github.com/josephreed2600/pro150-sb2#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "logger": "github:josephreed2600/logger#master",
+    "path": "^0.12.7",
+    "pug": "^3.0.0"
+  }
 }

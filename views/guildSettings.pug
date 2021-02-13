@@ -1,11 +1,6 @@
-doctype hmtl
-html
-    head
-        link(rel='stylesheet' href='bifrost.css')
-        link(rel='stylesheet' href='serverSettings.css')
-    body
-        header
-            include landingNavBar.pug
-        section.main
+extends layout.pug
+block style
+    link(rel='stylesheet' href='serverSettings.css')
+block content
+    section.main
             
-        footer

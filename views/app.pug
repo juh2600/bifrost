@@ -1,8 +1,16 @@
-doctype hmtl
-html
-    head
-        link(rel='stylesheet' href='bifrost.css')
-        link(rel='stylesheet' href='app.css')
-    body
-        section.main
+extends layout.pug
+block style
+    link(rel='stylesheet' href='app.css')
+block content
+    section.main
+        section.bar-area
+        section.guild-name 
+        section.channel-name
+        section.profile-area 
+        section.guild-list
+        section.channel-list
+        section.chat-area
+        section.user-list
+        section.message-area
+            input(type="text", name="message").input-field
             

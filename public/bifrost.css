@@ -105,10 +105,11 @@ body, html {
 
 .input-field {
   display: block;
+  border:none;
   /* Cursed but forces round edges no matter the height of the element */
   border-radius: 100vh;
   /* border: 2px solid var(--color-accent); */
-  padding: 5px 10px;
+  padding: 0.5rem 1rem;
 }
 
 input:focus,

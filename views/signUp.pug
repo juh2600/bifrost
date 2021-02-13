@@ -1,13 +1,11 @@
-doctype hmtl
-html
-    head
-        link(rel='stylesheet' href='bifrost.css')
-        link(rel='stylesheet' href='navbar.css')
-        link(rel='stylesheet' href='signup.css')
-    body
-        header
-            include landingNavBar.pug
-        section.main
-            
-            
-        footer
+extends layout.pug
+block style
+    link(rel='stylesheet' href='navbar.css')
+    link(rel='stylesheet' href='signup.css')
+block content
+    header
+        include landingNavBar.pug
+    section.main
+        
+        
+    footer

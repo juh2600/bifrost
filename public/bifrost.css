@@ -75,6 +75,8 @@ html {
 .error-message {
   color: var(--color-danger);
   font-size: 0.9em;
+  font-family: "Rubik", sans-serif;
+
 }
 
 /* Use on div wrapping img */

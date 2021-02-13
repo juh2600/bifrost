@@ -3,5 +3,21 @@ block style
     link(rel='stylesheet' href='createServer.css')
 block content
     section.main
-        
-    footer
+        div.form-area
+            div.title
+                h1 Create A Guild 
+                div.delete X
+            div.guild-form
+                div.img-circle.img-large
+                    img(src="", alt="Guild Icon").img
+                div.form-block
+                    label.input-label Guild Name
+                    input(type="text", name="guildName" placeholder="Guild Name") 
+                    span.error-message You did it wrong sir 
+                div.form-block
+                    label.input-label Guild Icon
+                    input(type="file", name="guildIcon", accept="image/png, image/jpeg, image/jpg, image/svg") 
+                    span.error-message Incorrect file type
+        div.button-area
+            button.btn.btn-outline-red Cancel
+            button(type="submit").btn.btn-green Create

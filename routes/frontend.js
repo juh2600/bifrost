@@ -11,6 +11,11 @@ const app = (req, res) => {
 		// key: value
 	});
 };
+const createGuild = (req, res) => {
+	res.render('createGuild', {
+		// key: value
+	});
+};
 
 const routes = [
 	{
@@ -18,11 +23,15 @@ const routes = [
 		methods: ['get'],
 		handler: index
 	},
-
 	{
 		uri: '/app',
 		methods: ['get'],
 		handler: app
+	},
+	{
+		uri: '/guilds/create',
+		methods: ['get'],
+		handler: createGuild
 	}
 
 ];

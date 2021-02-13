@@ -1,0 +1,6 @@
+.main {
+    background-color: var(--color-bg-3);
+    display:grid;
+    grid-template-rows: 1fr 4em;
+    max-width: 900px;
+}

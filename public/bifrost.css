@@ -49,6 +49,7 @@ body, html {
 .btn-outline-red {
   color: var(--color-danger);
   border: 2px solid var(--color-danger);
+  background: none;
 }
 
 .btn-outline-red:hover {
@@ -68,6 +69,8 @@ body, html {
   color: var(--color-danger);
   font-size: 0.9em;
   font-family: "Rubik", sans-serif;
+  display:block;
+  margin-top:0.3em;
 
 }
 
@@ -100,11 +103,21 @@ body, html {
   width: 100%;
 }
 
+
+
+.delete {
+  color: white;
+  cursor:pointer;
+  font-size: 1.3rem;
+}
+
+
 .input-label {
   display: inline-block;
   padding-left: 10px;
   margin-bottom: 0.25rem;
   font-family: "Rubik", sans-serif;
+  display: block;
 }
 
 .input-field {

@@ -1,0 +1,31 @@
+{
+  "name": "bifrost",
+  "version": "0.0.0",
+  "description": "A scaled-down Discord clone for a web project class",
+  "main": "index.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/josephreed2600/pro150-sb2.git"
+  },
+  "author": "Joe Reed, Ryan Unroe, Cody Ashby, Andrew Newberry",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/josephreed2600/pro150-sb2/issues"
+  },
+  "homepage": "https://github.com/josephreed2600/pro150-sb2#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "logger": "github:josephreed2600/logger#master",
+    "path": "^0.12.7",
+    "pug": "^3.0.0"
+  }
+}

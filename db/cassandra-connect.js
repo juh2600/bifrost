@@ -1,13 +1,14 @@
 #!/usr/bin/node
 const cass = require('cassandra-driver');
+const secrets = require('../secrets').cassandra;
 
 const client = new cass.Client({
-	contactPoints: ['172.17.0.2'],
-	localDataCenter: 'datacenter1',
-	keyspace: 'bifrost',
+	contactPoints: [secrets.host],
+	localDataCenter: secrets.dc,
+	keyspace: secrets.keyspace,
 	credentials: {
-		username: 'bifrost',
-		password: 'removed lol'
+		username: secrets.username,
+		password: secrets.password
 	}
 });
 

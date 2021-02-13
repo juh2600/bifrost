@@ -6,20 +6,25 @@ const index = (req, res) => {
 	});
 };
 
+const app = (req, res) => {
+	res.render('app', {
+		// key: value
+	});
+};
 
 const routes = [
 	{
 		uri: '/',
 		methods: ['get'],
 		handler: index
-	}/*,
+	},
 
 	{
-		uri: '/remote',
+		uri: '/app',
 		methods: ['get'],
-		handler: remote
+		handler: app
 	}
-	*/
+
 ];
 
 

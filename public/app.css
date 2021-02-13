@@ -1,0 +1,71 @@
+.main {
+    display:grid;
+    grid-template-areas: "bar-area    bar-area      bar-area      profile-area"
+                         "guild-list  guild-name    channel-name  profile-area"
+                         "guild-list  channel-list  chat-area     user-list"
+                         "guild-list  channel-list  message-area  user-list";
+    grid-template-columns: 6em 14em 1fr 14em;
+    grid-template-rows: 2em 3em 1fr 3em;
+    height:100%;
+    width:100%;
+    box-sizing: border-box;
+    color:white;
+}
+
+/*#############################
+         Grid elements
+###############################*/
+
+.bar-area {
+    grid-area: bar-area;
+    background-color: var(--color-bg-1);
+}
+.profile-area {
+    grid-area: profile-area;
+    background-color: var(--color-bg-1);
+}
+.guild-list {
+    grid-area: guild-list;
+    background-color: var(--color-bg-1);
+}
+
+.guild-name {
+    grid-area: guild-name;
+    background-color: var(--color-bg-2);
+    border-bottom: solid var(--color-bg-4) 1px;
+}
+.channel-list {
+    grid-area: channel-list;
+    background-color: var(--color-bg-2);
+}
+.user-list {
+    grid-area: user-list;
+    background-color: var(--color-bg-2);
+}
+
+.channel-name {
+    grid-area: channel-name;
+    background-color: var(--color-bg-3);
+    border-bottom: solid var(--color-bg-4) 1px;
+}
+.chat-area {
+    grid-area: chat-area;
+    background-color: var(--color-bg-3);
+}
+.message-area {
+    grid-area: message-area;
+    background-color: var(--color-bg-3);
+    border-top: solid var(--color-bg-4) 1px;
+    display:flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+
+
+.input-field {
+    width:90%;
+    margin:0 auto;
+    background-color: var(--color-bg-4);
+    color:white;
+}

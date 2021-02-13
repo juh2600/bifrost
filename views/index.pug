@@ -1,14 +1,12 @@
-doctype hmtl
-html
-    head
-        link(rel='stylesheet' href='bifrost.css')
-        link(rel='stylesheet' href='navbar.css')
-        link(rel='stylesheet' href='landing.css')
-    body
-        div.full-grid
-            header
-                include landingNavBar.pug
-            section.main
-                div.container 
-                    div.message         
-            footer
+extends layout.pug
+block style
+    link(rel='stylesheet' href='navbar.css')
+    link(rel='stylesheet' href='landing.css')
+block content
+    header
+        include landingNavBar.pug
+    section.main
+        div.container 
+            div.message  
+    footer
+

@@ -65,7 +65,7 @@ The bracketed intervals along the left indicate how many times the parameter may
 
 #### Create a guild
 
-Request:
+##### Request
 
     POST /api/v1/guilds HTTP/1.1
     Content-Type: application/json
@@ -74,14 +74,14 @@ Request:
     	"name": "Sam Ramaham's Auto Zone and Stripper Dome"
     }
 
-Response on success:
+##### Response on success
 
     HTTP/1.1 201 Created
     Location: /api/v1/guilds/<guild-snowflake>
 
-Possible modes of failure:
+##### Response on failure
 
-  - If the request body is invalid, the response MUST have a status code of 400 and SHOULD be accompanied by a body detailing the error(s) as precisely as possible.
+If the request body is invalid, the response MUST have a status code of 400 and SHOULD be accompanied by a body detailing the error(s) as precisely as possible.
 
         HTTP/1.1 400 Bad Request
         
@@ -96,22 +96,23 @@ Possible modes of failure:
 
 #### Retrieve a list of guilds
 
+##### Request
+
 A request for a collection of guilds may be modified with the following query string parameters:
 
   - [0..1] `before=<snowflake>`: return only guilds created before the timestamp in the snowflake
   - [0..1] `after=<snowflake>`: return only guilds created after the timestamp in the snowflake
   - [0..n] `name=<uri-string>`: return only guilds whose names include the string
 
-Request:
-
     GET /api/v1/guilds HTTP/1.1
     GET /api/v1/guilds?<query-string-parameters> HTTP/1.1
 
-Response on success
+##### Response on success
 
 This response may contain any number of guild description objects.
 
     HTTP/1.1 200 OK
+    Content-Type: application/json
     
     [
     	{
@@ -123,6 +124,22 @@ This response may contain any number of guild description objects.
 ### A specific guild
 
     /api/v1/guilds/<guild-snowflake>
+
+#### Retrieve a specific guild
+
+##### Request
+
+    GET /api/v1/guilds/<guild-snowflake> HTTP/1.1
+
+##### Response on success
+
+    HTTP/1.1 200 OK
+    Content-Type: application/json
+    
+    {
+    	"id": "<guild-snowflake>",
+    	"name": "Sam Ramaham's Auto Zone and Stripper Dome"
+    }
 
 ## Text Channels
 

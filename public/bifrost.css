@@ -9,9 +9,17 @@
 }
 
 /* Make sure all pages reach the edges of the browser */
-body, html {
-  margin:0;
-  padding:0;
+body,
+html {
+  margin: 0;
+  padding: 0;
+}
+
+.full-grid {
+  display: grid;
+  height: 100%;
+  grid-template-columns: 100%;
+  grid-template-rows: 1fr 15fr 1fr;
 }
 
 .btn {

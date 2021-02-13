@@ -1,0 +1,28 @@
+.container {
+  display: grid;
+  height: 100%;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+
+.item-1 {
+  border: 3px solid black;
+}
+
+.item-2 {
+  border: 3px solid black;
+}
+
+.item-3 {
+  border: 3px solid black;
+}
+
+.item-4 {
+  border: 3px solid black;
+}
+
+.message {
+  grid-column: 1 / span 1;
+  grid-row: 1 / span 2;
+  background-color: red;
+}

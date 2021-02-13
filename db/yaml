@@ -1,0 +1,2 @@
+#!/bin/sh
+./do vi /etc/scylla/scylla.yaml

@@ -21,6 +21,7 @@
   "homepage": "https://github.com/josephreed2600/pro150-sb2#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "cassandra-driver": "^4.6.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",

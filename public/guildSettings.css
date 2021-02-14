@@ -115,18 +115,24 @@ h2 {
 
 
 .channel.add > label {
-    color:var(--color-bg-4);
+    color:#fff;
     background-color: #fff;
     margin-left:2em;
     box-sizing: border-box;
     width:65%;
+    background-color: var(--color-bg-4);
+
 }
 .channel.add > label input {
+    color:#fff;
     width:90%;
     height:100%;
     border:none;
     outline: none;
     font-family: "Rubik", sans-serif;
+    padding-left: 0;
+    font-size: 1em;
+    background-color: var(--color-bg-4);
 }
 .channel.add > button {
     margin: 0 auto;

@@ -1,52 +1,47 @@
-#!/usr/bin/node
+const logger = require('logger').get('test');
 
-process.env.NODE_ENV = 'debug';
-const package = require('./package.json');
+logger.info('Testing schema validation...')
 
-console.log(`Starting ${package.name} v${package.version}`);
-
-require('dotenv').config();
-
-const logger = require('logger').get('main');
-
-logger.info('Requiring packages...');
-const express = require('express');
-const path = require('path');
-const bodyParser = require('body-parser');
-logger.info('Required packages.');
-
-logger.info('Configuring Express...');
-const app = express();
-app.set('view engine', 'pug');
-app.set('views', __dirname + '/views');
-app.use(express.static(path.join(__dirname + '/public')));
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
-logger.info('Configured Express.');
-
-logger.info('Instantiating globals...');
 const db = require('./db/dal');
-logger.info('Instantiated globals.');
 
-logger.info('Configuring routes...');
-let routeFiles = ['frontend']; //, 'api'];
-const routeManager = require('./routes/manager');
-routeFiles.forEach((file) => {
-	logger.info(`Adding ${file} routes...`);
-	let component = require(`./routes/${file}`);
-	if(component.configure) component.configure({
-		// pass stuff to routing files here
-		// dependency injection :tm:
-	});
-	routeManager.apply(app, component);
-	logger.info(`Added ${file} routes.`);
-});
-logger.info('Configured routes.');
+const cases = [];
+const values = [undefined, null, 3, 'bar'];
+for (let valueA of values) {
+	for (let valueB of values) {
+		for (let valueC of values) {
+			for (let valueD of values) {
+				let c = {
+					'foo': valueA,
+					'guild_id': valueB,
+					'name': valueC,
+					'icon_id': valueD
+				};
+				cases.push(c);
+			}
+		}
+	}
+}
 
+const passing_records = [];
+for (let c of cases) {
+	console.log(c);
+	const out = db.schemas.guilds.validate(c, false); // as a new record
+	if (out.length === 0) passing_records.push(c);
+}
 
-logger.info(`Listening on port ${process.env.PORT}`);
-app.listen(process.env.PORT);
+const passing_updates = [];
+for (let c of cases) {
+	const out = db.schemas.guilds.validate(c, true); // as a new record
+	if (out.length === 0) passing_updates.push(c);
+}
 
-module.exports = {
-	db, app
-};
+for (let c of passing_records) {
+	logger.debug('Passed as new record: ' + JSON.stringify(c));
+}
+for (let c of passing_updates) {
+	logger.debug('Passed as update: ' + JSON.stringify(c));
+}
+
+logger.info('Tested schema validation.')
+
+module.exports = { cases };

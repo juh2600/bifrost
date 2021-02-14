@@ -231,7 +231,10 @@ const createGuild = async (name, icon_snowflake) => {
 // FIXME use the filtering options somewhere
 // snowflakes for before, after; string for name fragment
 const getGuilds = async (options) => {
-	return db.execute(...schemas.guilds.getSelectStmt()).then(res => res.rows);
+	return db.execute(...schemas.guilds.getSelectStmt())
+		.then(res => res.rows)
+		.then(rows => rows.map(convertTypesForDistribution))
+	;
 };
 
 // returns or throws
@@ -242,6 +245,20 @@ const updateGuild = async (changes) => {
 // returns or throws
 const deleteGuild = async (guild_snowflake) => {
 	return db.execute(...schemas.guilds.getDeleteStmt({guild_id: guild_snowflake})).then(() => {});
+};
+
+// takes data from database and converts anything necessary before shipping data to users
+// e.g. convert snowflakes from Long to string
+const convertTypesForDistribution = (row) => {
+	const out = {};
+	for (let key of Object.keys(row))
+		if (row[key] !== undefined && row[key] !== null)
+			switch (row[key].constructor.name) {
+				case 'Long': out[key] = row[key] + ''; break;
+				default: out[key] = row[key];
+			}
+	else out[key] = row[key];
+	return out;
 };
 
 module.exports = {

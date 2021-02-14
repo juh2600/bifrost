@@ -7,16 +7,16 @@ block content
         include landingNavBar.pug
         section.welcome-area
             div
-                div.header-text Welcome to
-                div.header-text Bifrost 
-                div.sub-text The bridge between worlds            
+                .header-text Welcome to
+                .header-text Bifrost 
+                .sub-text The bridge between worlds            
         section.button-area
             div
-                a.btn.btn-outline-purple.btn-space(href="signUp") Sign Up
+                a.btn.btn-outline-purple.btn-space(href="/signUp") Sign Up
             div
-                a.btn.btn-outline-purple.btn-space Log In                                   
+                a.btn.btn-outline-purple.btn-space(href="/logIn") Log In                                   
         section.image-area
-            div.img-container
+            .img-container
                 img.wavy-background(src="../images/Bifrost_Background.svg")
                 img.characters(src="../images/Bifrost_Characters.svg", alt="")                
         section.footer-area

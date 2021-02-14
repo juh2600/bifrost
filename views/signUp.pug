@@ -3,9 +3,40 @@ block style
     link(rel='stylesheet' href='navbar.css')
     link(rel='stylesheet' href='signup.css')
 block content
-    header
-        include landingNavBar.pug
     section.main
-        
-        
-    footer
+        include landingNavBar.pug
+        section.preview-area
+            .header-title Sign Up
+            .img-circle.img-large
+                //-Temp Image 
+                img.img(src="https://media.tarkett-image.com/large/TH_25094225_25187225_001.jpg")
+            div Username
+            div #1645 
+        section.form-area
+            form(action="")
+                .form-block
+                    label.input-label(for="") Username
+                    input.input-field(type="text", value="")
+                    .error-message Invalid Username
+                .form-block
+                    label.input-label(for="") Email
+                    input.input-field(type="text", value="")
+                    .error-message Invalid Email
+                .form-block
+                    label.input-label(for="") Password
+                    input.input-field(type="text", value="")
+                    .error-message Invalid Password
+                .form-block
+                    label.input-label(for="") Confirm Password
+                    input.input-field(type="text", value="")
+                    .error-message Password Does Not Match
+                .add-image-block
+                    //- ?
+                    .btn.btn-purple.choose-file-btn Add Image
+                        input.hide-file(type="file")
+                    div No File Chosen
+                .create-block
+                    button.btn.btn-purple(type="submit") Create Account
+
+        section.footer-area
+            div Joe Reed, Ryan Unroe, Andrew Newberry, Cody Ashby

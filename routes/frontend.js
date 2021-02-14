@@ -34,6 +34,11 @@ const guildSettings = (req, res) => {
 		// key: value
 	});
 };
+const userSettings = (req, res) => {
+	res.render('userSettings', {
+		// key: value
+	});
+};
 
 const routes = [
   {
@@ -65,6 +70,11 @@ const routes = [
 		uri: '/guilds/:snowflake/settings',
 		methods: ['get'],
 		handler: guildSettings
+	},
+	{
+		uri: '/users/:snowflake/settings',
+		methods: ['get'],
+		handler: userSettings
 	}
 ];
 

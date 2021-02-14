@@ -1,5 +1,33 @@
 extends layout.pug
 block style
-    link(rel='stylesheet' href='userSettings.css')
+    link(rel='stylesheet' href='/userSettings.css')
 block content
     section.main
+        form
+            section.content
+                div.form-area
+                    div.title
+                        h1 User Settings 
+                        div.delete X
+                    div.guild-form
+                        div.img-container
+                            div.img-circle.img-large
+                                img(src="https://ui-avatars.com/api/?background=random&name=Bi+Frost", alt="Guild Icon").img
+                            p#usernamePreview Username
+                            p#discrimatorPreview #1645 
+                        div.input-area
+                            div.form-block
+                                label.input-label Email
+                                input(type="text", name="newEmail" placeholder="Email").input-field
+                                span.error-message You did it wrong sir 
+                            div.form-block
+                                label.input-label Username
+                                input(type="text", name="newUsername" placeholder="Username").input-field
+                                span.error-message You did it wrong sir 
+                            div.form-block
+                                label.input-label User Icon
+                                input(type="file", name="newUserIcon", accept="image/png, image/jpeg, image/jpg, image/svg") 
+                                span.error-message Incorrect file type
+                div.button-area
+                    button(type="button").btn.btn-outline-red Cancel
+                    button(type="submit").btn.btn-green Save Changes

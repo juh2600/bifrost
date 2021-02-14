@@ -1,0 +1,94 @@
+.main {
+    background-color: var(--color-bg-3);
+    height:100%;
+    width:100%;
+    font-family: "Rubik", sans-serif;
+}
+
+.content {
+    display:grid;
+    grid-template-rows: 1fr 5em;
+    max-width: 1000px;
+    margin:0 auto;
+    height:100%;
+    padding: 0 0.75em;
+    
+}
+
+.title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+
+label, h1, input[type="file"] {
+    color:white;
+}
+
+
+h1 {
+    font-size: 2em;
+    font-weight: 500;
+}
+
+.button-area {
+    display:flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    padding-bottom: 1em;
+}
+
+
+
+.guild-form {
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 2em;
+
+}
+.input-area {
+    margin-right: 0;
+}
+.img-container {
+    margin-right: 2em;
+}
+
+.input-field {
+    width: 100%;
+}
+
+.img-container > p {
+    text-align: center;
+    color:#fff;
+    margin-bottom:0;
+}
+.img-container > #discrimatorPreview {
+    margin-top:0.25em;
+    color:#aaa;
+}
+
+@media all and (min-height:500px) {
+    .button-area {
+        align-items: flex-start;
+    }
+}
+
+@media all and (min-width:750px) {
+    .input-area {
+        margin-right: 3em;
+    }
+    .img-container {
+        margin-right: 7em;
+    }
+}
+
+@media all and (min-width:370px) {
+    .content {
+        padding:0 2em;
+    }
+    
+    
+}

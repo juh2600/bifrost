@@ -3,10 +3,23 @@ block style
     link(rel='stylesheet' href='navbar.css')
     link(rel='stylesheet' href='landing.css')
 block content
-    header
-        include landingNavBar.pug
     section.main
-        div.container 
-            div.message  
+        include landingNavBar.pug
+        section.welcome-area
+            div
+                div.header-text Welcome to
+                div.header-text Bifrost 
+                div.sub-text The bridge between worlds            
+        section.button-area
+            div
+                a.btn.btn-outline-purple.btn-space(href="signUp") Sign Up
+            div
+                a.btn.btn-outline-purple.btn-space Log In                                   
+        section.image-area
+            div.img-container
+                img.wavy-background(src="../images/Bifrost_Background.svg")
+                img.characters(src="../images/Bifrost_Characters.svg", alt="")                
+        section.footer-area
+            div Joe Reed, Ryan Unroe, Andrew Newberry, Cody Ashby
     footer
 

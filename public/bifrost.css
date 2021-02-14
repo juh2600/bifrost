@@ -15,13 +15,6 @@ html {
   padding: 0;
 }
 
-.full-grid {
-  display: grid;
-  height: 100%;
-  grid-template-columns: 100%;
-  grid-template-rows: 1fr 15fr 1fr;
-}
-
 .btn {
   display: inline-block;
   padding: 10px;
@@ -76,7 +69,6 @@ html {
   color: var(--color-danger);
   font-size: 0.9em;
   font-family: "Rubik", sans-serif;
-
 }
 
 /* Use on div wrapping img */
@@ -117,7 +109,7 @@ html {
 
 .input-field {
   display: block;
-  border:none;
+  border: none;
   /* Cursed but forces round edges no matter the height of the element */
   border-radius: 100vh;
   /* border: 2px solid var(--color-accent); */

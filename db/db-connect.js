@@ -1,4 +1,5 @@
 #!/usr/bin/node
+const logger = require('logger').get('db');
 const cass = require('cassandra-driver');
 const secrets = require('../secrets').cassandra;
 
@@ -12,4 +13,6 @@ const client = new cass.Client({
 	}
 });
 
-client.connect().then((x) => console.log(x, 'yeet'));
+client.connect().then(() => logger.info(`Connected to ${secrets.host}`));
+
+module.exports = client;

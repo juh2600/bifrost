@@ -4,7 +4,7 @@ CREATE KEYSPACE bifrost WITH replication =
 CREATE TABLE bifrost.guilds (
 	guild_id bigint,
 	name text,
-	icon bigint,
+	icon_id bigint,
 	PRIMARY KEY (guild_id)
 );
 

@@ -1,23 +1,26 @@
 extends layout.pug
 block style
-    link(rel='stylesheet' href='createServer.css')
+    link(rel='stylesheet' href='/createGuild.css')
 block content
     section.main
-        div.form-area
-            div.title
-                h1 Create A Guild 
-                div.delete X
-            div.guild-form
-                div.img-circle.img-large
-                    img(src="", alt="Guild Icon").img
-                div.form-block
-                    label.input-label Guild Name
-                    input(type="text", name="guildName" placeholder="Guild Name") 
-                    span.error-message You did it wrong sir 
-                div.form-block
-                    label.input-label Guild Icon
-                    input(type="file", name="guildIcon", accept="image/png, image/jpeg, image/jpg, image/svg") 
-                    span.error-message Incorrect file type
-        div.button-area
-            button.btn.btn-outline-red Cancel
-            button(type="submit").btn.btn-green Create
+        form
+            section.content
+                div.form-area
+                    div.title
+                        h1 Create A Guild 
+                        div.delete X
+                    div.guild-form
+                        div.img-circle.img-large
+                            img(src="https://ui-avatars.com/api/?background=random&name=Bi+Frost", alt="Guild Icon").img
+                        div.input-area
+                            div.form-block
+                                label.input-label Guild Name
+                                input(type="text", name="guildName" placeholder="Guild Name").input-field
+                                span.error-message You did it wrong sir 
+                            div.form-block
+                                label.input-label Guild Icon
+                                input(type="file", name="guildIcon", accept="image/png, image/jpeg, image/jpg, image/svg") 
+                                span.error-message Incorrect file type
+                div.button-area
+                    button.btn.btn-outline-red Cancel
+                    button(type="submit").btn.btn-green Create

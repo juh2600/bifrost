@@ -1,6 +1,9 @@
 #!/usr/bin/node
 const logger = require('logger').get('dal');
 const db = require('./db-connect');
+const snowmachine = new (require('snowflake-generator'))(1420070400000);
+// magic number comes from https://discord.com/developers/docs/reference#snowflakes-snowflake-id-format-structure-left-to-right
+// represents the Discord Epoch, in 2015 or something
 
 // cassandra-driver:
 // https://docs.datastax.com/en/developer/nodejs-driver/4.6/api/class.Client/
@@ -213,8 +216,7 @@ const schemas = {
 
 // returns description of guild, or throws
 const createGuild = async (name, icon_snowflake) => {
-	// FIXME generate real snowflakes
-	const guild_snowflake = Math.round(Math.random() * 10000000);
+	const guild_snowflake = snowmachine.generate().snowflake - 0;
 	const record = {
 		guild_id: guild_snowflake,
 		name,

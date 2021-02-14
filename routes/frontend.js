@@ -16,6 +16,11 @@ const createGuild = (req, res) => {
 		// key: value
 	});
 };
+const guildSettings = (req, res) => {
+	res.render('guildSettings', {
+		// key: value
+	});
+};
 
 const routes = [
 	{
@@ -32,6 +37,11 @@ const routes = [
 		uri: '/guilds/create',
 		methods: ['get'],
 		handler: createGuild
+	},
+	{
+		uri: '/guilds/:snowflake/settings',
+		methods: ['get'],
+		handler: guildSettings
 	}
 
 ];

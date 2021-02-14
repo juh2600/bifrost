@@ -1,6 +1,53 @@
 extends layout.pug
 block style
-    link(rel='stylesheet' href='guildSettings.css')
+    link(rel='stylesheet' href='/guildSettings.css')
 block content
     section.main
-            
+         form
+            section.content
+                div.form-area
+                    div.title
+                        h1 Guild Settings 
+                        div.delete X
+                    section.form-body
+                        div.guild-form
+                            div.img-circle.img-large
+                                img(src="https://ui-avatars.com/api/?background=random&name=Bi+Frost", alt="Guild Icon").img
+                            div.input-area
+                                div.form-block
+                                    label.input-label Guild Name
+                                    input(type="text", name="guildName" placeholder="Guild Name").input-field
+                                    span.error-message You did it wrong sir 
+                                div.form-block
+                                    label.input-label Guild Icon
+                                    input(type="file", name="guildIcon", accept="image/png, image/jpeg, image/jpg, image/svg") 
+                                    span.error-message Incorrect file type
+                        div.channel-area
+                            h2 Channels
+                            div.channel-container
+                                //- For loop for all current channels
+                                div.channel
+                                    div.drag
+                                    p.channel-name #example-channel
+                                    div.delete.channel-delete &times;
+                                div.channel
+                                    div.drag
+                                    p.channel-name #example-channel
+                                    div.delete.channel-delete &times;
+                                div.channel
+                                    div.drag
+                                    p.channel-name #example-channel
+                                    div.delete.channel-delete &times;
+                                div.channel
+                                    div.drag
+                                    p.channel-name #example-channel
+                                    div.delete.channel-delete &times;
+                                //- Add new channel box
+                                div.channel.add
+                                    label(for="newChannelName").input-field #
+                                        input#newChannelName(type="text", name="newChannelName")
+                                    button(type="button").btn.btn-outline-white +
+                div.button-area
+                    button(type="button").btn.btn-outline-red Cancel
+                    p You have unsaved changes
+                    button(type="submit").btn.btn-green Save Changes  

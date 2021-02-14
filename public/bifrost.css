@@ -13,6 +13,9 @@ body, html {
   margin:0;
   padding:0;
 }
+body {
+  height:100%;
+}
 
 .btn {
   display: inline-block;
@@ -38,6 +41,7 @@ body, html {
 .btn-outline-purple {
   color: var(--color-accent);
   border: 2px solid var(--color-accent);
+  background:none;
 }
 
 .btn-outline-purple:hover {
@@ -58,6 +62,22 @@ body, html {
   color: white;
   cursor: pointer;
 }
+
+.btn-outline-white {
+  color: #fff;
+  border: 2px solid #fff;
+  background: none;
+}
+
+.btn-outline-white:hover {
+  display: inline-block;
+  background-color: #fff;
+  color: var(--color-bg-1);
+  cursor: pointer;
+}
+
+
+
 
 .btn-green {
   background-color: var(--color-success);
@@ -106,10 +126,15 @@ body, html {
 
 
 .delete {
-  color: white;
+  color: #fff;
   cursor:pointer;
   font-size: 1.3rem;
+  transition: color 0.15s ease;
 }
+.delete:hover {
+    color: var(--color-danger);
+}
+
 
 
 .input-label {

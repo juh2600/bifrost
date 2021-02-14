@@ -1,0 +1,33 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  font-family: "Rubik", sans-serif;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+}
+
+.title-text {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.purple-text {
+  color: var(--color-accent);
+}
+
+.nav-logo {
+  height: 45px;
+}
+
+.nav-btn {
+  margin-right: 25px;
+}
+
+.nav-title {
+  margin-left: 50px;
+}

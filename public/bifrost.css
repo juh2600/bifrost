@@ -9,9 +9,10 @@
 }
 
 /* Make sure all pages reach the edges of the browser */
-body, html {
-  margin:0;
-  padding:0;
+body,
+html {
+  margin: 0;
+  padding: 0;
 }
 body {
   height:100%;
@@ -24,6 +25,7 @@ body {
   border-radius: 100vh;
   cursor: pointer;
   font-family: "Rubik", sans-serif;
+  text-decoration: none;
 }
 
 .btn-purple {
@@ -89,9 +91,8 @@ body {
   color: var(--color-danger);
   font-size: 0.9em;
   font-family: "Rubik", sans-serif;
-  display:block;
-  margin-top:0.3em;
-
+  display: block;
+  margin-top: 0.3em;
 }
 
 /* Use on div wrapping img */
@@ -123,8 +124,6 @@ body {
   width: 100%;
 }
 
-
-
 .delete {
   color: #fff;
   cursor:pointer;
@@ -134,8 +133,6 @@ body {
 .delete:hover {
     color: var(--color-danger);
 }
-
-
 
 .input-label {
   display: inline-block;
@@ -147,10 +144,9 @@ body {
 
 .input-field {
   display: block;
-  border:none;
+  border: none;
   /* Cursed but forces round edges no matter the height of the element */
   border-radius: 100vh;
-  /* border: 2px solid var(--color-accent); */
   padding: 0.5rem 1rem;
   font-family: "Rubik", sans-serif;
 }

@@ -7,7 +7,8 @@ const db = require('./db-connect');
 
 class Schema {
 	constructor(name, keys = [], requireds = [], nullables = [], immutables = [], automatics = [], update_keys = [], typeSamples = {}, validators = [], permitNulls = false) {
-		// e.g. 'guild'
+		// e.g. 'guilds', 'channels_by_guild'
+		// this is used as a table name for generating CQL
 		this.name = name;
 		// list of all column names
 		this.keys = keys;
@@ -48,10 +49,6 @@ class Schema {
 		this.validators.push(Schema.getCheckForTypeErrors(this));
 	}
 
-	get isValid() {
-		return this.validate().length === 0;
-	}
-	
 	trim(obj) {
 		const out = {};
 		this.keys.forEach(key => {out[key] = obj[key];});
@@ -61,16 +58,16 @@ class Schema {
 		return out;
 	}
 
-	get updatables() {
-		return this.keys.filter(key => !this.immutables.includes(key));
+	validate(obj, isUpdate = false) {
+		const errors = [];
+		this.validators.forEach(v => {
+			errors.push(...v(obj, isUpdate));
+		});
+		return errors;
 	}
 
-	getSelectStmt() {
-		return [
-			`SELECT * FROM ${this.name};`
-			, []
-			, { prepare: true }
-		];
+	get updatables() {
+		return this.keys.filter(key => !this.immutables.includes(key));
 	}
 
 	getInsertStmt(record) {
@@ -88,6 +85,14 @@ class Schema {
 		return [
 			`INSERT INTO ${this.name} (${column_string}) VALUES (${value_string});`
 			, params
+			, { prepare: true }
+		];
+	}
+
+	getSelectStmt() {
+		return [
+			`SELECT * FROM ${this.name};`
+			, []
 			, { prepare: true }
 		];
 	}
@@ -139,14 +144,6 @@ class Schema {
 			, params
 			, { prepare: true }
 		];
-	}
-
-	validate(obj, isUpdate = false) {
-		const errors = [];
-		this.validators.forEach(v => {
-			errors.push(...v(obj, isUpdate));
-		});
-		return errors;
 	}
 
 	static getCheckForMissingKeys(_this) {
@@ -229,23 +226,23 @@ const createGuild = async (name, icon_snowflake) => {
 };
 
 // returns list of guild descriptions, or throws
+// FIXME use the filtering options somewhere
+// snowflakes for before, after; string for name fragment
 const getGuilds = async (options) => {
-	return db.execute(...schemas.guilds.getSelectStmt())
-		.then(res => res.rows);
+	return db.execute(...schemas.guilds.getSelectStmt()).then(res => res.rows);
 };
 
 // returns or throws
 const updateGuild = async (changes) => {
-	return db.execute(...schemas.guilds.getUpdateStmt(changes))
-		.then(() => {});
+	return db.execute(...schemas.guilds.getUpdateStmt(changes)).then(() => {});
 };
 
 // returns or throws
 const deleteGuild = async (guild_snowflake) => {
-	return db.execute(...schemas.guilds.getDeleteStmt({guild_id: guild_snowflake}))
-		.then(() => {});
+	return db.execute(...schemas.guilds.getDeleteStmt({guild_id: guild_snowflake})).then(() => {});
 };
 
 module.exports = {
-	createGuild, getGuilds, updateGuild, deleteGuild, Schema, schemas
+	Schema, schemas
+	, createGuild, getGuilds, updateGuild, deleteGuild
 };

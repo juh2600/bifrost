@@ -166,10 +166,12 @@ class Schema {
 					.filter(key => obj[key] !== undefined)
 					.length === 0)
 					errors.push(`At least one key besides [${_this.immutables.join(', ')}] must be supplied for an update, but none were`);
+				/*
 				else console.log(_this.keys
 					.filter(key => !_this.immutables.includes(key))
 					.filter(key => obj[key] !== undefined)
 				);
+				*/
 			} else {
 				// ensure that all keys that aren't optional are defined,
 				// and also that all keys that are defined aren't null if nulls are not permitted
@@ -207,20 +209,20 @@ const schemas = {
 		, ['guild_id'] // automatics
 		, ['guild_id'] // update keys
 		, { // type samples
-			'guild_id': 0
+			'guild_id': ''
 			, 'name': ''
-			, 'icon_id': 0
+			, 'icon_id': ''
 		}
 	)
 };
 
 // returns description of guild, or throws
 const createGuild = async (name, icon_snowflake) => {
-	const guild_snowflake = snowmachine.generate().snowflake - 0;
+	const guild_snowflake = snowmachine.generate().snowflake;
 	const record = {
-		guild_id: guild_snowflake,
-		name,
-		icon_id: icon_snowflake
+		guild_id: Long.fromString(guild_snowflake)
+		, name
+		, icon_id: Long.fromString(icon_snowflake)
 	};
 
 	return db.execute(...schemas.guilds.getInsertStmt(record))
@@ -239,12 +241,19 @@ const getGuilds = async (options) => {
 
 // returns or throws
 const updateGuild = async (changes) => {
-	return db.execute(...schemas.guilds.getUpdateStmt(changes)).then(() => {});
+	getGuilds()
+		.then(rows => rows.filter(row => row.guild_id == changes.guild_id).length > 0)
+		.then(recordExists => {
+			if (recordExists)
+				return db.execute(...schemas.guilds.getUpdateStmt(changes)).then(() => {});
+			else
+				throw [`Only existing guilds may be updated, but no guild with id ${changes.guild_id} was found`];
+		});
 };
 
 // returns or throws
 const deleteGuild = async (guild_snowflake) => {
-	return db.execute(...schemas.guilds.getDeleteStmt({guild_id: guild_snowflake})).then(() => {});
+	return db.execute(...schemas.guilds.getDeleteStmt({guild_id: Long.fromString(guild_snowflake)})).then(() => {});
 };
 
 // takes data from database and converts anything necessary before shipping data to users

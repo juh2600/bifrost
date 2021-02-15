@@ -63,11 +63,12 @@
 }
 
 .error-message {
-  padding-left: 10px;
+  margin-top: 1rem;
+  margin-left: 7rem;
 }
 
 .login-block {
-  margin-left: 8rem;
+  margin-left: 10rem;
 }
 
 button.btn {

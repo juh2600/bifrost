@@ -3,8 +3,22 @@ block style
     link(rel='stylesheet' href='navbar.css')
     link(rel='stylesheet' href='login.css')
 block content
-    header
-        include landingNavBar.pug
     section.main
-        
-    footer
+        include landingNavBar.pug
+        section.display-area
+            .header-title Log In
+            img.bifrost-logo(src="../images/Bifrost_Logo.svg")
+        section.form-area
+            form(action="") 
+                .form-block
+                    label.input-label(for="") Username
+                    input.input-field(type="text", value="")
+                    .error-message Invalid Username
+                .form-block
+                    label.input-label(for="") Username
+                    input.input-field(type="text", value="")
+                    .error-message Invalid Username
+                .login-block
+                    button.btn.btn-purple(type="submit") Log In
+        section.footer-area
+            div Joe Reed, Ryan Unroe, Andrew Newberry, Cody Ashby

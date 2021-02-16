@@ -1,6 +1,6 @@
 extends layout.pug
 block style
-    link(rel='stylesheet' href='/guildSettings.css')
+    link(rel='stylesheet' href='/styles/guildSettings.css')
 block content
     section.main
          form
@@ -8,7 +8,7 @@ block content
                 div.form-area
                     div.title
                         h1 Guild Settings 
-                        div.delete X
+                        div.delete.cancel X
                     section.form-body
                         div.guild-form
                             div.img-circle.img-large
@@ -49,6 +49,6 @@ block content
                                         input#newChannelName(type="text", name="newChannelName" autocomplete="off")
                                     button(type="button").btn.btn-outline-white +
                 div.button-area
-                    button(type="button").btn.btn-outline-red Cancel
+                    button(type="button").btn.btn-outline-red.cancel Cancel
                     p You have unsaved changes
                     button(type="submit").btn.btn-green Save Changes  

@@ -1,6 +1,6 @@
 extends layout.pug
 block style
-    link(rel='stylesheet' href='/createGuild.css')
+    link(rel='stylesheet' href='/styles/createGuild.css')
 block content
     section.main
         form
@@ -8,7 +8,7 @@ block content
                 div.form-area
                     div.title
                         h1 Create A Guild 
-                        div.delete X
+                        div.delete.cancel X
                     div.guild-form
                         div.img-circle.img-large
                             img(src="https://ui-avatars.com/api/?background=random&name=Bi+Frost", alt="Guild Icon").img
@@ -23,5 +23,5 @@ block content
                                     input(type="file", name="newUserIcon", accept="image/png, image/jpeg, image/jpg, image/svg") 
                                 span.error-message Incorrect file type
                 div.button-area
-                    button(type="button").btn.btn-outline-red Cancel
+                    button(type="button").btn.btn-outline-red.cancel Cancel
                     button(type="submit").btn.btn-green Create

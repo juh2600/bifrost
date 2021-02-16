@@ -1,11 +1,10 @@
+body {
+  background-color: var(--color-bg-3);
+}
+
 .main {
   display: grid;
-  grid-template-areas:
-    "navbar-area   navbar-area"
-    "preview-area  form-area"
-    "footer-area   footer-area";
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 5em 1fr 4em;
+  grid-template-rows: 4em 1fr 4em;
   height: 100%;
   width: 100%;
   box-sizing: border-box;
@@ -14,12 +13,10 @@
 }
 
 .navbar-area {
-  grid-area: navbar-area;
   background-color: var(--color-bg-2);
 }
 
 .preview-area {
-  grid-area: preview-area;
   background-color: var(--color-bg-3);
   display: flex;
   flex-direction: column;
@@ -27,15 +24,12 @@
 }
 
 .form-area {
-  grid-area: form-area;
   background-color: var(--color-bg-3);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  padding-top:2em;
+  
 }
 
 .footer-area {
-  grid-area: footer-area;
   background-color: var(--color-bg-2);
   display: flex;
   justify-content: center;
@@ -43,13 +37,14 @@
 }
 
 .header-title {
-  font-size: 4vw;
-  margin-top: 15vh;
+  font-size: 2.75em;
+  font-weight: 400;
+  margin-top: 1.5rem;
   margin-bottom: 1rem;
 }
 
 .input-field {
-  width: 400px;
+  width: 100%;
 }
 
 .error-message {
@@ -89,11 +84,54 @@
   margin-left: 8rem;
 }
 
-button.btn {
-  font-size: 17px;
-  font-family: "Rubik", sans-serif;
-}
+
 
 .form-block {
   margin-bottom: 1.5rem;
+}
+
+.content {
+  display:grid;
+}
+
+form {
+  max-width: 500px;
+  margin:0 auto;
+  padding:0 1rem;
+
+}
+
+.submit-btn {
+  margin:0 auto;
+  display:block;
+}
+
+
+@media all and (min-width:400px) {
+  .header-title {
+    font-size: 3.75em;
+  }
+}
+@media all and (min-width:750px) {
+  form {
+    max-width: 400px;
+  }
+  .content {
+    grid-template-columns: 2fr 3fr;
+  }
+  .header-title {
+    margin-top: 15vh;
+    font-size: 3.75em;
+  }
+  .form-area {
+    padding-top:4rem;
+    margin-top: 0;
+  }
+  
+}
+
+@media all and (min-width:1000px) {
+  .content {
+    grid-template-columns: 1fr 1fr;
+  }
 }

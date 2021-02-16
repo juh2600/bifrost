@@ -20,7 +20,8 @@ body {
 
 .btn {
   display: inline-block;
-  padding: 10px;
+  font-size: 1em;
+  padding: 8px 10px;
   /* Cursed but forces round edges no matter the height of the element */
   border-radius: 100vh;
   cursor: pointer;

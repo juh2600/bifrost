@@ -1,25 +1,18 @@
 .main {
   display: grid;
-  grid-template-areas:
-    "navbar-area   navbar-area"
-    "display-area  form-area"
-    "footer-area   footer-area";
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 5em 1fr 4em;
-  height: 100%;
-  width: 100%;
+  grid-template-rows: 4em 1fr 4em;
   box-sizing: border-box;
   color: white;
+  height:100%;
+
   font-family: "Rubik", sans-serif;
 }
 
 .navbar-area {
-  grid-area: navbar-area;
   background-color: var(--color-bg-2);
 }
 
 .display-area {
-  grid-area: display-area;
   background-color: var(--color-bg-3);
   display: flex;
   flex-direction: column;
@@ -27,15 +20,11 @@
 }
 
 .form-area {
-  grid-area: form-area;
   background-color: var(--color-bg-3);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+
 }
 
 .footer-area {
-  grid-area: footer-area;
   background-color: var(--color-bg-2);
   display: flex;
   justify-content: center;
@@ -43,15 +32,15 @@
 }
 
 .header-title {
-  font-size: 4vw;
-  margin-top: 15vh;
-  margin-bottom: 2rem;
+  font-size: 2.75em;
+  font-weight: 400;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .bifrost-logo {
-  height: 400;
+  max-height: 300px;
   width: auto;
-  margin-right: 50px;
 }
 
 .form-block {
@@ -59,19 +48,49 @@
 }
 
 .input-field {
-  width: 400px;
+  width: 100%;
 }
 
 .error-message {
-  margin-top: 1rem;
-  margin-left: 7rem;
+  text-align: center;
 }
 
-.login-block {
-  margin-left: 10rem;
+.submit-btn {
+  margin:0.5em auto;
+  display:block;
 }
 
-button.btn {
-  font-size: 17px;
-  font-family: "Rubik", sans-serif;
+form {
+  max-width: 400px;
+  margin:0 auto;
+  padding:0 1rem;
+  flex:1;
+
+}
+.content {
+  display:grid;
+}
+
+@media all and (min-width:750px) {
+  .content {
+    grid-template-columns: 2fr 3fr;
+  }
+  .header-title {
+    margin-top: 15vh;
+    font-size: 3.75em;
+  }
+  .form-area {
+    display:flex;
+    align-items: center;
+    margin-top: 0;
+
+  }
+  
+}
+
+
+@media all and (min-width:1000px) {
+  .content {
+    grid-template-columns: 1fr 1fr;
+  }
 }

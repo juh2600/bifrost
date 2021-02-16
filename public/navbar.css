@@ -9,10 +9,12 @@
 .title {
   display: flex;
   align-items: center;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .title-text {
-  font-size: 30px;
+  font-size: 25px;
   font-weight: bold;
 }
 
@@ -21,13 +23,32 @@
 }
 
 .nav-logo {
-  height: 45px;
+  height: 35px;
 }
 
 .nav-btn {
-  margin-right: 25px;
+  margin-right: 0.75em;
 }
 
 .nav-title {
-  margin-left: 50px;
+  margin-left: 1em;
+}
+
+
+@media all and (min-width: 400px) {
+  .nav-btn {
+    margin-right: 1.25em;
+  }
+  .nav-logo {
+    height: 45px;
+  }
+  .title-text {
+    font-size: 30px;
+  }
+}
+
+@media all and (min-width: 600px) {
+  .nav-btn {
+    margin-right: 1.5em;
+  }
 }

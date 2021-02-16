@@ -135,6 +135,15 @@ body {
     color: var(--color-danger);
 }
 
+
+.file-input {
+  width:7em;
+}
+.file-input > input {
+  display:none;
+}
+
+
 .input-label {
   display: inline-block;
   padding-left: 10px;

@@ -18,8 +18,9 @@ block content
                                 input(type="text", name="guildName" placeholder="Guild Name").input-field
                                 span.error-message You did it wrong sir 
                             div.form-block
-                                label.input-label Guild Icon
-                                input(type="file", name="guildIcon", accept="image/png, image/jpeg, image/jpg, image/svg") 
+                                label.input-label User Icon
+                                label.input-label.file-input.btn.btn-purple Upload Image
+                                    input(type="file", name="newUserIcon", accept="image/png, image/jpeg, image/jpg, image/svg") 
                                 span.error-message Incorrect file type
                 div.button-area
                     button(type="button").btn.btn-outline-red Cancel

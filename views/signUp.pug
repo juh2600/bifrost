@@ -31,11 +31,11 @@ block content
                         label.input-label(for="") Confirm Password
                         input.input-field(type="text", value="")
                         span.error-message Password Does Not Match
-                    .add-image-block
-                        //- ?
-                        .btn.btn-purple.choose-file-btn Add Image
-                            input.hide-file(type="file")
-                        div No File Chosen
+                    .form-block
+                        label.input-label User Icon
+                        label.input-label.file-input.btn.btn-purple Upload Image
+                            input(type="file", name="newUserIcon", accept="image/png, image/jpeg, image/jpg, image/svg") 
+                        span.error-message Incorrect file type
                     button.btn.btn-purple(type="submit").submit-btn Create Account
 
         section.footer-area

@@ -51,6 +51,10 @@ h1 {
 }
 .input-area {
     margin-right: 0;
+    margin-top:1em;
+    flex:1;
+    max-width: 400px;
+    min-width: 175px;
 }
 .img-circle {
     margin-right: 2em;

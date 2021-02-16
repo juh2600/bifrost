@@ -66,8 +66,13 @@ h2 {
     border-radius: 10px;
 
 }
+
+
 .input-area {
     margin-right: 0;
+    flex:1;
+    max-width: 350px;
+    min-width: 175px;
 }
 .img-circle {
     margin-right: 2em;

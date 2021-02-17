@@ -1,6 +1,8 @@
 extends layout.pug
 block style
     link(rel='stylesheet' href='/styles/guildSettings.css')
+    script(defer, src="/scripts/appSettings.js") 
+    script(defer, src="/scripts/channels.js") 
 block content
     section.main
          form
@@ -44,10 +46,10 @@ block content
                                     p.channel-name #example-channel
                                     div.delete.channel-delete &times;
                                 //- Add new channel box
-                                div.channel.add
-                                    label(for="newChannelName").input-field #
-                                        input#newChannelName(type="text", name="newChannelName" autocomplete="off")
-                                    button(type="button").btn.btn-outline-white +
+                            div.channel.add
+                                label(for="newChannelName").input-field #
+                                    input#newChannelName(type="text", name="newChannelName" autocomplete="off")
+                                button#addChannelBtn(type="button").btn.btn-outline-white +
                 div.button-area
                     button(type="button").btn.btn-outline-red.cancel Cancel
                     p You have unsaved changes

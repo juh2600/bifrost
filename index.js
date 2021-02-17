@@ -29,7 +29,7 @@ logger.info('Instantiating globals...');
 logger.info('Instantiated globals.');
 
 logger.info('Configuring routes...');
-let routeFiles = ['frontend']; //, 'api'];
+let routeFiles = ['frontend', 'api/v0/guilds', 'api/v0/text-channels', 'api/v0/messages', 'api/v0/users']; //, 'api'];
 const routeManager = require('./routes/manager');
 routeFiles.forEach((file) => {
 	logger.info(`Adding ${file} routes...`);

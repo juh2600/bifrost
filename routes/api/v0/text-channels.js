@@ -1,4 +1,4 @@
-const logger = require('logger').get('frontend');
+const logger = require('logger').get('text-channels');
 
 const snowmachine = new (require('snowflake-generator'))(1420070400000);
 

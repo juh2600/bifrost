@@ -1,4 +1,4 @@
-const logger = require('logger').get('frontend');
+const logger = require('logger').get('users');
 
 const index = (req, res) => {
 	res.render('index', {

@@ -2,6 +2,7 @@ extends layout.pug
 block style
     link(rel='stylesheet' href='/styles/navbar.css')
     link(rel='stylesheet' href='/styles/login.css')
+    script(defer, src="/scripts/login.js") 
 block content
     section.main
         include landingNavBar.pug
@@ -10,14 +11,14 @@ block content
                 h1.header-title Log In
                 img.bifrost-logo(src="../images/Bifrost_Logo.svg")
             section.form-area
-                form(action="") 
+                form(onsubmit="return validateForm()" method="post") 
                     .form-block
-                        label.input-label(for="") Email
-                        input.input-field(type="text", value="")
+                        label.input-label Email
+                        input#emailInput.input-field(type="text", name="email")
                     .form-block
-                        label.input-label(for="") Password
-                        input.input-field(type="text", value="")
-                    span.error-message Invalid Email or Password
-                    button.btn.btn-purple(type="submit").submit-btn Log In
+                        label.input-label Password
+                        input#passwordInput.input-field(type="text", name="password")
+                    span#errorMsg.error-message
+                    button#loginBtn.btn.btn-purple(type="submit").submit-btn Log In
         section.footer-area
             div Joe Reed, Ryan Unroe, Andrew Newberry, Cody Ashby

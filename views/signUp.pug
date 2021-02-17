@@ -2,6 +2,7 @@ extends layout.pug
 block style
     link(rel='stylesheet' href='/styles/navbar.css')
     link(rel='stylesheet' href='/styles/signup.css')
+    script(defer, src="/scripts/signUp.js") 
 block content
     section.main
         include landingNavBar.pug
@@ -10,32 +11,32 @@ block content
                 h1.header-title Sign Up
                 .img-circle.img-large
                     //-Temp Image 
-                    img.img(src="https://www.gravatar.com/avatar/" + Math.floor(Math.random() * 15 + 1) + "?s=200&d=retro")
-                div Username
-                div #1645 
+                    img#profileImg.img(src="https://www.gravatar.com/avatar/" + Math.floor(Math.random() * 15 + 1) + "?s=200&d=retro")
+                div#usernameDisplay Username
+                div#discriminatorDisplay 
             section.form-area
-                form(action="")
+                form(onsubmit="return validateForm()" method="post")
                     .form-block
-                        label.input-label(for="") Username
-                        input.input-field(type="text", value="")
-                        span.error-message Invalid Username
+                        label.input-label Username
+                        input#usernameInput.input-field(type="text", name="username")
+                        span#usernameErrorMsg.error-message Invalid Username
                     .form-block
-                        label.input-label(for="") Email
-                        input.input-field(type="text", value="")
-                        span.error-message Invalid Email
+                        label.input-label Email
+                        input#emailInput.input-field(type="text", name="email")
+                        span#usernameErrorMsg.error-message Invalid Email
                     .form-block
-                        label.input-label(for="") Password
-                        input.input-field(type="text", value="")
-                        span.error-message Invalid Password
+                        label.input-label Password
+                        input#passwordInput.input-field(type="text", name="password")
+                        span#passwordErrorMsg.error-message Invalid Password (8 Characters, 1 letter, and 1 number)
                     .form-block
-                        label.input-label(for="") Confirm Password
-                        input.input-field(type="text", value="")
-                        span.error-message Password Does Not Match
+                        label.input-label Confirm Password
+                        input#confirmInput.input-field(type="text", name="confirmPassword")
+                        span#confirmErrorMsg.error-message Password Does Not Match
                     .form-block
                         label.input-label User Icon
                         label.input-label.file-input.btn.btn-purple Upload Image
-                            input(type="file", name="newUserIcon", accept="image/png, image/jpeg, image/jpg, image/svg") 
-                        span.error-message Incorrect file type
+                            input#iconInput(type="file", name="newUserIcon", accept="image/png, image/jpeg, image/jpg, image/svg") 
+                        span#iconErrorMsg.error-message Incorrect file type
                     button.btn.btn-purple(type="submit").submit-btn Create Account
 
         section.footer-area

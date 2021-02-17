@@ -1,0 +1,119 @@
+let usernameInputId = document.getElementById("usernameInput");
+let emailInputId = document.getElementById("emailInput");
+let passwordInputId = document.getElementById("passwordInput");
+let confirmInputId = document.getElementById("confirmInput");
+let iconInputId = document.getElementById("iconInput");
+let profileImgId = document.getElementById("profileImg");
+let usernameDisplayId = document.getElementById("usernameDisplay");
+
+let imgUrl =
+  "https://www.gravatar.com/avatar/" +
+  Math.floor(Math.random() * 15 + 1) +
+  "?s=200&d=retro";
+
+usernameInputId.addEventListener("input", () => {
+  validateUsername();
+  usernameDisplay();
+});
+
+const validateUsername = () => {
+  let input = usernameInputId.value;
+  let usernameRegex = /^[a-zA-Z0-9_ ]+$/;
+  let areCharactersValid = usernameRegex.test(input);
+  let isLongEnough = input.length > 0;
+  let isShortEnough = input.length < 65;
+
+  let usernameErrorMsg = document.getElementById("usernameErrorMsg");
+
+  if (!isLongEnough) usernameErrorMsg.innerHTML = "Username is too short";
+  else if (!areCharactersValid)
+    usernameErrorMsg.innerHTML = "Invalid character(s)";
+  else if (!isShortEnough) usernameErrorMsg.innerHTML = "Username is too long";
+
+  let isValid = areCharactersValid && isShortEnough && isLongEnough;
+  isValid
+    ? usernameErrorMsg.classList.add("hidden")
+    : usernameErrorMsg.classList.remove("hidden");
+  return isValid;
+};
+
+const usernameDisplay = () => {
+  let input = usernameInputId.value;
+  let defaultUsername = (usernameDisplayId.innerHTML = "Username");
+  input === "" ? defaultUsername : (usernameDisplayId.innerHTML = input);
+};
+
+emailInputId.addEventListener("input", () => {
+  validateEmail();
+});
+
+const validateEmail = () => {
+  let input = emailInputId.value;
+  let emailRegex = /\w+@\w+\.\w+/;
+  isValid = emailRegex.test(input);
+  let emailErrorMsg = document.getElementById("emailErrorMsg");
+  isValid
+    ? emailErrorMsg.classList.add("hidden")
+    : emailErrorMsg.classList.remove("hidden");
+  return isValid;
+};
+
+passwordInputId.addEventListener("input", () => {
+  validatePassword();
+});
+
+const validatePassword = () => {
+  let input = passwordInputId.value;
+  //Minimum eight characters, at least one letter and one number
+  let passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+  let passwordIsValid = passwordRegex.test(input);
+  let passwordErrorMsg = document.getElementById("passwordErrorMsg");
+
+  passwordIsValid
+    ? passwordErrorMsg.classList.add("hidden")
+    : passwordErrorMsg.classList.remove("hidden");
+
+  return passwordIsValid;
+};
+
+confirmInputId.addEventListener("input", () => {
+  confirmPassword();
+});
+
+const confirmPassword = () => {
+  let isValid = confirmInputId.value == passwordInputId.value;
+  let confirmErrorMsg = document.getElementById("confirmErrorMsg");
+  isValid
+    ? confirmErrorMsg.classList.add("hidden")
+    : confirmErrorMsg.classList.remove("hidden");
+};
+
+iconInputId.addEventListener("input", () => {
+  validateIcon();
+});
+
+const validateIcon = () => {
+  let input = iconInputId.value;
+  console.log(input);
+  let iconRegex = /\.(jpg|png|jpeg|svg|jfif|pjpeg|pjp)$/;
+  isValid = iconRegex.test(input);
+  let iconErrorMsg = document.getElementById("iconErrorMsg");
+  isValid
+    ? iconErrorMsg.classList.add("hidden")
+    : iconErrorMsg.classList.remove("hidden");
+
+  if (isValid) {
+    let url = window.URL.createObjectURL(iconInputId.files[0]);
+    updateUserIcon(url);
+  }
+
+  return isValid;
+};
+
+const updateUserIcon = (imgURL) => {
+  profileImgId.src = imgURL;
+};
+
+//Generates random discriminator
+document.getElementById("discriminatorDisplay").innerHTML =
+  "#" + Math.floor(1000 + Math.random() * 9000);

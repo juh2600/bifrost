@@ -2,9 +2,10 @@ extends layout.pug
 block style
     link(rel='stylesheet' href='/styles/userSettings.css')
     script(defer, src="/scripts/appSettings.js") 
+    script(defer, src="/scripts/userSettings.js") 
 block content
     section.main
-        form
+        form(onsubmit="return validateForm()" method="post")
             section.content
                 div.form-area
                     div.title
@@ -13,23 +14,23 @@ block content
                     div.guild-form
                         div.img-container
                             div.img-circle.img-large
-                                img(src="https://ui-avatars.com/api/?background=random&name=Bi+Frost", alt="Guild Icon").img
+                                img#userImage(src="https://ui-avatars.com/api/?background=random&name= ", alt="Guild Icon").img
                             p#usernamePreview Username
                             p#discrimatorPreview #1645 
                         div.input-area
                             div.form-block
                                 label.input-label Email
-                                input(type="text", name="newEmail" placeholder="Email").input-field
-                                span.error-message You did it wrong sir 
+                                input#emailInput(type="text", name="newEmail" placeholder="Email").input-field
+                                span#emailErrorMsg.error-message.hidden Invalid email
                             div.form-block
                                 label.input-label Username
-                                input(type="text", name="newUsername" placeholder="Username").input-field
-                                span.error-message You did it wrong sir 
+                                input#usernameInput(type="text", name="newUsername" placeholder="Username").input-field
+                                span#usernameErrorMsg.error-message.hidden You did it wrong sir 
                             div.form-block
                                 label.input-label User Icon
                                 label.input-label.file-input.btn.btn-purple Upload Image
-                                    input(type="file", name="newUserIcon", accept="image/png, image/jpeg, image/jpg, image/svg") 
-                                span.error-message Incorrect file type
+                                    input#iconInput(type="file", name="newUserIcon", accept="image/png, image/jpeg, image/jpg, image/svg") 
+                                span#iconErrorMsg.error-message.hidden Incorrect file type
                 div.button-area
                     button(type="button").btn.btn-outline-red.cancel Cancel
                     button(type="submit").btn.btn-green Save Changes

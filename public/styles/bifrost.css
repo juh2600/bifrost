@@ -80,7 +80,9 @@ body {
 }
 
 
-
+.hidden {
+  visibility: hidden;
+}
 
 .btn-green {
   background-color: var(--color-success);

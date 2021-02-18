@@ -1,5 +1,5 @@
 
-const setupEventListeners = () => {
+const setupCancelEventListeners = () => {
     document.querySelectorAll('.cancel').forEach(button => {
         button.addEventListener("click", () => {
             window.location.href = "/app";
@@ -7,4 +7,4 @@ const setupEventListeners = () => {
     });
 }
 
-setupEventListeners();
+setupCancelEventListeners();

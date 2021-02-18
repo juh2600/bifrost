@@ -1,5 +1,17 @@
+let isPageChanged = false;
+let channelList;
 let channelContainer = document.getElementsByClassName('channel-container')[0];
 
+const setupEventListeners = () => {
+    document.getElementById("addChannelBtn").addEventListener("click", () => {
+        formatInputField();
+        addChannel({"name":document.getElementById("newChannelName").value});
+        updateChannelList();
+    });
+    document.getElementById("newChannelName").addEventListener("input", () => {
+        formatInputField();
+    });
+}
 
 const createChannel = (channelName) => {
     let channel = document.createElement('div');
@@ -16,6 +28,9 @@ const createChannel = (channelName) => {
     deleteBtn.classList.add('delete');
     deleteBtn.classList.add('channel-delete');
     deleteBtn.innerHTML = '&times;';
+    deleteBtn.addEventListener("click", evt => {
+        deleteChannel(evt);
+    });
 
     channel.appendChild(drag);
     channel.appendChild(name);
@@ -24,13 +39,74 @@ const createChannel = (channelName) => {
 }
 
 
+const initializePage = () => {
+    getData();
+}
+
+
 const getData = () => {
-
+    fetch("/api/v0/guilds/1/text-channels")
+    .then(response => response.json())
+    .then(data => {
+        populateData(data);
+        setupEventListeners();
+    });
 }
 
-const addChannel = () => {
-    let newChannel = createChannel(document.getElementById("#newChannelName"));
+const populateData = (data) => {
+    //Sort channel list by position property
+    data.sort((a, b) => (a.position > b.position) ? 1 : -1);
+    console.log(data);
+    for(let i = 0; i < data.length; i++) {
+        addChannel(data[i]);
+    }
+    updateChannelList();
+}
+
+const addChannel = (channel) => {
+    //Removes dashes from beginning/end if they exist
+    channel.name = (channel.name.charAt(channel.name.length -1) == "-") ? channel.name.slice(0, -1) : channel.name;
+    channel.name = (channel.name.charAt(0) == "-") ? channel.name.slice(1) : channel.name;
+
+    let newChannel = createChannel(channel.name);
+    newChannel.dataset.guild_id = "Placeholder";
+    newChannel.dataset.name = channel.name;
+    if(channel.position !== undefined) newChannel.dataset.position = channel.position;
+    else newChannel.dataset.position = parseInt(channelList[channelList.length-1].position) + 1;
+    if(channel.channel_id) newChannel.dataset.channel_id = channel.channel_id;
     channelContainer.appendChild(newChannel);
+    document.getElementById("newChannelName").value = "";
+    
 }
 
-document.getElementById("addChannelBtn").addEventListener("click", () => {addChannel()})
+
+const deleteChannel = evt => {
+    channelContainer.removeChild(evt.toElement.parentElement);
+    updatePositions();
+    updateChannelList();
+    console.log(channelList);
+}
+
+const updatePositions = () => {
+    let newPosition = 0;
+    [...document.getElementsByClassName('channel-container')[0].children].forEach(channel => {
+        channel.dataset.position = newPosition;
+        newPosition++;
+    })
+}
+
+const updateChannelList = () => {
+    channelList = [...document.getElementsByClassName('channel-container')[0].children].map(element => Object.assign({}, element.dataset));
+}
+
+
+const formatInputField = () => {
+    let inputValue = document.getElementById("newChannelName").value;
+    inputValue = inputValue.replaceAll(" ", "-");
+    inputValue = inputValue.replaceAll("--", "-");
+    inputValue = inputValue.toLowerCase();
+    document.getElementById("newChannelName").value = inputValue;
+}
+
+initializePage();
+

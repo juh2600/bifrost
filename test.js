@@ -5,10 +5,10 @@ const Long = require('long');
 
 const db = require('./db/dal');
 
-const values = [undefined, null, 3, 'bar', new Long(4), {}];
+const g = {guild_id: '123456', icon_id: '765432', name: 'yeehaw'};
+const values = [undefined, null, 3, 'bar', new Long(4), {}, [], g.guild_id];
 
 logger.info('Testing schema validation...')
-
 const cases = [];
 for (let valueA of values) {
 	for (let valueB of values) {
@@ -45,7 +45,6 @@ for (let c of passing_records) {
 for (let c of passing_updates) {
 	logger.debug('Passed as update: ' + JSON.stringify(c));
 }
-
 logger.info('Tested schema validation.');
 
 logger.info('Testing createGuild...');
@@ -57,10 +56,6 @@ for (let valueB of values)
 	}
 logger.info('Tested createGuild.');
 
-logger.info('Clearing guilds...');
-db.getGuilds().then(guilds => guilds.map(guild => guild.guild_id)).then(guild_ids => guild_ids.forEach(db.deleteGuild));
-logger.info('Cleared guilds.');
-
 logger.info('Testing getGuilds...');
 db.getGuilds()
 	.then ((o) => {console.log(`[ X ]\tgetGuilds()`, o)})
@@ -71,33 +66,43 @@ for (let valueB of values) {
 		.catch((o) => {console.log(`[   ]\tgetGuilds(${valueB})`, o)});
 	for (let valueA of values) {
 		db.getGuilds({guild_id: valueA, limit: valueB})
-			.then ((o) => {console.log(`[ X ]\tgetGuilds(${valueA}, ${valueB})`, o)})
-			.catch((o) => {console.log(`[   ]\tgetGuilds(${valueA}, ${valueB})`, o)});
+			.then ((o) => {console.log(`[ X ]\tgetGuilds({guild_id: ${valueA}, limit: ${valueB}})`, o)})
+			.catch((o) => {console.log(`[   ]\tgetGuilds({guild_id: ${valueA}, limit: ${valueB}})`, o)});
 	}
 }
 logger.info('Tested getGuilds.');
 
-
 logger.info('Testing updateGuild...');
-
-/*
-db.createGuild('Test Guild', '123456432322452').then(g => {
-
-	db.updateGuild()
-		.then ((o) => {console.log(`[ X ]\tupdateGuild()`, o)})
-		.catch((o) => {console.log(`[   ]\tupdateGuild()`, o)});
-	for (let valueB of [...values, g.guild_id]) {
-		db.updateGuild(valueB)
-			.then ((o) => {console.log(`[ X ]\tupdateGuild(${valueB})`, o)})
-			.catch((o) => {console.log(`[   ]\tupdateGuild(${valueB})`, o)});
-		for (let valueA of [...values, g.guild_id]) {
-			db.updateGuild(valueA, {name: valueB})
-				.then ((o) => {console.log(`[ X ]\tupdateGuild(${valueA}, ${valueB})`, o)})
-				.catch((o) => {console.log(`[   ]\tupdateGuild(${valueA}, ${valueB})`, o)});
-		}
+db.updateGuild()
+	.then ((o) => {console.log(`[ X ]\tupdateGuild()`, o)})
+	.catch((o) => {console.log(`[   ]\tupdateGuild()`, o)});
+for (let valueB of values) {
+	db.updateGuild(valueB)
+		.then ((o) => {console.log(`[ X ]\tupdateGuild(${valueB})`, o)})
+		.catch((o) => {console.log(`[   ]\tupdateGuild(${valueB})`, o)});
+	for (let valueA of values) {
+		db.updateGuild(valueA, {name: valueB})
+			.then ((o) => {console.log(`[ X ]\tupdateGuild(${valueA}, {name: ${valueB}})`, o)})
+			.catch((o) => {console.log(`[   ]\tupdateGuild(${valueA}, {name: ${valueB}})`, o)});
+	for (let valueC of values) {
+		db.updateGuild(valueA, {name: valueB, icon_id: valueC})
+			.then ((o) => {console.log(`[ X ]\tupdateGuild(${valueA}, {name: ${valueB}, icon_id: ${valueC}})`, o)})
+			.catch((o) => {console.log(`[   ]\tupdateGuild(${valueA}, {name: ${valueB}, icon_id: ${valueC}})`, o)});
 	}
-});
-*/
+	}
+}
 logger.info('Tested updateGuild.');
 
-module.exports = { cases };
+logger.info('Testing deleteGuild...');
+db.deleteGuild()
+	.then ((o) => {console.log(`[ X ]\tdeleteGuild()`, o)})
+	.catch((o) => {console.log(`[   ]\tdeleteGuild()`, o)});
+for (let valueB of values) {
+	db.deleteGuild(valueB)
+		.then ((o) => {console.log(`[ X ]\tdeleteGuild(${valueB})`, o)})
+		.catch((o) => {console.log(`[   ]\tdeleteGuild(${valueB})`, o)});
+}
+//db.getGuilds().then(guilds => guilds.map(guild => guild.guild_id)).then(guild_ids => guild_ids.forEach(db.deleteGuild));
+logger.info('Tested deleteGuild.');
+
+//module.exports = { cases };

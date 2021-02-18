@@ -253,25 +253,32 @@ const schemas = {
 // adds things like 'guild_id < ?' to the list of constraints supplied
 // also adds errors if appropriate
 const addSnowflakeConstraint = (key, constraint_string, options, constraints, params, errors, required = false) => {
-	if (options[key] === undefined || options[key] === null) {
+	if (options[key] === undefined) {
 		if (required)
 			errors.push(`'${key}' must be a snowflake (either as a string or a Long), but ${options[key]} was supplied`);
 		return;
-	} else {
-		constraints.push(`${constraint_string} ?`);
-		switch (options[key].constructor.name) {
-			case 'String':
-			case 'Long':
-				params.push(coerceToLong(options[key]));
-				break;
-			default:
-				errors.push(`'${key}' must be a snowflake (either as a string or a Long), but ${options[key]} of type ${options[key].constructor.name} was supplied`);
-		}
+	}
+	if (options[key] === null) {
+		errors.push(`'${key}' must be a snowflake (either as a string or a Long), but ${options[key]} was supplied`);
+		return;
+	}
+	constraints.push(`${constraint_string} ?`);
+	switch (options[key].constructor.name) {
+		case 'String':
+		case 'Long':
+			params.push(coerceToLong(options[key], errors));
+			break;
+		default:
+			errors.push(`'${key}' must be a snowflake (either as a string or a Long), but ${options[key]} of type ${options[key].constructor.name} was supplied`);
 	}
 };
 
 const generateResultLimit = (limit, params, errors) => {
-	if (limit === undefined || limit === null) return '';
+	if (limit === undefined) return '';
+	if (limit === null) {
+		errors.push(`'limit' search filter must be a Number, but ${limit} was supplied`);
+		return '';
+	}
 	if (limit.constructor.name !== 'Number')
 		errors.push(`'limit' search filter must be a Number, but ${limit} of type ${limit.constructor.name} was supplied`);
 	else if (limit < 1)
@@ -282,7 +289,25 @@ const generateResultLimit = (limit, params, errors) => {
 	}
 };
 
-const coerceToLong = (x) => (x === undefined || x === null) ? x : Long.fromString(x.toString());
+const coerceToLong = (x, errors = []) => { // error list may be omitted; if it doesn't look like a snowflake then we return null
+	if (x === undefined || x === null) {
+		errors.push(`A value representing a snowflake was expected, but ${x} was supplied`);
+		return null;
+	}
+	if (x.constructor.name === 'Long') return x;
+	if (x.constructor.name === 'String') {
+		const out = Long.fromString(x);
+		if (out == 0) {
+			errors.push(`The string '${x}' does not appear to represent a snowflake, but a snowflake was required`);
+			return null;
+		}
+		return out;
+	}
+	if (x.constructor.name === 'Number') {
+		errors.push(`Most snowflakes used in this application are too large to store as 64-bit floats; therefore, to prevent data errors, the numeric value ${x} was rejected during snowflake parsing. Please pass in a string or Long representing the snowflake`);
+	}
+	return null;
+}
 
 /*
  ** guidelines for designing these methods
@@ -292,14 +317,18 @@ const coerceToLong = (x) => (x === undefined || x === null) ? x : Long.fromStrin
  **   - all methods should start with a type-checking block
  **  - all snowflakes should be acceptable as either strings or Longs
  **  - all snowflakes should be returned as strings
- **  - optional keys that are undefined or null should be ignored
- **  - optional keys with otherwise illegal values should throw errors
- **  - required keys that are undefined or null should throw errors
+ **  - optional keys or parameters that are undefined should be ignored
+ **  - optional keys or parameters with otherwise illegal values (including null) should throw errors
+ **  - required keys or parameters with illegal values (including undefined and null) should throw errors
  **
  **  - create takes only mandatory parameters, no options object
+ **   - returns the created record
  **  - read takes mandatory parameters and an options object
+ **   - returns an array of records
  **  - update takes mandatory parameters and an options object
+ **   - returns undefined
  **  - delete takes only mandatory parameters, no options object
+ **   - returns undefined
  **
  */
 
@@ -311,10 +340,9 @@ const createGuild = async (name, icon_snowflake) => {
 	const errors = [];
 	if (name === undefined || name === null)
 		errors.push(`A name must be passed, but ${name} was supplied`);
-	else name = name.toString();
 	if (icon_snowflake === undefined || icon_snowflake === null)
 		errors.push(`An icon snowflake must be passed, but ${icon_snowflake} was supplied`);
-	else icon_snowflake = coerceToLong(icon_snowflake);
+	else icon_snowflake = coerceToLong(icon_snowflake, errors);
 	if (errors.length) {
 		throw errors;
 	}
@@ -326,7 +354,8 @@ const createGuild = async (name, icon_snowflake) => {
 	};
 
 	return db.execute(...schemas.guilds.getInsertStmt(record))
-		.then(() => convertTypesForDistribution(record));
+		.then(() => convertTypesForDistribution(record))
+	;
 };
 
 // returns list of guild descriptions, or throws
@@ -334,12 +363,15 @@ const getGuilds = async (options = {
 	guild_id: undefined
 	, limit: undefined
 }) => {
-	if (options === null) options = {};
 	const keys = Object.keys(options);
 	const constraints = [];
 	let limit = '';
 	const params = [];
 	const errors = [];
+
+	// catch passing other junk as the options
+	if (options === null || options.constructor.name !== 'Object') 
+		errors.push(`An optional object containing filtering keys was expected, but ${options} was supplied`);
 
 	addSnowflakeConstraint('guild_id', 'guild_id =', options, constraints, params, errors);
 	limit = generateResultLimit(options.limit, params, errors);
@@ -362,26 +394,29 @@ const getGuilds = async (options = {
 // returns or throws
 // FIXME this is currently an expensive operation, with three queries total
 // try to reduce this, eh?
+// ok, it's just two now---got rid of the last fetch; returns undefined on success
 const updateGuild = async (guild_snowflake, changes) => {
 	const errors = [];
+
 	if (guild_snowflake === undefined || guild_snowflake === null)
 		errors.push(`A guild snowflake must be passed, but ${guild_snowflake} was supplied`);
-	else guild_snowflake = coerceToLong(guild_snowflake);
+	else guild_snowflake = coerceToLong(guild_snowflake, errors);
 	if (changes === undefined || changes === null || changes.constructor.name !== 'Object' || Object.keys(changes).length < 1)
 		errors.push(`An object describing changes to be made must be passed, but ${changes} was supplied`);
+	if (changes && changes.icon_id !== undefined)
+		changes.icon_id = coerceToLong(changes.icon_id, errors);
+
 	if (errors.length) {
 		throw errors;
 	}
 
-	changes.icon_id = coerceToLong(changes.icon_id); // if it's not there, it'll still be not there
-
-	getGuilds({guild_id: guild_snowflake})
+	return getGuilds({guild_id: guild_snowflake})
 		.then(rows => rows.length > 0)
 		.then(recordExists => {
 			if (recordExists)
-				return db.execute(...schemas.guilds.getUpdateStmt(changes))
-					.then(() => getGuilds({guild_id: guild_snowflake}))
-					.then(rows => convertTypesForDistribution(rows[0]));
+				return db.execute(...schemas.guilds.getUpdateStmt(Object.assign({}, {guild_id: guild_snowflake}, changes)))
+					.then(() => {})
+			;
 			else
 				throw [`Only existing guilds may be updated, but no guild with id ${guild_snowflake} was found`];
 		});
@@ -389,9 +424,13 @@ const updateGuild = async (guild_snowflake, changes) => {
 
 // returns or throws
 const deleteGuild = async (guild_snowflake) => {
+	const errors = [];
 	if (guild_snowflake === undefined || guild_snowflake === null)
-		throw [`A guild snowflake must be passed, but ${guild_snowflake} was supplied`];
-	else guild_snowflake = coerceToLong(guild_snowflake);
+		errors.push(`A guild snowflake must be passed, but ${guild_snowflake} was supplied`);
+	else guild_snowflake = coerceToLong(guild_snowflake, errors);
+	if (errors.length) {
+		throw errors;
+	}
 
 	return db.execute(...schemas.guilds.getDeleteStmt({
 		guild_id: guild_snowflake
@@ -406,15 +445,16 @@ const createChannel = async (guild_snowflake, name, position = -1) => {
 	const errors = [];
 	if (guild_snowflake === undefined || guild_snowflake === null)
 		errors.push(`A guild snowflake must be passed, but ${guild_snowflake} was supplied`);
-	else guild_snowflake = coerceToLong(guild_snowflake);
+	else guild_snowflake = coerceToLong(guild_snowflake, errors);
 	if (name === undefined || name === null)
 		errors.push(`A name must be passed, but ${name} was supplied`);
-	else name = name.toString();
+	if (position === null || position.constructor.name !== 'Number')
+		errors.push(`An optional position may be passed, but ${position} was supplied`);
 	if (errors.length) {
 		throw errors;
 	}
 
-	if (!(position > 0)) { // this handles strings and bad guys lmao end me
+	if (!(position > 0)) { // this handles strings and bad guys lmao end me // this shouldn't matter; catch type errors above
 		// by default, append the channel to the end of the guild
 		position = await getChannelsByGuild(guild_snowflake).then(rows => rows.length);
 		console.log('using position ' + position);
@@ -438,12 +478,15 @@ const getChannelsByGuild = async (guild_snowflake, options = {
 	, channel_id: undefined
 	, limit: undefined
 }) => {
-	if (options === null) options = {};
 	const keys = Object.keys(options);
 	const constraints = [];
 	let limit = '';
 	const params = [];
 	const errors = [];
+
+	// catch passing other junk as the options
+	if (options === null || options.constructor.name !== 'Object') 
+		errors.push(`An optional object containing filtering keys was expected, but ${options} was supplied`);
 
 	// mandatory; this is the partition key
 	addSnowflakeConstraint('guild_snowflake', 'guild_id =', {guild_snowflake}, constraints, params, errors, true); // true: this is required and will fail if not provided
@@ -472,25 +515,26 @@ const getChannelsByGuild = async (guild_snowflake, options = {
 // returns or throws
 const updateChannel = async (guild_snowflake, channel_snowflake, changes) => {
 	const errors = [];
+
 	if (guild_snowflake === undefined || guild_snowflake === null)
 		errors.push(`A guild snowflake must be passed, but ${guild_snowflake} was supplied`);
-	else guild_snowflake = coerceToLong(guild_snowflake);
+	else guild_snowflake = coerceToLong(guild_snowflake, errors);
 	if (channel_snowflake === undefined || channel_snowflake === null)
 		errors.push(`A channel snowflake must be passed, but ${channel_snowflake} was supplied`);
-	else channel_snowflake = coerceToLong(channel_snowflake);
+	else channel_snowflake = coerceToLong(channel_snowflake, errors);
 	if (changes === undefined || changes === null || changes.constructor.name !== 'Object' || Object.keys(changes).length < 1)
 		errors.push(`An object describing changes to be made must be passed, but ${changes} was supplied`);
 	if (errors.length) {
 		throw errors;
 	}
 
-	getChannelsByGuild(guild_snowflake, {channel_id: channel_snowflake})
+	return getChannelsByGuild(guild_snowflake, {channel_id: channel_snowflake})
 		.then(rows => rows.length > 0)
 		.then(recordExists => {
 			if (recordExists)
-				return db.execute(...schemas.channels_by_guild.getUpdateStmt(changes))
-					.then(() => getChannelsByGuild(guild_snowflake, {channel_id: channel_snowflake}))
-					.then(rows => convertTypesForDistribution(rows[0]));
+				return db.execute(...schemas.channels_by_guild.getUpdateStmt(Object.assign({}, {guild_id: guild_snowflake, channel_id: channel_snowflake}, changes)))
+					.then(() => {})
+			;
 			else
 				throw [`Only existing channels may be updated, but no channel with id ${channel_snowflake} was found in guild ${guild_snowflake}`];
 		});
@@ -501,10 +545,10 @@ const deleteChannel = async (guild_snowflake, channel_snowflake) => {
 	const errors = [];
 	if (guild_snowflake === undefined || guild_snowflake === null)
 		errors.push(`A guild snowflake must be passed, but ${guild_snowflake} was supplied`);
-	else guild_snowflake = coerceToLong(guild_snowflake);
+	else guild_snowflake = coerceToLong(guild_snowflake, errors);
 	if (channel_snowflake === undefined || channel_snowflake === null)
 		errors.push(`A channel snowflake must be passed, but ${channel_snowflake} was supplied`);
-	else channel_snowflake = coerceToLong(channel_snowflake);
+	else channel_snowflake = coerceToLong(channel_snowflake, errors);
 	if (errors.length) {
 		throw errors;
 	}
@@ -513,6 +557,43 @@ const deleteChannel = async (guild_snowflake, channel_snowflake) => {
 		guild_id: guild_snowflake
 		, channel_id: channel_snowflake
 	})).then(() => {});
+};
+
+
+/*************************************************************************
+ * messages_by_channel
+ */
+// returns description of message, or throws
+const createMessage = async (channel_snowflake, author_snowflake, body) => {
+	const errors = [];
+	if (channel_snowflake === undefined || channel_snowflake === null)
+		errors.push(`A channel snowflake must be passed, but ${channel_snowflake} was supplied`);
+	else channel_snowflake = coerceToLong(channel_snowflake, errors);
+	if (author_snowflake === undefined || author_snowflake === null)
+		errors.push(`A author_snowflake must be passed, but ${author_snowflake} was supplied`);
+	else author_snowflake = author_snowflake.toString();
+	if (body === undefined || body === null)
+		errors.push(`A body must be passed, but ${body} was supplied`);
+	else body = body.toString();
+	if (errors.length) {
+		throw errors;
+	}
+
+	if (!(position > 0)) { // this handles strings and bad guys lmao end me
+		// by default, append the channel to the end of the guild
+		position = await getChannelsByGuild(guild_snowflake).then(rows => rows.length);
+		console.log('using position ' + position);
+	} else position = position - 0; // coerce number type
+
+	const record = {
+		guild_id: guild_snowflake
+		, channel_id: coerceToLong(snowmachine.generate().snowflake)
+		, name
+		, position
+	};
+
+	return db.execute(...schemas.channels_by_guild.getInsertStmt(record))
+		.then(() => convertTypesForDistribution(record));
 };
 
 module.exports = {

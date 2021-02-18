@@ -12,31 +12,29 @@ block content
                 .img-circle.img-large
                     //-Temp Image 
                     img#profileImg.img(src="https://www.gravatar.com/avatar/" + Math.floor(Math.random() * 15 + 1) + "?s=200&d=retro")
-                div#usernameDisplay Username
-                div#discriminatorDisplay 
             section.form-area
                 form(onsubmit="return validateForm()" method="post")
                     .form-block
                         label.input-label Username
                         input#usernameInput.input-field(type="text", name="username")
-                        span#usernameErrorMsg.error-message Invalid Username
+                        span#usernameErrorMsg.error-message.hidden Invalid Username
                     .form-block
                         label.input-label Email
-                        input#emailInput.input-field(type="text", name="email")
-                        span#usernameErrorMsg.error-message Invalid Email
+                        input#emailInput.input-field(type="email", name="email")
+                        span#emailErrorMsg.error-message.hidden Invalid Email
                     .form-block
                         label.input-label Password
-                        input#passwordInput.input-field(type="text", name="password")
-                        span#passwordErrorMsg.error-message Invalid Password (8 Characters, 1 letter, and 1 number)
+                        input#passwordInput.input-field(type="password", name="password")
+                        span#passwordErrorMsg.error-message.hidden Invalid Password (8 Characters, 1 letter, and 1 number)
                     .form-block
                         label.input-label Confirm Password
-                        input#confirmInput.input-field(type="text", name="confirmPassword")
-                        span#confirmErrorMsg.error-message Password Does Not Match
+                        input#confirmInput.input-field(type="password", name="confirmPassword")
+                        span#confirmErrorMsg.error-message.hidden Password Does Not Match
                     .form-block
                         label.input-label User Icon
                         label.input-label.file-input.btn.btn-purple Upload Image
                             input#iconInput(type="file", name="newUserIcon", accept="image/png, image/jpeg, image/jpg, image/svg") 
-                        span#iconErrorMsg.error-message Incorrect file type
+                        span#iconErrorMsg.error-message.hidden Incorrect file type
                     button.btn.btn-purple(type="submit").submit-btn Create Account
 
         section.footer-area

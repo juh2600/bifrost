@@ -4,7 +4,6 @@ let passwordInputId = document.getElementById("passwordInput");
 let confirmInputId = document.getElementById("confirmInput");
 let iconInputId = document.getElementById("iconInput");
 let profileImgId = document.getElementById("profileImg");
-let usernameDisplayId = document.getElementById("usernameDisplay");
 
 let imgUrl =
   "https://www.gravatar.com/avatar/" +
@@ -13,7 +12,6 @@ let imgUrl =
 
 usernameInputId.addEventListener("input", () => {
   validateUsername();
-  usernameDisplay();
 });
 
 const validateUsername = () => {
@@ -37,11 +35,6 @@ const validateUsername = () => {
   return isValid;
 };
 
-const usernameDisplay = () => {
-  let input = usernameInputId.value;
-  let defaultUsername = (usernameDisplayId.innerHTML = "Username");
-  input === "" ? defaultUsername : (usernameDisplayId.innerHTML = input);
-};
 
 emailInputId.addEventListener("input", () => {
   validateEmail();
@@ -60,6 +53,7 @@ const validateEmail = () => {
 
 passwordInputId.addEventListener("input", () => {
   validatePassword();
+  confirmPassword();
 });
 
 const validatePassword = () => {
@@ -81,11 +75,12 @@ confirmInputId.addEventListener("input", () => {
 });
 
 const confirmPassword = () => {
-  let isValid = confirmInputId.value == passwordInputId.value;
+  let isValid = (confirmInputId.value == passwordInputId.value) && confirmInputId.value != "";
   let confirmErrorMsg = document.getElementById("confirmErrorMsg");
   isValid
     ? confirmErrorMsg.classList.add("hidden")
     : confirmErrorMsg.classList.remove("hidden");
+  return isValid;
 };
 
 iconInputId.addEventListener("input", () => {
@@ -114,6 +109,11 @@ const updateUserIcon = (imgURL) => {
   profileImgId.src = imgURL;
 };
 
-//Generates random discriminator
-document.getElementById("discriminatorDisplay").innerHTML =
-  "#" + Math.floor(1000 + Math.random() * 9000);
+
+const validateForm = () => {
+  let validators = [validateEmail(), validateUsername(), validatePassword(), confirmPassword()];
+  let isValid = validators.reduce((a, b) => a && b);
+  if(!isValid) {
+      return false;
+  }
+}

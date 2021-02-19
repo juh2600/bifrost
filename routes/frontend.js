@@ -1,5 +1,23 @@
 const logger = require("logger").get("frontend");
 
+const dal = {
+  getGuilds: async () => {
+    return [
+      {
+        guild_id: "456",
+        icon_id: "sdfsdfjdshfkjashfkjahdsflkjadsa",
+        name: "Fucked"
+      },
+      {
+        guild_id: "123",
+        icon_id: "qwertyuiop",
+        name: "Joes glasses are foggy"
+      }
+    ]
+  }
+}
+
+
 const index = (req, res) => {
   res.render("index", {
     // key: value
@@ -7,8 +25,12 @@ const index = (req, res) => {
 };
 
 const app = (req, res) => {
-  res.render("app", {
-    // key: value
+  dal.getGuilds().then(dalGuildList => {
+    res.render("app", {
+      guildList: dalGuildList
+    });
+
+
   });
 };
 

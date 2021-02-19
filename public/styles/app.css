@@ -4,7 +4,7 @@
                          "guild-list  guild-name    channel-name  profile-area"
                          "guild-list  channel-list  chat-area     user-list"
                          "guild-list  channel-list  message-area  user-list";
-    grid-template-columns: 6em 14em 1fr 14em;
+    grid-template-columns: 5.5em 14em 1fr 14em;
     grid-template-rows: 2em 3em 1fr 3em;
     height:100%;
     width:100%;
@@ -33,6 +33,8 @@
     grid-area: guild-name;
     background-color: var(--color-bg-2);
     border-bottom: solid var(--color-bg-4) 1px;
+    display:flex;
+    justify-content: space-between;
 }
 .channel-list {
     grid-area: channel-list;
@@ -63,9 +65,86 @@
 
 
 
+#guildCollection {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+.guild {
+    width:55px;
+    height:55px;
+    cursor:pointer;
+    margin-bottom: 0.5em;
+    padding:0.25em;
+    border-radius: 100%;
+    border:2px solid var(--color-bg-1);
+}
+
+.guild.selected {
+    border:2px solid var(--color-accent);
+}
+
+.guild > .img-circle {
+    height:100%;
+    width:100%;
+}
+
+#createGuildBtn {
+    display:block;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+#createGuildBtn > div {
+    color:var(--color-success);
+    border: 3px solid var(--color-success);
+    text-align: center;
+    font-size: 1.8em;
+    font-weight: bold;
+    border-radius: 100%;
+    height:100%;
+    width:100%;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    background-color: transparent;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+#createGuildBtn:hover > div {
+    color:#fff;
+    background-color: var(--color-success);
+}
+
+
+
+
 .input-field {
     width:90%;
     margin:0 auto;
     background-color: var(--color-bg-4);
     color:white;
+}
+
+#guildSettingsBtn {
+    cursor:pointer;
+}
+
+.three-dots {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    height:100%;
+    padding:0.65em 0.75em;
+    box-sizing: border-box;
+}
+.three-dots > div {
+    background-color: #fff;
+    width:4px;
+    height:4px;
+    border-radius: 100%;
 }

@@ -14,6 +14,8 @@ const addGuild = guild => {
     let guildDiv = document.createElement("div");
     guildDiv.classList.add("guild");
     guildDiv.dataset.guildId = guild.guild_id;
+    guildDiv.dataset.guildName = guild.name;
+    setupTooltip(guildDiv, guildDiv.dataset.guildName);
 
     let imgContainer = document.createElement("div");
     imgContainer.classList.add("img-circle");
@@ -30,4 +32,38 @@ const addGuild = guild => {
 //Delete guild by ID
 const removeGuild = guildId => {
     document.getElementById("guildCollection").querySelector(`[data-guild-id='${guildId}']`).remove();
+}
+
+
+
+//Show guild name on hover 
+const setupTooltip = (guildDiv, message) => {
+    let tooltip = document.getElementById("tooltip");
+    guildDiv.addEventListener("mouseover", () => {
+        tooltip.style.display = "block";
+        tooltip.style.left = offset(guildDiv).left + 85;
+        tooltip.style.top = offset(guildDiv).top + 17;
+        tooltip.innerHTML = message;
+    });
+    guildDiv.addEventListener("mouseout", () => {
+        tooltip.style.display = "none";
+    });
+
+}
+
+//setup tool tip for all guilds that were rendered server side
+[...document.getElementById("guildCollection").children].forEach(guild => {
+    setupTooltip(guild, guild.dataset.guildName);
+})
+
+setupTooltip(document.getElementById("createGuildBtn"), "Add Guild");
+
+
+//https://plainjs.com/javascript/styles/get-the-position-of-an-element-relative-to-the-document-24/
+//Used to get the position of an element on the screen
+const offset = (el) => {
+    let rect = el.getBoundingClientRect(),
+    scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
+    scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    return { top: rect.top + scrollTop, left: rect.left + scrollLeft }
 }

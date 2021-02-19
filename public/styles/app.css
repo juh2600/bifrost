@@ -6,11 +6,13 @@
                          "guild-list  channel-list  message-area  user-list";
     grid-template-columns: 5.5em 14em 1fr 14em;
     grid-template-rows: 2em 3em 1fr 3em;
+    font-family: "Rubik", sans-serif;
     height:100%;
     width:100%;
     box-sizing: border-box;
     color:white;
 }
+
 
 /*#############################
          Grid elements
@@ -27,6 +29,15 @@
 .guild-list {
     grid-area: guild-list;
     background-color: var(--color-bg-1);
+    overflow-x: hidden;
+}
+.guild-list::-webkit-scrollbar {
+    display: none;
+}
+/* Hide scrollbar for IE, Edge and Firefox */
+.guild-list {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
 }
 
 .guild-name {
@@ -63,6 +74,20 @@
     flex-direction: column;
 }
 
+/*#############################
+           General
+###############################*/
+
+.input-field {
+    width:90%;
+    margin:0 auto;
+    background-color: var(--color-bg-4);
+    color:white;
+}
+
+/*#############################
+          Guild List
+###############################*/
 
 
 #guildCollection {
@@ -101,8 +126,8 @@
     color:var(--color-success);
     border: 3px solid var(--color-success);
     text-align: center;
-    font-size: 1.8em;
-    font-weight: bold;
+    font-size: 1.7em;
+    font-weight: 400;
     border-radius: 100%;
     height:100%;
     width:100%;
@@ -113,6 +138,7 @@
     box-sizing: border-box;
     background-color: transparent;
     transition: background-color 0.15s ease, color 0.15s ease;
+    padding-bottom:2px;
 }
 
 #createGuildBtn:hover > div {
@@ -121,14 +147,33 @@
 }
 
 
-
-
-.input-field {
-    width:90%;
-    margin:0 auto;
-    background-color: var(--color-bg-4);
-    color:white;
+#tooltip {
+    display: block;
+    position: fixed;
+    color: #fff;
+    background: var(--color-bg-1);
+    text-align: center;
+    padding:0.5em 0.65em;
+    border-radius: 6px;
+    font-size: 0.9em;
+    z-index: 100;
+    font-family: "Rubik", sans-serif;
 }
+
+#tooltip::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent var(--color-bg-1) transparent transparent;
+  }
+
+/*#############################
+          Guild Name
+###############################*/
 
 #guildSettingsBtn {
     cursor:pointer;

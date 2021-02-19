@@ -3,6 +3,7 @@ block style
     link(rel='stylesheet' href='/styles/app.css')
     script(defer, src="/scripts/app.js") 
 block content
+    div#tooltip
     section.main
         div.bar-area
         div.guild-name 
@@ -13,7 +14,7 @@ block content
         div.guild-list
             div#guildCollection
                 each guild in guildList
-                    div.guild(data-guild-id = guild.guild_id)
+                    div.guild(data-guild-id = guild.guild_id, data-guild-name = guild.name)
                         div.img-circle
                             img(src="/api/v0/icons/" + guild.icon_id).img
             div#createGuildBtn.guild

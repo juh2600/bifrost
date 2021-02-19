@@ -606,7 +606,11 @@ const createMessage = async (channel_snowflake, author_snowflake, body) => {
 };
 
 // returns list of message descriptions, or throws
-// FIXME: constrain before and after to be no earlier than channel_snowflake and no later than the present
+// do not depend on the output to be sorted in any manner
+// FIXME ok so if you have two buckets and all of the messages are in range and you request just enough to get one and a half buckets,
+// how do you ensure that you get the right half of the second bucket
+// FIXME FIXME FIXME ohno ^
+// you might need to grab the whole bucket and filter over here
 const getMessagesByChannel = async (channel_snowflake, options = {
 	before: undefined
 	, after: undefined

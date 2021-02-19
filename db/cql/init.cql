@@ -16,7 +16,7 @@ CREATE TABLE bifrost.channels_by_guild (
     PRIMARY KEY (guild_id, channel_id)
 ) WITH CLUSTERING ORDER BY (channel_id ASC);
 
-CREATE TABLE bifrost.messages_by_channel (
+CREATE TABLE bifrost.messages_by_channel_bucket (
 	channel_id bigint,
 	bucket int,
 	message_id bigint,

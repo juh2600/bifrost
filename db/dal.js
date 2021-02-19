@@ -1,10 +1,19 @@
 #!/usr/bin/node
 const logger = require('logger').get('dal');
 const db = require('./db-connect');
-const snowmachine = new (require('snowflake-generator'))(1420070400000);
 const Long = require('long');
-// magic number comes from https://discord.com/developers/docs/reference#snowflakes-snowflake-id-format-structure-left-to-right
+// TODO move these to config file or something
+// epoch comes from https://discord.com/developers/docs/reference#snowflakes-snowflake-id-format-structure-left-to-right
+const epoch = 1420070400000; // ms between 1970 and 2015
+// bucket size represents ten days, per https://blog.discord.com/how-discord-stores-billions-of-messages-7fa6ec7ee4c7
+const bucket_size = 1000 * 60 * 60 * 24 * 10; // ms per ten days
+const snowmachine = new (require('snowflake-generator'))(epoch);
 // represents the Discord Epoch, in 2015 or something
+
+const getBucket = (timestamp, errors = []) => {
+	timestamp = coerceToLong(timestamp, errors);
+	return Math.round((timestamp.shiftRightUnsigned(22) - 0 + epoch) / bucket_size);
+};
 
 // cassandra-driver:
 // https://docs.datastax.com/en/developer/nodejs-driver/4.6/api/class.Client/
@@ -273,8 +282,12 @@ const addSnowflakeConstraint = (key, constraint_string, options, constraints, pa
 	}
 };
 
-const generateResultLimit = (limit, params, errors) => {
-	if (limit === undefined) return '';
+const generateResultLimit = (limit, params, errors, required = false) => {
+	if (limit === undefined) {
+		if (required)
+			errors.push(`'limit' search filter must be supplied, but was not`);
+		return '';
+	}
 	if (limit === null) {
 		errors.push(`'limit' search filter must be a Number, but ${limit} was supplied`);
 		return '';
@@ -307,7 +320,7 @@ const coerceToLong = (x, errors = []) => { // error list may be omitted; if it d
 		errors.push(`Most snowflakes used in this application are too large to store as 64-bit floats; therefore, to prevent data errors, the numeric value ${x} was rejected during snowflake parsing. Please pass in a string or Long representing the snowflake`);
 	}
 	return null;
-}
+};
 
 /*
  ** guidelines for designing these methods
@@ -570,30 +583,226 @@ const createMessage = async (channel_snowflake, author_snowflake, body) => {
 		errors.push(`A channel snowflake must be passed, but ${channel_snowflake} was supplied`);
 	else channel_snowflake = coerceToLong(channel_snowflake, errors);
 	if (author_snowflake === undefined || author_snowflake === null)
-		errors.push(`A author_snowflake must be passed, but ${author_snowflake} was supplied`);
-	else author_snowflake = author_snowflake.toString();
+		errors.push(`A user snowflake must be passed, but ${author_snowflake} was supplied`);
+	else author_snowflake = coerceToLong(author_snowflake, errors);
 	if (body === undefined || body === null)
 		errors.push(`A body must be passed, but ${body} was supplied`);
-	else body = body.toString();
 	if (errors.length) {
 		throw errors;
 	}
 
-	if (!(position > 0)) { // this handles strings and bad guys lmao end me
-		// by default, append the channel to the end of the guild
-		position = await getChannelsByGuild(guild_snowflake).then(rows => rows.length);
-		console.log('using position ' + position);
-	} else position = position - 0; // coerce number type
+	const message_id = coerceToLong(snowmachine.generate().snowflake);
 
 	const record = {
-		guild_id: guild_snowflake
-		, channel_id: coerceToLong(snowmachine.generate().snowflake)
-		, name
-		, position
+		channel_id: channel_snowflake
+		, bucket: getBucket(message_id)
+		, author_id: author_snowflake
+		, message_id
+		, body
 	};
 
-	return db.execute(...schemas.channels_by_guild.getInsertStmt(record))
+	return db.execute(...schemas.messages_by_channel_bucket.getInsertStmt(record))
 		.then(() => convertTypesForDistribution(record));
+};
+
+// returns list of message descriptions, or throws
+// FIXME: constrain before and after to be no earlier than channel_snowflake and no later than the present
+const getMessagesByChannel = async (channel_snowflake, options = {
+	before: undefined
+	, after: undefined
+	, message_id: undefined
+	, limit: undefined
+}) => {
+	const keys = Object.keys(options);
+	// these are the partition keys; we'll need them for sure. put the bucket in a predictable location (0) so we can swap it out later
+	const constraints = ['bucket = ?', 'channel_id = ?'];
+	const params = [null, channel_snowflake];
+	const errors = [];
+
+	// validate types of surface-level parameters
+	if (channel_snowflake === undefined || channel_snowflake === null)
+		errors.push(`A channel snowflake must be passed, but ${channel_snowflake} was supplied`);
+	else channel_snowflake = coerceToLong(channel_snowflake, errors);
+	if (options === null || options.constructor.name !== 'Object')
+		errors.push(`An object containing filtering keys was expected, but ${options} was supplied`);
+	if (errors.length) {
+		throw errors;
+	}
+	// we now certainly have a channel_snowflake and an options object
+	// next let's ensure that all options are either undefined or of a correct type
+	if (options.before !== undefined)
+		options.before = coerceToLong(options.before, errors);
+	if (options.after !== undefined)
+		options.after = coerceToLong(options.after, errors);
+	if (options.message_id !== undefined)
+		options.message_id = coerceToLong(options.message_id, errors);
+	if (options.limit !== undefined) {
+		if (options.limit === null) {
+			errors.push(`'limit' search parameter is expected to be a Number, but ${options.limit} was supplied`);
+		} else if (options.limit.constructor.name !== 'Number')) {
+			errors.push(`'limit' search parameter is expected to be a Number, but ${options.limit} of type ${options.limit.constructor.name} was supplied`);
+		}
+	}
+	if (errors.length) {
+		throw errors;
+	}
+	// we now certainly know:
+	// - channel_snowflake is a Long
+	// - options is an object
+	// - options.before is either a Long or undefined
+	// - options.after is either a Long or undefined
+	// - options.message_id is either a Long or undefined
+	// - options.limit is either a number or undefined
+	// next let's verify that we have at least one of message_id and limit
+	if (options.message_id !== undefined) {
+		options.limit = 1;
+		constraints.push('message_id = ?');
+		params.push(options.message_id);
+	} else if (options.limit === undefined) {
+		errors.push(`One of 'message_id' or 'limit' must be specified in the search options object, but neither was supplied`);
+	}
+	// we now certainly know:
+	// - all of the above items
+	// - we have a limit
+	// - if we're looking for a specific message, we've got that constraint listed
+	// next let's determine which direction to search:
+	// - if there's a before, then we search backward
+	// - otherwise, if there's an after, then we search forward
+	// - otherwise, we search backward
+	// we'll add this value to our bucket to move through time: +1 means a later bucket (forward); -1 means an earlier bucket (backward)
+	//           before    is less than    after
+	// earlier <---|-------------------------|---> later
+	//     backward                           forward
+	//        -1                                 +1
+	// i sure hope this helps me or i'm gonna look real dumb
+	let search_direction = -1; // backward is the default
+	if (options.before === undefined && options.after !== undefined) { // but if this is the case, we go forward instead
+		search_direction = 1; // credit to Ryan Unroe
+	}
+	// we now certainly know:
+	// - all of the above items
+	// - which way we're traveling through time
+	// next let's ensure that our start and end times are both defined and reasonable
+	const now = coerceToLong(snowmachine.generate().snowflake);
+	const dawn = channel_snowflake;
+	if (!options.before || options.before.lessThan(dawn))
+		options.before = dawn;
+	if (!options.after || options.after.greaterThan(now))
+		options.after = now;
+	if (options.before.greaterThan(options.after))
+		errors.push(`The 'before' timestamp (${options.before}) occurs after the 'after' timestamp (${options.after}), which is an impossible scenario`);
+	// we now certainly know:
+	// - all of the above items
+	// - our before and after times are defined and reasonable
+	// next let's add them to our list of constraints
+	constraints.push('message_id < ?');
+	params.push(options.before);
+	constraints.push('message_id > ?');
+	params.push(options.after);
+	// we now certainly know:
+	// - all of the above items
+	// - we will only receive messages from within the time boundaries
+	// next let's determine our earliest, latest, and starting buckets
+	const earliest_bucket = getBucket(options.after, errors);
+	const latest_bucket = getBucket(options.before, errors);
+	const starting_bucket = search_direction == 1 ? earliest_bucket : latest_bucket;
+	// this was the last opportunity for pre-database errors to be pushed, so let's flush them out one last time
+	if (errors.length) {
+		throw errors;
+	}
+	// we now certainly know:
+	// - all of the above items
+	// - the bucket we're starting in
+	// - the buckets to stay between (inclusive)
+	// next let's define our query string
+	const query = 'SELECT * FROM messages_by_channel_bucket WHERE ' + constraints.join(' AND ') + ' LIMIT ?;';
+	// we still haven't pushed the limit, so let's do that now
+	params.push(options.limit);
+	// Q: this is a limit on how many messages we want total, right? not how many we want per bucket? so why include it?
+	// A: that's a great question! while we may have to scan more than one bucket, we still won't ever want more than n messages
+	//    from a single bucket, so it's okay to include this. it helps in the case that we find all of our messages in one bucket,
+	//    and it doesn't hurt very much if we have to scan multiple buckets anyways. that's assuming Cassandra works the way I imagine
+	//    it does, which it may not. I'm hoping that it just stops scanning when we reach the limit of the query. I also hope, but less so,
+	//    that it ignores the limit if it's greater than the number of rows in a table.
+	// Q: hang on a sec. if you find some messages in one bucket, then go on to the next bucket, wouldn't it make sense to reduce the query
+	//    limit from then on?
+	// A: ...yes it would! let's do that!
+	// take note, ye intrepid reader! the limit shall henceforth be specially-located at the _end_ of the params array, so we can push and pop it
+	// when we want to change it. we'll do this whenever we get some messages back.
+
+	// keep in mind that the bucket and channel_id were in the params and constraints arrays to start with.
+	// we'll overwrite the bucket (at index 0) each loop, and we'll overwrite the result limit (at last index) whenever we find messages
+	// we now certainly know:
+	// - all of the above items
+	// - the query we intend to execute
+	// - the parameters to pass in
+	// next we'll execute queries until we have enough messages to satisfy the limit, or until we run out of buckets, whichever comes first
+	const messages = []; // here we'll accumulate messages that match the criteria
+	let bucket = starting_bucket;
+	while (earliest_bucket <= bucket && bucket <= latest_bucket && options.limit > 0) { // options.limit will decrease as we gather messages
+		params[0] = bucket;
+		new_messages = await db.execute(query, params, { prepare: true }).catch(error => errors.push(error));
+		// so yeah. it's possible that the db will throw an error somehow, still...idk how but i'd rather be prepared-ish
+		// so if we see an error, we'll happily forward it on to the unsuspecting caller, who will now know about our database's
+		// internals and not really have a clue how to fix the problem probably. yeah. sounds good
+		if (errors.length) {
+			throw errors;
+		}
+		messages.push(...new_messages);
+		options.limit -= new_messages.length; // yeah, i think that was a pretty good idea! good job, question-asker
+		params.pop();
+		params.push(options.limit);
+	}
+	// so by now we've either gathered enough messages or checked all the buckets in our time frame
+	// let's blow this popsicle stand
+	return messages;
+};
+
+// returns or throws
+const updateMessage = async (guild_snowflake, channel_snowflake, changes) => {
+	const errors = [];
+
+	if (guild_snowflake === undefined || guild_snowflake === null)
+		errors.push(`A guild snowflake must be passed, but ${guild_snowflake} was supplied`);
+	else guild_snowflake = coerceToLong(guild_snowflake, errors);
+	if (channel_snowflake === undefined || channel_snowflake === null)
+		errors.push(`A channel snowflake must be passed, but ${channel_snowflake} was supplied`);
+	else channel_snowflake = coerceToLong(channel_snowflake, errors);
+	if (changes === undefined || changes === null || changes.constructor.name !== 'Object' || Object.keys(changes).length < 1)
+		errors.push(`An object describing changes to be made must be passed, but ${changes} was supplied`);
+	if (errors.length) {
+		throw errors;
+	}
+
+	return getChannelsByGuild(guild_snowflake, {channel_id: channel_snowflake})
+		.then(rows => rows.length > 0)
+		.then(recordExists => {
+			if (recordExists)
+				return db.execute(...schemas.channels_by_guild.getUpdateStmt(Object.assign({}, {guild_id: guild_snowflake, channel_id: channel_snowflake}, changes)))
+					.then(() => {})
+			;
+			else
+				throw [`Only existing channels may be updated, but no channel with id ${channel_snowflake} was found in guild ${guild_snowflake}`];
+		});
+};
+
+// returns or throws
+const deleteMessage = async (guild_snowflake, channel_snowflake) => {
+	const errors = [];
+	if (guild_snowflake === undefined || guild_snowflake === null)
+		errors.push(`A guild snowflake must be passed, but ${guild_snowflake} was supplied`);
+	else guild_snowflake = coerceToLong(guild_snowflake, errors);
+	if (channel_snowflake === undefined || channel_snowflake === null)
+		errors.push(`A channel snowflake must be passed, but ${channel_snowflake} was supplied`);
+	else channel_snowflake = coerceToLong(channel_snowflake, errors);
+	if (errors.length) {
+		throw errors;
+	}
+
+	return db.execute(...schemas.channels_by_guild.getDeleteStmt({
+		guild_id: guild_snowflake
+		, channel_id: channel_snowflake
+	})).then(() => {});
 };
 
 module.exports = {

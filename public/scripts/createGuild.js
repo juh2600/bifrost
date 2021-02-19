@@ -47,7 +47,7 @@ const validateIcon = () => {
     let input = document.getElementById("iconInput").value;
     console.log(input);
     let iconRegex = /\.(jpg|png|jpeg|svg|jfif|pjpeg|pjp)$/i;
-    isValid = iconRegex.test(input);
+    isValid = iconRegex.test(input) || input == "";
     let iconErrorMsg = document.getElementById("iconErrorMsg");
     isValid ? iconErrorMsg.classList.add("hidden"): iconErrorMsg.classList.remove("hidden");
 
@@ -74,3 +74,11 @@ document.getElementById("removeImageBtn").addEventListener("click", () => {remov
 const removeImage = () => {
     updateDefaultImage();
 } 
+
+
+
+
+document.getElementById("createGuildForm").addEventListener("submit", event => {
+    event.preventDefault();
+    console.log(event);
+});

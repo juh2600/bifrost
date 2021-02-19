@@ -5,7 +5,7 @@ block style
     script(defer, src="/scripts/createGuild.js") 
 block content
     section.main
-        form(onsubmit="return validateForm()" method="post")
+        form#createGuildForm(onsubmit="return validateForm()" method="post")
             section.content
                 div.form-area
                     div.title
@@ -19,12 +19,12 @@ block content
                         div.input-area
                             div.form-block
                                 label.input-label Guild Name
-                                input#guildNameInput(type="text", name="guildName" placeholder="Guild Name").input-field
+                                input#guildNameInput(type="text", name="name" placeholder="Guild Name").input-field
                                 span#guildNameErrorMsg.error-message.hidden You did it wrong sir 
                             div.form-block
                                 label.input-label User Icon
                                 label.input-label.file-input.btn.btn-purple Upload Image
-                                    input#iconInput(type="file", name="newUserIcon", accept="image/png, image/jpeg, image/jpg, image/svg") 
+                                    input#iconInput(type="file", name="icon", accept="image/png, image/jpeg, image/jpg, image/svg") 
                                 span#iconErrorMsg.error-message.hidden Incorrect file type
                 div.button-area
                     button(type="button").btn.btn-outline-red.cancel Cancel

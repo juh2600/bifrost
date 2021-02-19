@@ -1,3 +1,8 @@
+let selectedGuildId;
+let selectedChannelId;
+
+
+//Make 3 dots icon
 document.getElementById("guildSettingsBtn").innerHTML = "<div class='three-dots'><div></div><div></div><div></div></div>";
 document.getElementById("guildSettingsBtn").addEventListener("click", () => {
     //Route to guild settings

@@ -50,7 +50,11 @@ const updateDefaultImage = () => {
 
 
 document.getElementById("iconInput").addEventListener("input", () => {
-    validateIcon();
+    if( validateIcon()) {
+        imageURL = window.URL.createObjectURL(document.getElementById("iconInput").files[0]);
+        updateGuildIcon(imageURL);
+    }
+    document.getElementById("iconInput").value = "";
 });
 
 const validateIcon = () => {
@@ -60,12 +64,6 @@ const validateIcon = () => {
     isValid = iconRegex.test(input);
     let iconErrorMsg = document.getElementById("iconErrorMsg");
     isValid ? iconErrorMsg.classList.add("hidden"): iconErrorMsg.classList.remove("hidden");
-
-    if(isValid) {
-        let url = window.URL.createObjectURL(document.getElementById("iconInput").files[0]);
-        updateGuildIcon(url);
-    }
-    
 
     return isValid;
 }
@@ -83,3 +81,10 @@ const validateForm = () => {
         return false;
     }
 }
+
+
+document.getElementById("removeImageBtn").addEventListener("click", () => {removeImage();});
+
+const removeImage = () => {
+    updateDefaultImage();
+} 

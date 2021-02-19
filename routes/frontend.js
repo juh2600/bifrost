@@ -21,7 +21,9 @@ const signUp = (req, res) => {
 const logIn = (req, res) => {
   res.render("logIn", {
     // key: value
+    session: req.session,
   });
+  console.log("req.session = " + JSON.stringify(req.session.cookie));
 };
 
 const createGuild = (req, res) => {
@@ -30,14 +32,14 @@ const createGuild = (req, res) => {
   });
 };
 const guildSettings = (req, res) => {
-	res.render('guildSettings', {
-		// key: value
-	});
+  res.render("guildSettings", {
+    // key: value
+  });
 };
 const userSettings = (req, res) => {
-	res.render('userSettings', {
-		// key: value
-	});
+  res.render("userSettings", {
+    // key: value
+  });
 };
 
 const routes = [
@@ -66,16 +68,16 @@ const routes = [
     methods: ["get"],
     handler: createGuild,
   },
-	{
-		uri: '/guilds/:snowflake/settings',
-		methods: ['get'],
-		handler: guildSettings
-	},
-	{
-		uri: '/users/:snowflake/settings',
-		methods: ['get'],
-		handler: userSettings
-	}
+  {
+    uri: "/guilds/:snowflake/settings",
+    methods: ["get"],
+    handler: guildSettings,
+  },
+  {
+    uri: "/users/:snowflake/settings",
+    methods: ["get"],
+    handler: userSettings,
+  },
 ];
 
 module.exports = { logger, routes };

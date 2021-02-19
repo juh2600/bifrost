@@ -4,7 +4,7 @@
   --color-bg-3: #292b2f;
   --color-bg-4: #40444b;
   --color-accent: #7148ff;
-  --color-success: #28a745;
+  --color-success: #21af6f;
   --color-danger: #dc3545;
 }
 
@@ -16,6 +16,16 @@ html {
 }
 body {
   height:100%;
+}
+
+
+
+.link {
+  border:none;
+  outline:none;
+  background:none;
+  display:inline-block;
+  cursor: pointer;
 }
 
 .btn {
@@ -40,6 +50,12 @@ body {
     have actives a slight shade darker?
 
 } */
+
+.btn-red {
+  background-color: var(--color-danger);
+  color: white;
+  border: 2px solid var(--color-danger);
+}
 
 .btn-outline-purple {
   color: var(--color-accent);
@@ -138,8 +154,9 @@ body {
 }
 
 
-.file-input {
-  width:7em;
+.input-label.file-input {
+  display: inline-block;
+  margin-bottom: 0;
 }
 .file-input > input {
   display:none;
@@ -147,7 +164,6 @@ body {
 
 
 .input-label {
-  display: inline-block;
   padding-left: 10px;
   margin-bottom: 0.25rem;
   font-family: "Rubik", sans-serif;

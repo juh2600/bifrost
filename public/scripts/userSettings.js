@@ -42,7 +42,6 @@ document.getElementById("usernameInput").addEventListener("focusout", () => {
 });
 
 const updateDefaultImage = () => {
-    console.log("username");
     let username = document.getElementById("usernameInput").value;
     username = username.replaceAll(/[ _]/g, "+");
     console.log(username);

@@ -153,6 +153,19 @@ h2 {
     display:none;
 }
 
+.form-block .buttons {
+    display:flex;
+    justify-content: space-between;
+}
+.form-block .buttons > .input-label, .form-block .buttons > button {
+    display:inline-block;
+}
+
+.link {
+    color:var(--color-danger);
+    text-align: center;
+}
+
 @media all and (min-height:500px) {
     .button-area {
         margin-bottom:1em;

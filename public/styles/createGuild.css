@@ -64,6 +64,8 @@ h1 {
     width: 100%;
 }
 
+
+
 @media all and (min-height:500px) {
     .button-area {
         align-items: flex-start;

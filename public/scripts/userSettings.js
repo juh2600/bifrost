@@ -1,4 +1,4 @@
-let imageURL = "https://ui-avatars.com/api/?background=random&name= ";
+let imageURL = document.getElementById("userImage").src;
 
 document.getElementById("emailInput").addEventListener("input", () => {
   validateEmail();
@@ -39,15 +39,11 @@ const validateUsername = () => {
   return isValid;
 };
 
-document.getElementById("usernameInput").addEventListener("focusout", () => {
-  if (imageURL.includes("https://ui-avatars.com/api/?")) updateDefaultImage();
-});
-
 const updateDefaultImage = () => {
-  let username = document.getElementById("usernameInput").value;
-  username = username.replaceAll(/[ _]/g, "+");
-  console.log(username);
-  imageURL = "https://ui-avatars.com/api/?background=random&name=" + username;
+  imageURL =
+    "https://www.gravatar.com/avatar/" +
+    Math.floor(Math.random() * 15 + 1) +
+    "?s=200&d=retro";
   updateUserIcon(imageURL);
 };
 
@@ -66,17 +62,34 @@ const validateIcon = () => {
     : iconErrorMsg.classList.remove("hidden");
 
   if (isValid) {
-    let url = window.URL.createObjectURL(
+    imageURL = window.URL.createObjectURL(
       document.getElementById("iconInput").files[0]
     );
-    updateUserIcon(url);
+    updateUserIcon(imageURL);
   }
 
   return isValid;
 };
 
+document.getElementById("removeImageBtn").addEventListener("click", () => {
+  removeImage();
+});
+
+const removeImage = () => {
+  if (!imageURL.includes("https://www.gravatar.com/avatar/"))
+    updateDefaultImage();
+};
+
 const updateUserIcon = (imgURL) => {
   document.getElementById("userImage").src = imgURL;
+};
+
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  logoutUser();
+});
+
+const logoutUser = () => {
+  //TODO: Logout user. Destroy session. All that jazz
 };
 
 const validateForm = () => {

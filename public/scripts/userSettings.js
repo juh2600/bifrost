@@ -49,12 +49,13 @@ const updateDefaultImage = () => {
 
 document.getElementById("iconInput").addEventListener("input", () => {
   validateIcon();
+  document.getElementById("iconInput").value = "";
 });
 
 const validateIcon = () => {
   let input = document.getElementById("iconInput").value;
   console.log(input);
-  let iconRegex = /\.(jpg|png|jpeg|svg|jfif|pjpeg|pjp)$/;
+  let iconRegex = /\.(jpg|png|jpeg|svg|jfif|pjpeg|pjp)$/i;
   isValid = iconRegex.test(input);
   let iconErrorMsg = document.getElementById("iconErrorMsg");
   isValid

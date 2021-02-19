@@ -60,7 +60,7 @@ document.getElementById("iconInput").addEventListener("input", () => {
 const validateIcon = () => {
     let input = document.getElementById("iconInput").value;
     console.log(input);
-    let iconRegex = /\.(jpg|png|jpeg|svg|jfif|pjpeg|pjp)$/;
+    let iconRegex = /\.(jpg|png|jpeg|svg|jfif|pjpeg|pjp)$/i;
     isValid = iconRegex.test(input);
     let iconErrorMsg = document.getElementById("iconErrorMsg");
     isValid ? iconErrorMsg.classList.add("hidden"): iconErrorMsg.classList.remove("hidden");

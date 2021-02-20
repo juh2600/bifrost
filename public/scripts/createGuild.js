@@ -1,17 +1,4 @@
 let imageURL = document.getElementById("guildImage").src;
-let imageHasBeenChanged = false;
-let guild_id = document.getElementById("guildIdField").value;
-
-document.getElementById("deleteGuildBtn").addEventListener("click", () => {
-    deleteGuild();
-});
-
-const deleteGuild = () => {
-    console.log("delete");
-    //TODO: api delete fetch request
-}
-
-
 
 
 document.getElementById("guildNameInput").addEventListener("input", () => {
@@ -48,12 +35,10 @@ const updateDefaultImage = () => {
 }
 
 
-
 document.getElementById("iconInput").addEventListener("input", () => {
     if( validateIcon()) {
         imageURL = window.URL.createObjectURL(document.getElementById("iconInput").files[0]);
         updateGuildIcon(imageURL);
-        imageHasBeenChanged = true;
     }
     document.getElementById("iconInput").value = "";
 });
@@ -93,45 +78,28 @@ const removeImage = () => {
 
 
 //Intercept the form submit and post from here instead
-document.getElementById("updateGuildForm").addEventListener("submit", event => {
+document.getElementById("createGuildForm").addEventListener("submit", event => {
     event.preventDefault();
     //Post image and get icon_id
     //TODO: Fix below: Dont know how to post image
-    if(imageHasBeenChanged) {
-        fetch("/api/v0/icons", {
+    fetch("/api/v0/icons", {
+        method: "post",
+        body: imageURL
+    }).then(response => (
+        response.json()
+    )).then(data => {
+        let formData = {
+            "name": document.getElementById("guildNameInput").value,
+            "icon_id": data.icon_id
+        }
+        return fetch("/api/v0/guilds", {
             method: "post",
-            body: imageURL
-        }).then(response => (
-            response.json()
-        )).then(updateGuild
-        ).then(response => (
-            response.json()
-        )).then(data => {
-            window.location.href = "/app/" + guild_id;
+            body: JSON.stringify(formData)
         });
-    } else {
-        updateGuild({}).then(response => (
-            response.json()
-        )).then(data => {
-            window.location.href = "/app/" + guild_id;
-        });
-    }
+    }).then(response => (
+        response.json()
+    )).then(data => {
+        window.location.href = "/app/" + data.guild_id;
+    });
 
 });
-
-
-const updateGuild = async(data) => {
-    let formData = {
-        "name": document.getElementById("guildNameInput").value
-    }
-    if(data.icon_id) formData.icon_id = data.icon_id;
-
-    return fetch(`/api/v0/guilds/${guild_id}`, {
-        method: "put",
-        body: JSON.stringify(formData)
-    });
-}
-
-
-
-

@@ -4,8 +4,9 @@ block style
     script(defer, src="/scripts/appSettings.js") 
     script(defer, src="/scripts/userSettings.js") 
 block content
+    input#userIdField(type="hidden" value=user_id) 
     section.main
-        form(onsubmit="return validateForm()" method="post")
+        form#updateUserForm(onsubmit="return validateForm()" method="post")
             section.content
                 div.form-area
                     div.title

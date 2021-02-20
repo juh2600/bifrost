@@ -74,7 +74,7 @@ h2 {
     max-width: 350px;
     min-width: 175px;
 }
-.img-circle {
+.image-area {
     margin-right: 2em;
 }
 
@@ -153,6 +153,21 @@ h2 {
     display:none;
 }
 
+.form-block .buttons {
+    display:flex;
+    justify-content: space-between;
+}
+.form-block .buttons > .input-label, .form-block .buttons > button {
+    display:inline-block;
+}
+
+.link {
+    color:var(--color-danger);
+    text-align: center;
+    display:block;
+    margin:0.5em auto 0 auto;
+}
+
 @media all and (min-height:500px) {
     .button-area {
         margin-bottom:1em;
@@ -163,7 +178,7 @@ h2 {
     .input-area {
         margin-right: 3em;
     }
-    .img-circle {
+    .image-area {
         margin-right: 7em;
     }
 }

@@ -104,6 +104,7 @@ const formatInputField = () => {
     let inputValue = document.getElementById("newChannelName").value;
     inputValue = inputValue.replaceAll(" ", "-");
     inputValue = inputValue.replaceAll("--", "-");
+    inputValue = inputValue.replaceAll(/[^a-z-]/g, "");
     inputValue = inputValue.toLowerCase();
     document.getElementById("newChannelName").value = inputValue;
 }

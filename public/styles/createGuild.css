@@ -56,12 +56,20 @@ h1 {
     max-width: 400px;
     min-width: 175px;
 }
-.img-circle {
+.image-area {
     margin-right: 2em;
 }
 
 .input-field {
     width: 100%;
+}
+
+
+.link {
+    color:var(--color-danger);
+    text-align: center;
+    display:block;
+    margin:0.5em auto 0 auto;
 }
 
 @media all and (min-height:500px) {
@@ -74,7 +82,7 @@ h1 {
     .input-area {
         margin-right: 3em;
     }
-    .img-circle {
+    .image-area {
         margin-right: 7em;
     }
 }

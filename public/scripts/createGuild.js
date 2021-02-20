@@ -77,8 +77,25 @@ const removeImage = () => {
 
 
 
-
+//Intercept the form submit and post from here instead
 document.getElementById("createGuildForm").addEventListener("submit", event => {
     event.preventDefault();
-    console.log(event);
+    //Post image and get icon_id
+    //TODO: Fix below: Route does not exist. Dont know how to post image
+    fetch("/api/v0/", {
+        method: "post",
+        body: JSON.stringify(imageURL)
+    }).then(response => (
+        response.json()
+    )).then(data => {
+        let formData = {
+            "name": document.getElementById("guildNameInput").value,
+            "icon_id": data
+        }
+        fetch("/api/v0/guilds", {
+            method: "post",
+            body: JSON.stringify(formData)
+        });
+    });
+
 });

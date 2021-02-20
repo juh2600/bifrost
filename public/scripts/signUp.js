@@ -91,7 +91,7 @@ const validateIcon = () => {
   let input = iconInputId.value;
   console.log(input);
   let iconRegex = /\.(jpg|png|jpeg|svg|jfif|pjpeg|pjp)$/;
-  isValid = iconRegex.test(input);
+  isValid = iconRegex.test(input) || input == "";
   let iconErrorMsg = document.getElementById("iconErrorMsg");
   isValid
     ? iconErrorMsg.classList.add("hidden")
@@ -127,4 +127,36 @@ document.getElementById("removeImageBtn").addEventListener("click", () => {
     "https://www.gravatar.com/avatar/" +
     Math.floor(Math.random() * 15 + 1) +
     "?s=200&d=retro";
+});
+
+
+
+
+//Intercept the form submit and post from here instead
+document.getElementById("signupForm").addEventListener("submit", event => {
+  event.preventDefault();
+  //Post image and get icon_id
+  //TODO: Fix below: Dont know how to post image
+  fetch("/api/v0/icons", {
+      method: "post",
+      body: imageURL
+  }).then(response => (
+      response.json()
+  )).then(data => {
+      let formData = {
+          "name": document.getElementById("usernameInput").value,
+          "email": document.getElementById("emailInput").value,
+          "password": document.getElementById("passwordInput").value,
+          "icon_id": data.icon_id
+      }
+      return fetch("/api/v0/users", {
+          method: "post",
+          body: JSON.stringify(formData)
+      });
+  }).then(response => (
+      response.json()
+  )).then(data => {
+      window.location.href = "/login";
+  });
+
 });

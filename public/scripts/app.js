@@ -11,6 +11,7 @@ document.getElementById("guildSettingsBtn").addEventListener("click", () => {
 
 document.getElementById("createGuildBtn").addEventListener("click", () => {
     //Route to createGuild page
+    window.location.href = "/guilds/create";
 });
 
 

@@ -5,8 +5,9 @@ block style
     script(defer, src="/scripts/guildSettings.js") 
     script(defer, src="/scripts/channels.js") 
 block content
+    input#guildIdField(type="hidden") #{guild_id}
     section.main
-         form(onsubmit="return validateForm()" method="post")
+         form#updateGuildForm(onsubmit="return validateForm()" method="post")
             section.content
                 div.form-area
                     div.title

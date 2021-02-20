@@ -103,7 +103,7 @@ const createGuild = (req, res) => {
 };
 const guildSettings = (req, res) => {
 	res.render('guildSettings', {
-		// key: value
+      guild_id: req.params.guild_id
 	});
 };
 const userSettings = (req, res) => {

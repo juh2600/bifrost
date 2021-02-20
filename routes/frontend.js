@@ -103,12 +103,12 @@ const createGuild = (req, res) => {
 };
 const guildSettings = (req, res) => {
 	res.render('guildSettings', {
-      guild_id: req.params.guild_id
+    guild_id: req.params.snowflake
 	});
 };
 const userSettings = (req, res) => {
 	res.render('userSettings', {
-		// key: value
+    user_id: req.params.snowflake
 	});
 };
 

@@ -62,7 +62,7 @@ const validateIcon = () => {
     let input = document.getElementById("iconInput").value;
     console.log(input);
     let iconRegex = /\.(jpg|png|jpeg|svg|jfif|pjpeg|pjp)$/i;
-    isValid = iconRegex.test(input);
+    isValid = iconRegex.test(input) || input == "";
     let iconErrorMsg = document.getElementById("iconErrorMsg");
     isValid ? iconErrorMsg.classList.add("hidden"): iconErrorMsg.classList.remove("hidden");
 
@@ -122,7 +122,7 @@ document.getElementById("updateGuildForm").addEventListener("submit", event => {
 
 const updateGuild = async(data) => {
     let formData = {
-        "name": document.getElementById("guildNameInput").value,
+        "name": document.getElementById("guildNameInput").value
     }
     if(data.icon_id) formData.icon_id = data.icon_id;
 

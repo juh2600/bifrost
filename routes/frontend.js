@@ -1,5 +1,7 @@
 const logger = require("logger").get("frontend");
 
+let people = [];
+
 const index = (req, res) => {
   res.render("index", {
     // key: value
@@ -7,23 +9,31 @@ const index = (req, res) => {
 };
 
 const app = (req, res) => {
-  res.render("app", {
-    // key: value
-  });
+  if (req.session.user === "Cody") {
+    res.render("app", {
+      // key: value
+    });
+    console.log(JSON.stringify(req.session));
+  } else {
+    res.redirect("/");
+    console.log(JSON.stringify(req.session));
+  }
 };
 
 const signUp = (req, res) => {
+  req.session.destroy();
   res.render("signUp", {
     // key: value
   });
+  console.log(JSON.stringify(req.session));
 };
 
 const logIn = (req, res) => {
+  req.session.user = "Cody";
   res.render("logIn", {
     // key: value
-    session: req.session,
   });
-  console.log("req.session = " + JSON.stringify(req.session.cookie));
+  console.log(JSON.stringify(req.session));
 };
 
 const createGuild = (req, res) => {
@@ -41,6 +51,8 @@ const userSettings = (req, res) => {
     // key: value
   });
 };
+
+const createUser = (req, res) => {};
 
 const routes = [
   {

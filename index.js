@@ -30,7 +30,7 @@ app.use(
     secret: "top-secret",
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: true },
+    //cookie: { secure: true },
   })
 );
 //////////

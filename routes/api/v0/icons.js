@@ -35,6 +35,7 @@ const getIcon = (req, res) => {
 	res.sendFile('bolb.png', {root: path.join('./', 'icons')});
 };
 
+/*
 const updateIcon = (req, res) => {
 	res.json(Object.assign({"user_id": req.params.user_id, "name": "Joe 5", "icon_id": "811411410646155264", "email": "josephreed2604@gmail.com", "discriminator": 1234}, req.body));
 };
@@ -42,6 +43,7 @@ const updateIcon = (req, res) => {
 const deleteIcon = (req, res) => {
 	res.status(204).send('Deleted');
 };
+*/
 
 const expect = (obj, names, errors) => {
 	if (names.constructor.name !== 'Array')
@@ -69,6 +71,7 @@ const routes = [
 		methods: ['get'],
 		handler: getIcon
 	}
+	/*
 	, {
 		uri: '/api/v0/icons/:icon_id',
 		methods: ['put'],
@@ -79,6 +82,7 @@ const routes = [
 		methods: ['delete'],
 		handler: deleteIcon
 	}
+	*/
 ];
 
 

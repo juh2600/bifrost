@@ -611,6 +611,7 @@ const createMessage = async (channel_snowflake, author_snowflake, body) => {
 // how do you ensure that you get the right half of the second bucket
 // FIXME FIXME FIXME ohno ^
 // you might need to grab the whole bucket and filter over here
+// FIXME unrelated, if they give us a message_id, just search the bucket it belongs in! brilliant!
 const getMessagesByChannel = async (channel_snowflake, options = {
 	before: undefined
 	, after: undefined
@@ -643,7 +644,7 @@ const getMessagesByChannel = async (channel_snowflake, options = {
 	if (options.limit !== undefined) {
 		if (options.limit === null) {
 			errors.push(`'limit' search parameter is expected to be a Number, but ${options.limit} was supplied`);
-		} else if (options.limit.constructor.name !== 'Number')) {
+		} else if (options.limit.constructor.name !== 'Number') {
 			errors.push(`'limit' search parameter is expected to be a Number, but ${options.limit} of type ${options.limit.constructor.name} was supplied`);
 		}
 	}
@@ -699,9 +700,9 @@ const getMessagesByChannel = async (channel_snowflake, options = {
 	// - all of the above items
 	// - our before and after times are defined and reasonable
 	// next let's add them to our list of constraints
-	constraints.push('message_id < ?');
+	constraints.push('message_id <= ?');
 	params.push(options.before);
-	constraints.push('message_id > ?');
+	constraints.push('message_id >= ?');
 	params.push(options.after);
 	// we now certainly know:
 	// - all of the above items

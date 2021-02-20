@@ -14,9 +14,11 @@ block content
                     div.guild-form
                         div.img-container
                             div.img-circle.img-large
-                                img#userImage(src="https://ui-avatars.com/api/?background=random&name= ", alt="Guild Icon").img
+                                img#userImage(src="https://www.gravatar.com/avatar/" + Math.floor(Math.random() * 15 + 1) + "?s=200&d=retro" alt="User Icon").img
+                            button#removeImageBtn(type="button").link remove
                             p#usernamePreview Username
-                            p#discrimatorPreview #1645 
+                            p#discrimatorPreview #1645
+                            button#logoutBtn(type="button").btn.btn-outline-red.logout Logout 
                         div.input-area
                             div.form-block
                                 label.input-label Email

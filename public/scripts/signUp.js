@@ -35,7 +35,6 @@ const validateUsername = () => {
   return isValid;
 };
 
-
 emailInputId.addEventListener("input", () => {
   validateEmail();
 });
@@ -75,7 +74,8 @@ confirmInputId.addEventListener("input", () => {
 });
 
 const confirmPassword = () => {
-  let isValid = (confirmInputId.value == passwordInputId.value) && confirmInputId.value != "";
+  let isValid =
+    confirmInputId.value == passwordInputId.value && confirmInputId.value != "";
   let confirmErrorMsg = document.getElementById("confirmErrorMsg");
   isValid
     ? confirmErrorMsg.classList.add("hidden")
@@ -109,11 +109,22 @@ const updateUserIcon = (imgURL) => {
   profileImgId.src = imgURL;
 };
 
-
 const validateForm = () => {
-  let validators = [validateEmail(), validateUsername(), validatePassword(), confirmPassword()];
+  let validators = [
+    validateEmail(),
+    validateUsername(),
+    validatePassword(),
+    confirmPassword(),
+  ];
   let isValid = validators.reduce((a, b) => a && b);
-  if(!isValid) {
-      return false;
+  if (!isValid) {
+    return false;
   }
-}
+};
+
+document.getElementById("removeImageBtn").addEventListener("click", () => {
+  profileImgId.src =
+    "https://www.gravatar.com/avatar/" +
+    Math.floor(Math.random() * 15 + 1) +
+    "?s=200&d=retro";
+});

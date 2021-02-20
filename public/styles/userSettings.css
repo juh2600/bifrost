@@ -74,7 +74,17 @@ h1 {
     margin-top:0.25em;
     color:#aaa;
 }
+.btn.logout {
+    display: block;
+    margin:0.75em auto;
+}
 
+.link {
+    color:var(--color-danger);
+    text-align: center;
+    display:block;
+    margin:0.5em auto 0 auto;
+}
 @media all and (min-height:500px) {
     .button-area {
         align-items: flex-start;

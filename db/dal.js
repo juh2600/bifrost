@@ -792,22 +792,21 @@ const updateMessage = async (channel_snowflake, message_snowflake, changes) => {
 };
 
 // returns or throws
-// TODO you were just about to start this method
-const deleteMessage = async (guild_snowflake, channel_snowflake) => {
+const deleteMessage = async (channel_snowflake, message_snowflake) => {
 	const errors = [];
-	if (guild_snowflake === undefined || guild_snowflake === null)
-		errors.push(`A guild snowflake must be passed, but ${guild_snowflake} was supplied`);
-	else guild_snowflake = coerceToLong(guild_snowflake, errors);
 	if (channel_snowflake === undefined || channel_snowflake === null)
 		errors.push(`A channel snowflake must be passed, but ${channel_snowflake} was supplied`);
 	else channel_snowflake = coerceToLong(channel_snowflake, errors);
+	if (message_snowflake === undefined || message_snowflake === null)
+		errors.push(`A message snowflake must be passed, but ${message_snowflake} was supplied`);
+	else message_snowflake = coerceToLong(message_snowflake, errors);
 	if (errors.length) {
 		throw errors;
 	}
 
-	return db.execute(...schemas.channels_by_guild.getDeleteStmt({
-		guild_id: guild_snowflake
-		, channel_id: channel_snowflake
+	return db.execute(...schemas.messages_by_channel_bucket.getDeleteStmt({
+		channel_id: channel_snowflake
+		, message_id: message_snowflake
 	})).then(() => {});
 };
 

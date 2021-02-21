@@ -469,7 +469,7 @@ const createChannel = async (guild_snowflake, name, position = -1) => {
 
 	if (!(position > 0)) { // this handles strings and bad guys lmao end me // this shouldn't matter; catch type errors above
 		// by default, append the channel to the end of the guild
-		position = await getChannelsByGuild(guild_snowflake).then(rows => rows.length);
+		position = await getChannels(guild_snowflake).then(rows => rows.length);
 		console.log('using position ' + position);
 	} else position = position - 0; // coerce number type
 
@@ -485,7 +485,7 @@ const createChannel = async (guild_snowflake, name, position = -1) => {
 };
 
 // returns list of channel descriptions, or throws
-const getChannelsByGuild = async (guild_snowflake, options = {
+const getChannels = async (guild_snowflake, options = {
 	before: undefined
 	, after: undefined
 	, channel_id: undefined
@@ -541,7 +541,7 @@ const updateChannel = async (guild_snowflake, channel_snowflake, changes) => {
 		throw errors;
 	}
 
-	return getChannelsByGuild(guild_snowflake, {channel_id: channel_snowflake})
+	return getChannels(guild_snowflake, {channel_id: channel_snowflake})
 		.then(rows => rows.length > 0)
 		.then(recordExists => {
 			if (recordExists)
@@ -612,7 +612,7 @@ const createMessage = async (channel_snowflake, author_snowflake, body) => {
 // FIXME FIXME FIXME ohno ^
 // you might need to grab the whole bucket and filter over here
 // FIXME unrelated, if they give us a message_id, just search the bucket it belongs in! brilliant!
-const getMessagesByChannel = async (channel_snowflake, options = {
+const getMessages = async (channel_snowflake, options = {
 	before: undefined
 	, after: undefined
 	, message_id: undefined
@@ -779,7 +779,7 @@ const updateMessage = async (channel_snowflake, message_snowflake, changes) => {
 		throw errors;
 	}
 
-	return getMessagesByChannel(channel_snowflake, {message_id: message_snowflake})
+	return getMessages(channel_snowflake, {message_id: message_snowflake})
 		.then(rows => rows.length > 0)
 		.then(recordExists => {
 			if (recordExists)
@@ -814,5 +814,6 @@ const deleteMessage = async (guild_snowflake, channel_snowflake) => {
 module.exports = {
 	Schema, schemas
 	, createGuild, getGuilds, updateGuild, deleteGuild
-	, createChannel, getChannelsByGuild, updateChannel, deleteChannel
+	, createChannel, getChannels, updateChannel, deleteChannel
+	, createMessage, getMessages, updateMessage, deleteMessage
 };

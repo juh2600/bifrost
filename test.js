@@ -8,6 +8,12 @@ const db = require('./db/dal');
 const g = {guild_id: '123456', icon_id: '765432', name: 'yeehaw'};
 const values = [undefined, null, 3, 'bar', new Long(4), {}, [], g.guild_id];
 
+for (let v of values) {
+	try {
+		console.log('>>> ', v, v.constructor.name)
+	} catch {
+	}
+}
 logger.info('Testing schema validation...')
 const cases = [];
 for (let valueA of values) {
@@ -84,11 +90,11 @@ for (let valueB of values) {
 		db.updateGuild(valueA, {name: valueB})
 			.then ((o) => {console.log(`[ X ]\tupdateGuild(${valueA}, {name: ${valueB}})`, o)})
 			.catch((o) => {console.log(`[   ]\tupdateGuild(${valueA}, {name: ${valueB}})`, o)});
-	for (let valueC of values) {
-		db.updateGuild(valueA, {name: valueB, icon_id: valueC})
-			.then ((o) => {console.log(`[ X ]\tupdateGuild(${valueA}, {name: ${valueB}, icon_id: ${valueC}})`, o)})
-			.catch((o) => {console.log(`[   ]\tupdateGuild(${valueA}, {name: ${valueB}, icon_id: ${valueC}})`, o)});
-	}
+		for (let valueC of values) {
+			db.updateGuild(valueA, {name: valueB, icon_id: valueC})
+				.then ((o) => {console.log(`[ X ]\tupdateGuild(${valueA}, {name: ${valueB}, icon_id: ${valueC}})`, o)})
+				.catch((o) => {console.log(`[   ]\tupdateGuild(${valueA}, {name: ${valueB}, icon_id: ${valueC}})`, o)});
+		}
 	}
 }
 logger.info('Tested updateGuild.');
@@ -105,4 +111,79 @@ for (let valueB of values) {
 //db.getGuilds().then(guilds => guilds.map(guild => guild.guild_id)).then(guild_ids => guild_ids.forEach(db.deleteGuild));
 logger.info('Tested deleteGuild.');
 
+logger.info('Testing createChannel...');
+db.createChannel()
+	.then ((o) => {console.log(`[ X ]\tcreateChannel()`, o)})
+	.catch((o) => {console.log(`[   ]\tcreateChannel()`, o)});
+for (let valueB of values) {
+	db.createChannel(valueB)
+		.then ((o) => {console.log(`[ X ]\tcreateChannel(${valueB})`, o)})
+		.catch((o) => {console.log(`[   ]\tcreateChannel(${valueB})`, o)});
+	for (let valueA of values) {
+		db.createChannel(valueA, valueB)
+			.then ((o) => {console.log(`[ X ]\tcreateChannel(${valueA}, ${valueB})`, o)})
+			.catch((o) => {console.log(`[   ]\tcreateChannel(${valueA}, ${valueB})`, o)});
+		for (let valueC of values) {
+			db.createChannel(valueA, valueB, valueC)
+				.then ((o) => {console.log(`[ X ]\tcreateChannel(${valueA}, ${valueB}, ${valueC})`, o)})
+				.catch((o) => {console.log(`[   ]\tcreateChannel(${valueA}, ${valueB}, ${valueC})`, o)});
+		}
+	}
+}
+logger.info('Tested createChannel.');
+
+logger.info('Testing getChannels...');
+db.getChannels()
+	.then ((o) => {console.log(`[ X ]\tgetChannels()`, o)})
+	.catch((o) => {console.log(`[   ]\tgetChannels()`, o)});
+for (let valueA of values) {
+	db.getChannels(valueA)
+		.then ((o) => {console.log(`[ X ]\tgetChannels(${valueA})`, o)})
+		.catch((o) => {console.log(`[   ]\tgetChannels(${valueA})`, o)});
+	for (let valueB of values) {
+		for (let valueC of values) {
+			for (let valueD of values) {
+				for (let valueE of values) {
+					db.getChannels(valueA, {before: valueB, after: valueC, channel_id: valueD, limit: valueE})
+						.then ((o) => {console.log(`[ X ]\tgetChannels(${valueA}, {before: ${valueB}, after: ${valueC}, channel_id: ${valueD}, limit: ${valueE}})`, o)})
+						.catch((o) => {console.log(`[   ]\tgetChannels(${valueA}, {before: ${valueB}, after: ${valueC}, channel_id: ${valueD}, limit: ${valueE}})`, o)});
+				}
+			}
+		}
+	}
+}
+logger.info('Tested getChannels.');
+
+logger.info('Testing updateChannel...');
+db.updateChannel()
+	.then ((o) => {console.log(`[ X ]\tupdateChannel()`, o)})
+	.catch((o) => {console.log(`[   ]\tupdateChannel()`, o)});
+for (let valueB of values) {
+	db.updateChannel(valueB)
+		.then ((o) => {console.log(`[ X ]\tupdateChannel(${valueB})`, o)})
+		.catch((o) => {console.log(`[   ]\tupdateChannel(${valueB})`, o)});
+	for (let valueA of values) {
+		db.updateChannel(valueA, valueB)
+			.then ((o) => {console.log(`[ X ]\tupdateChannel(${valueA}, ${valueB})`, o)})
+			.catch((o) => {console.log(`[   ]\tupdateChannel(${valueA}, ${valueB})`, o)});
+		for (let valueC of values) {
+			db.updateChannel(valueA, valueB, {name: valueC})
+				.then ((o) => {console.log(`[ X ]\tupdateChannel(${valueA}, ${valueB}, {name: ${valueC}})`, o)})
+				.catch((o) => {console.log(`[   ]\tupdateChannel(${valueA}, ${valueB}, {name: ${valueC}})`, o)});
+			for (let valueD of values) {
+				db.updateChannel(valueA, valueB, {name: valueC, guild_id: valueD}) // these should pass/fail regardless of guild_id value: it should be ignored
+					.then ((o) => {console.log(`[ X ]\tupdateChannel(${valueA}, ${valueB}, {name: ${valueC}, guild_id: ${valueD}})`, o)})
+					.catch((o) => {console.log(`[   ]\tupdateChannel(${valueA}, ${valueB}, {name: ${valueC}, guild_id: ${valueD}})`, o)});
+			for (let valueE of values) {
+				db.updateChannel(valueA, valueB, {name: valueC, guild_id: valueD, channel_id: valueE}) // these should pass/fail regardless of channel_id value: it should be ignored
+					.then ((o) => {console.log(`[ X ]\tupdateChannel(${valueA}, ${valueB}, {name: ${valueC}, guild_id: ${valueD}, channel_id: ${valueE}})`, o)})
+					.catch((o) => {console.log(`[   ]\tupdateChannel(${valueA}, ${valueB}, {name: ${valueC}, guild_id: ${valueD}, channel_id: ${valueE}})`, o)});
+			}
+			}
+		}
+	}
+}
+logger.info('Tested updateChannel.');
+
 //module.exports = { cases };
+setInterval(() => {throw undefined;}, 3000);

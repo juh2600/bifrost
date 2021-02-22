@@ -26,7 +26,7 @@
     width:100%;
     box-sizing: border-box;
     color:var(--color-text-2);
-    font-size: 0.95em;
+    font-size: 0.9em;
 }
 
 
@@ -114,8 +114,8 @@
     flex-wrap: nowrap;
 }
 .guild {
-    width:55px;
-    height:55px;
+    width:3.5em;
+    height:3.5em;
     cursor:pointer;
     margin-bottom: 0.5em;
     padding:0.25em;
@@ -277,7 +277,7 @@
           Channel List
 ###############################*/
 #channelList {
-    padding:0.5em 0;
+    padding:0.5em;
 }
 .channel-list > p {
     padding: 0 1em;
@@ -287,7 +287,7 @@
 
 .channel {
     color:var(--color-text-3);
-    padding:0.5em 1em;
+    padding:0.5em;
     cursor:pointer;
     width:100%;
     box-sizing: border-box;
@@ -296,6 +296,8 @@
 
 .channel.selected {
     color:var(--color-text-2);
+    background-color: var(--color-bg-3);
+    border-radius: 6px;
     
 }
 .channel > p {
@@ -313,9 +315,17 @@
     display:flex;
     flex-direction: column;
     justify-content: center;
+    box-sizing: border-box;
+    width: 100%;
+    overflow: hidden;
+
 }
 #channelName {
     margin:0;
     margin-left:0.5em;
     box-sizing: border-box;
+    text-overflow:ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+
 }

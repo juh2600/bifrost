@@ -42,7 +42,7 @@ const createChannelList = (channelList) => {
         let div = document.createElement("div");
         div.classList.add("channel");
         div.dataset.channelId = channel.channel_id;
-        div.addEventListener("click", () => changeChannel(channel.channel_id));
+        div.addEventListener("click", () => changeChannel(channel.channel_id, true));
         let name = document.createElement("p");
         name.innerHTML = "#" + channel.name;
         div.appendChild(name);
@@ -51,14 +51,14 @@ const createChannelList = (channelList) => {
 
     //show selected channel. if channel is invalid or unspecified,show first channel in list
     if(selectedChannelId) {
-        if(!changeChannel(selectedChannelId)) changeChannel(channelList[0].channel_id)
+        if(!changeChannel(selectedChannelId, true)) changeChannel(channelList[0].channel_id, true);
     }
-    else changeChannel(channelList[0].channel_id);
+    else changeChannel(channelList[0].channel_id, true);
 }
 
 
 //Get messages for new channel, change selected channel styles
-const changeChannel = newChannelId => {
+const changeChannel = (newChannelId, addToHistory) => {
     let newChannelExists = false;
     let newChannelName;
     //Search list for new channel
@@ -80,6 +80,10 @@ const changeChannel = newChannelId => {
         document.getElementById("channelName").innerHTML = `#${newChannelName}`;
         //Update selected channel id
         selectedChannelId = newChannelId;
+        
+        //Update url and history
+        if(addToHistory) updateHistory();
+
         //Repopulate messages
         populateMessages();
     }
@@ -92,6 +96,26 @@ const populateMessages = () => {
 
 }
 
+
+const changeGuild = (newGuildId, addToHistory) => {
+
+}
+
+
+const updateHistory = () => {
+    let newURL = `/app/${selectedGuildId}/${selectedChannelId}`;
+    history.pushState("What I was typing before", "", newURL);
+}
+
+//Callback when user clicks back button
+window.onpopstate = () => {
+    //history.back();
+    //get current url, parse it, and load correct guild & channel
+    selectedGuildId = getIdFromURL("guild");
+    selectedChannelId = getIdFromURL("channel");
+    changeGuild(selectedGuildId, false);
+    changeChannel(selectedChannelId, false);
+}
 
 
 //get init channel list if guild is selected

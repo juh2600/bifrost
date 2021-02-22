@@ -1,3 +1,18 @@
+/*#############################
+        Color Variables
+###############################*/
+:root {
+    --color-text-1: #fff;
+    --color-text-2: #eee;
+    --color-text-3: #999;
+  }
+
+
+
+/*#############################
+            Main
+###############################*/
+
 .main {
     display:grid;
     grid-template-areas: "bar-area    bar-area      bar-area      profile-area"
@@ -10,7 +25,7 @@
     height:100%;
     width:100%;
     box-sizing: border-box;
-    color:white;
+    color:var(--color-text-2);
     font-size: 0.95em;
 }
 
@@ -74,7 +89,7 @@
     width:90%;
     margin:0 auto;
     background-color: var(--color-bg-4);
-    color:white;
+    color:var(--color-text-1);
 }
 
 .guild-list::-webkit-scrollbar, .user-list::-webkit-scrollbar, .channel-list::-webkit-scrollbar {
@@ -144,7 +159,7 @@
 }
 
 #createGuildBtn:hover > div {
-    color:#fff;
+    color:var(--color-text-1);
     background-color: var(--color-success);
 }
 
@@ -152,7 +167,7 @@
 #tooltip {
     display: block;
     position: fixed;
-    color: #fff;
+    color: var(--color-text-2);
     background: var(--color-bg-1);
     text-align: center;
     padding:0.5em 0.65em;
@@ -190,7 +205,7 @@
     box-sizing: border-box;
 }
 .three-dots > div {
-    background-color: #fff;
+    background-color: var(--color-text-3);
     width:4px;
     height:4px;
     border-radius: 100%;
@@ -210,7 +225,9 @@
 .profile-area > .user {
     cursor: pointer;
 }
-
+.profile-area > .user .name-container .name {
+    color:var(--color-text-1);
+}
 
 
 /*#############################
@@ -241,8 +258,11 @@
     text-overflow:ellipsis;
     margin:0;
 }
+.user .name-container .name {
+    color:var(--color-text-2);
+}
 .user .name-container .discriminator {
-    color:#999;
+    color:var(--color-text-3);
     
 }
 .user .icon {
@@ -262,11 +282,11 @@
 .channel-list > p {
     padding: 0 1em;
     margin-bottom:0;
-    color:#999;
+    color:var(--color-text-3);
 }
 
 .channel {
-    color:#999;
+    color:var(--color-text-3);
     padding:0.5em 1em;
     cursor:pointer;
     width:100%;
@@ -275,7 +295,7 @@
 }
 
 .channel.selected {
-    color:#fff;
+    color:var(--color-text-2);
     
 }
 .channel > p {
@@ -284,4 +304,18 @@
     margin:0;
     white-space: nowrap;
 
+}
+
+/*#############################
+          Channel Name
+###############################*/
+.channel-name {
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+}
+#channelName {
+    margin:0;
+    margin-left:0.5em;
+    box-sizing: border-box;
 }

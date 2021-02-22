@@ -27,16 +27,16 @@ const updateChannelList = () => {
     fetch(`/api/v0/guilds/${selectedGuildId}/text-channels`)
     .then(response => response.json())
     .then(data => {
-        createChannelList(data);
         channelList = data;
+        //sort by position
+        channelList.sort((a, b) => (a.position > b.position) ? 1 : -1);
+        createChannelList(data);
     });
 }
 const clearChannelList = () => {
     document.getElementById("channelList").innerHTML = "";   
 }
 const createChannelList = (channelList) => {
-    //sort by position
-    channelList.sort((a, b) => (a.position > b.position) ? 1 : -1);
     //create divs and append to container
     channelList.forEach(channel => {
         let div = document.createElement("div");
@@ -48,25 +48,42 @@ const createChannelList = (channelList) => {
         div.appendChild(name);
         document.getElementById("channelList").appendChild(div);
     });
+
+    //show selected channel. if channel is invalid or unspecified,show first channel in list
+    if(selectedChannelId) {
+        if(!changeChannel(selectedChannelId)) changeChannel(channelList[0].channel_id)
+    }
+    else changeChannel(channelList[0].channel_id);
 }
-//get init channel list if guild is selected
-if(selectedGuildId) updateChannelList();
+
 
 //Get messages for new channel, change selected channel styles
 const changeChannel = newChannelId => {
     let newChannelExists = false;
-    //Remove selected from all channels
-    [...document.getElementById("channelList").children].forEach(channel => {
-        channel.classList.remove("selected");
-        if(channel.dataset.channelId == newChannelId) newChannelExists = true;
+    let newChannelName;
+    //Search list for new channel
+    channelList.forEach(channel => {
+        if(channel.channel_id == newChannelId) {
+            newChannelExists = true;
+            newChannelName = channel.name;
+        }
     });
     //if new channel exists, switch to it
     if(newChannelExists) {
+        //Remove selected from all channels
+        [...document.getElementById("channelList").children].forEach(channel => {
+            channel.classList.remove("selected");
+        });
         //add selected class to new selected channel
         document.querySelector('[data-channel-id="'+ newChannelId +'"]').classList.add("selected");
+        //Change current channel name
+        document.getElementById("channelName").innerHTML = `#${newChannelName}`;
+        //Update selected channel id
         selectedChannelId = newChannelId;
+        //Repopulate messages
         populateMessages();
     }
+    return newChannelExists;
 }
 
 
@@ -75,6 +92,10 @@ const populateMessages = () => {
 
 }
 
+
+
+//get init channel list if guild is selected
+if(selectedGuildId) updateChannelList();
 
 
 //Make 3 dots icon
@@ -156,3 +177,4 @@ const offset = (el) => {
 document.getElementById("currentUser").addEventListener("click", () => {
     window.location.href = `/users/${document.getElementById("currentUser").dataset.userId}/settings`;
 });
+

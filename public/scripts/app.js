@@ -2,6 +2,26 @@ let selectedGuildId;
 let selectedChannelId;
 
 
+//Get current guild and channel ids out of the URL if they are present
+const getIdFromURL = (typeOfID) => {
+    let url = window.location.href;
+    if(typeOfID == "guild") {
+        try {
+            return (url.split("/app")[1].split("/")[1]);
+        } catch (error) {}
+    }
+    else if (typeOfID = "channel") {
+        try {
+            return (url.split("/app")[1].split("/")[2]);
+        } catch (error) {}
+    }
+    return null;
+}
+selectedGuildId = getIdFromURL("guild");
+selectedChannelId = getIdFromURL("channel");
+console.log(selectedGuildId);
+console.log(selectedChannelId);
+
 //Make 3 dots icon
 document.getElementById("guildSettingsBtn").innerHTML = "<div class='three-dots'><div></div><div></div><div></div></div>";
 document.getElementById("guildSettingsBtn").addEventListener("click", () => {
@@ -73,3 +93,9 @@ const offset = (el) => {
     scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     return { top: rect.top + scrollTop, left: rect.left + scrollLeft }
 }
+
+
+//Route to user settings when click on profile
+document.getElementById("currentUser").addEventListener("click", () => {
+    window.location.href = `/users/${document.getElementById("currentUser").dataset.userId}/settings`;
+});

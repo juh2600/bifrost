@@ -195,6 +195,23 @@
 }
 
 /*#############################
+        Profile Section
+###############################*/
+
+.profile-area {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding:1.5em 0.5em 0.5em 0.5em;
+}
+.profile-area > .user {
+    cursor: pointer;
+}
+
+
+
+/*#############################
           User List
 ###############################*/
 

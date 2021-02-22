@@ -144,6 +144,16 @@ const routes = [
     handler: app,
   },
   {
+    uri: "/app/:guild_id",
+    methods: ["get"],
+    handler: app,
+  },
+  {
+    uri: "/app/:guild_id/:channel_id",
+    methods: ["get"],
+    handler: app,
+  },
+  {
     uri: "/signUp",
     methods: ["get"],
     handler: signUp,

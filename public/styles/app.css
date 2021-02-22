@@ -31,11 +31,11 @@
     background-color: var(--color-bg-1);
     overflow-x: hidden;
 }
-.guild-list::-webkit-scrollbar {
+.guild-list::-webkit-scrollbar, .user-list::-webkit-scrollbar {
     display: none;
 }
 /* Hide scrollbar for IE, Edge and Firefox */
-.guild-list {
+.guild-list, .user-list {
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
 }
@@ -193,3 +193,42 @@
     height:4px;
     border-radius: 100%;
 }
+
+/*#############################
+          User List
+###############################*/
+
+.user-list {
+    padding:0.5em;
+    overflow-x: hidden;
+}
+.user {
+    width:100%;
+    display:flex;
+    padding:0.5em;
+    align-items: center;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    flex-wrap: nowrap;
+}
+.user .name-container {
+    text-overflow:ellipsis;
+    width:75%;
+
+}
+.user .name-container p {
+    overflow:hidden;
+    text-overflow:ellipsis;
+    margin:0;
+}
+.user .name-container .discriminator {
+    color:#999;
+    
+}
+.user .icon {
+    width:40px;
+    height:40px;
+    margin-right: 0.5em;
+}
+

@@ -64,6 +64,25 @@ const dal = {
         name: "J"
       }
     ]
+  },
+  getUsers: async() => {
+    return [
+		  {"user_id": "811410903487692800", "name": "8888888888888888888888888888888888888888888888888888888888888888", "icon_id": "811411148556681216", "email": "josephreed2600@gmail.com", "discriminator": 1234}
+		, {"user_id": "811411148556681216", "name": "Joe 2", "icon_id": "811411487263506432", "email": "josephreed2601@gmail.com", "discriminator": 1234}
+		, {"user_id": "811411322687406080", "name": "Joe 3", "icon_id": "811411461028134912", "email": "josephreed2602@gmail.com", "discriminator": 1234}
+		, {"user_id": "811411348876640256", "name": "Joe 4", "icon_id": "811411438727020544", "email": "josephreed2603@gmail.com", "discriminator": 1234}
+		, {"user_id": "811411377200775168", "name": "Joe 5", "icon_id": "811411410646155264", "email": "josephreed2604@gmail.com", "discriminator": 1234}
+    , {"user_id": "811410903487692800", "name": "Joe 1", "icon_id": "811411148556681216", "email": "josephreed2600@gmail.com", "discriminator": 1234}
+		, {"user_id": "811411148556681216", "name": "Joe 2", "icon_id": "811411487263506432", "email": "josephreed2601@gmail.com", "discriminator": 1234}
+		, {"user_id": "811411322687406080", "name": "Joe 3", "icon_id": "811411461028134912", "email": "josephreed2602@gmail.com", "discriminator": 1234}
+		, {"user_id": "811411348876640256", "name": "Joe 4", "icon_id": "811411438727020544", "email": "josephreed2603@gmail.com", "discriminator": 1234}
+		, {"user_id": "811411377200775168", "name": "Joe 5", "icon_id": "811411410646155264", "email": "josephreed2604@gmail.com", "discriminator": 1234}
+    , {"user_id": "811410903487692800", "name": "Joe 1", "icon_id": "811411148556681216", "email": "josephreed2600@gmail.com", "discriminator": 1234}
+		, {"user_id": "811411148556681216", "name": "Joe 2", "icon_id": "811411487263506432", "email": "josephreed2601@gmail.com", "discriminator": 1234}
+		, {"user_id": "811411322687406080", "name": "Joe 3", "icon_id": "811411461028134912", "email": "josephreed2602@gmail.com", "discriminator": 1234}
+		, {"user_id": "811411348876640256", "name": "Joe 4", "icon_id": "811411438727020544", "email": "josephreed2603@gmail.com", "discriminator": 1234}
+		, {"user_id": "811411377200775168", "name": "Joe 5", "icon_id": "811411410646155264", "email": "josephreed2604@gmail.com", "discriminator": 1234}
+	];
   }
 }
 
@@ -76,11 +95,12 @@ const index = (req, res) => {
 
 const app = (req, res) => {
   dal.getGuilds().then(dalGuildList => {
-    res.render("app", {
-      guildList: dalGuildList
+    dal.getUsers().then(dalUsersList => {
+      res.render("app", {
+        guildList: dalGuildList,
+        userList: dalUsersList
+      });
     });
-
-
   });
 };
 

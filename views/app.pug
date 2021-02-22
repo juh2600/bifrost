@@ -6,11 +6,26 @@ block content
     div#tooltip
     section.main
         div.bar-area
+
+
         div.guild-name 
             p#guildName 
             div#guildSettingsBtn
+
+
         div.channel-name
-        div.profile-area 
+
+
+        //- TODO: get data from session
+        div.profile-area
+            div.user(data-user-id = "111")
+                div.icon.img-circle
+                    img(src="/api/v0/icons/" + "12345678").img
+                div.name-container 
+                    p.name Foggy
+                    p.discriminator #1645
+
+
         div.guild-list
             div#guildCollection
                 each guild in guildList
@@ -19,9 +34,22 @@ block content
                             img(src="/api/v0/icons/" + guild.icon_id).img
             div#createGuildBtn.guild
                 div +
+
+
         div.channel-list
+
+
         div.chat-area
+
+
         div.user-list
+            each user in userList
+                div.user(data-user-id = user.user_id)
+                    div.icon.img-circle
+                        img(src="/api/v0/icons/" + user.icon_id).img
+                    div.name-container 
+                        p.name #{user.name}
+                        p.discriminator ##{user.discriminator}
         div.message-area
             input(type="text", name="message" placeholder="Message").input-field
             

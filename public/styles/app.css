@@ -249,3 +249,29 @@
     margin-right: 0.5em;
 }
 
+
+
+/*#############################
+          Channel List
+###############################*/
+
+.channel {
+    color:#999;
+    padding:0.5em;
+    cursor:pointer;
+    width:100%;
+    box-sizing: border-box;
+
+}
+
+.channel.selected {
+    color:#fff;
+    
+}
+.channel > p {
+    text-overflow:ellipsis;
+    overflow: hidden;
+    margin:0;
+    white-space: nowrap;
+
+}

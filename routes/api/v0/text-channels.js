@@ -18,9 +18,9 @@ const createTextChannel = (req, res) => {
 
 const getTextChannels = (req, res) => {
 	res.json([
-		  {"guild_id": req.params.guild_id, "channel_id": "811431023975034880", "name": "Sam Ramaham's Auto Zone and Stripper Dome", "position": 0}
-		, {"guild_id": req.params.guild_id, "channel_id": "811431032275562496", "name": "Albania", "position": 1}
-		, {"guild_id": req.params.guild_id, "channel_id": "811431034574041088", "name": "Comfort Zone 130", "position": 2}
+		  {"guild_id": req.params.guild_id, "channel_id": "811431023975034880", "name": "sam-ramahams-auto-zone-and-stripper-dome", "position": 0}
+		, {"guild_id": req.params.guild_id, "channel_id": "811431032275562496", "name": "albania", "position": 1}
+		, {"guild_id": req.params.guild_id, "channel_id": "811431034574041088", "name": "comfort-zone-130", "position": 2}
 		, {"guild_id": req.params.guild_id, "channel_id": "811431036687970304", "name": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", "position": 3}
 		, {"guild_id": req.params.guild_id, "channel_id": "811431038827065344", "name": "h", "position": 4}
 	]);

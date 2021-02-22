@@ -19,13 +19,44 @@ const getIdFromURL = (typeOfID) => {
 }
 selectedGuildId = getIdFromURL("guild");
 selectedChannelId = getIdFromURL("channel");
-console.log(selectedGuildId);
-console.log(selectedChannelId);
+
+
+const updateChannelList = () => {
+    clearChannelList();
+    fetch(`/api/v0/guilds/${selectedGuildId}/text-channels`)
+    .then(response => response.json())
+    .then(data => {
+        createChannelList(data);
+    });
+}
+const clearChannelList = () => {
+    document.getElementById("channelList").innerHTML = "";   
+}
+const createChannelList = (channelList) => {
+    //sort by position
+    channelList.sort((a, b) => (a.position > b.position) ? 1 : -1);
+    //create divs and append to container
+    channelList.forEach(channel => {
+        let div = document.createElement("div");
+        div.classList.add("channel");
+        div.dataset.channelId = channel.channel_id;
+        div.addEventListener("click", () => changeChannel(channel.channel_id));
+        let name = document.createElement("p");
+        name.innerHTML = "#" + channel.name;
+        div.appendChild(name);
+        document.getElementById("channelList").appendChild(div);
+    });
+}
+//get init channel list if guild is selected
+if(selectedGuildId) updateChannelList();
+
 
 //Make 3 dots icon
 document.getElementById("guildSettingsBtn").innerHTML = "<div class='three-dots'><div></div><div></div><div></div></div>";
+
 document.getElementById("guildSettingsBtn").addEventListener("click", () => {
     //Route to guild settings
+    window.location.href = `/guilds/${selectedGuildId}/settings`;
 });
 
 

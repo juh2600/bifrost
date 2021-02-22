@@ -1,6 +1,7 @@
 let selectedGuildId;
 let selectedChannelId;
 
+let channelList;
 
 //Get current guild and channel ids out of the URL if they are present
 const getIdFromURL = (typeOfID) => {
@@ -27,6 +28,7 @@ const updateChannelList = () => {
     .then(response => response.json())
     .then(data => {
         createChannelList(data);
+        channelList = data;
     });
 }
 const clearChannelList = () => {
@@ -49,6 +51,30 @@ const createChannelList = (channelList) => {
 }
 //get init channel list if guild is selected
 if(selectedGuildId) updateChannelList();
+
+//Get messages for new channel, change selected channel styles
+const changeChannel = newChannelId => {
+    let newChannelExists = false;
+    //Remove selected from all channels
+    [...document.getElementById("channelList").children].forEach(channel => {
+        channel.classList.remove("selected");
+        if(channel.dataset.channelId == newChannelId) newChannelExists = true;
+    });
+    //if new channel exists, switch to it
+    if(newChannelExists) {
+        //add selected class to new selected channel
+        document.querySelector('[data-channel-id="'+ newChannelId +'"]').classList.add("selected");
+        selectedChannelId = newChannelId;
+        populateMessages();
+    }
+}
+
+
+//TODO: Request messages for new channel
+const populateMessages = () => {
+
+}
+
 
 
 //Make 3 dots icon

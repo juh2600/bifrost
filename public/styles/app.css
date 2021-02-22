@@ -11,6 +11,7 @@
     width:100%;
     box-sizing: border-box;
     color:white;
+    font-size: 0.95em;
 }
 
 
@@ -31,15 +32,6 @@
     background-color: var(--color-bg-1);
     overflow-x: hidden;
 }
-.guild-list::-webkit-scrollbar, .user-list::-webkit-scrollbar {
-    display: none;
-}
-/* Hide scrollbar for IE, Edge and Firefox */
-.guild-list, .user-list {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-}
-
 .guild-name {
     grid-area: guild-name;
     background-color: var(--color-bg-2);
@@ -84,6 +76,16 @@
     background-color: var(--color-bg-4);
     color:white;
 }
+
+.guild-list::-webkit-scrollbar, .user-list::-webkit-scrollbar, .channel-list::-webkit-scrollbar {
+    display: none;
+}
+/* Hide scrollbar for IE, Edge and Firefox */
+.guild-list, .user-list, .channel-list {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
 
 /*#############################
           Guild List
@@ -254,10 +256,18 @@
 /*#############################
           Channel List
 ###############################*/
+#channelList {
+    padding:0.5em 0;
+}
+.channel-list > p {
+    padding: 0 1em;
+    margin-bottom:0;
+    color:#999;
+}
 
 .channel {
     color:#999;
-    padding:0.5em;
+    padding:0.5em 1em;
     cursor:pointer;
     width:100%;
     box-sizing: border-box;

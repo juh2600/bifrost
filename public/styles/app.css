@@ -26,7 +26,6 @@
     width:100%;
     box-sizing: border-box;
     color:var(--color-text-2);
-    font-size: 0.9em;
 }
 
 
@@ -191,6 +190,24 @@
 /*#############################
           Guild Name
 ###############################*/
+.guild-name {
+    width:100%;
+    overflow:hidden;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
+}
+
+#guildName {
+    margin:0 0.5em;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    width:100%;
+    text-overflow: ellipsis;
+    overflow:hidden;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
 
 #guildSettingsBtn {
     cursor:pointer;
@@ -247,6 +264,8 @@
     overflow: hidden;
     text-overflow:ellipsis;
     flex-wrap: nowrap;
+    font-size: 0.9em;
+
 }
 .user .name-container {
     text-overflow:ellipsis;

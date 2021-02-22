@@ -98,7 +98,36 @@ const populateMessages = () => {
 
 
 const changeGuild = (newGuildId, addToHistory) => {
+    let newGuildExists = false;
+    let newGuildName;
+    //Search list for new guild
+    [...document.getElementById("guildCollection").children].forEach(guild => {
+        if(guild.dataset.guildId == newGuildId) {
+            newGuildExists = true;
+            newGuildName = guild.dataset.guildName;
+        }
+    });
 
+    if(newGuildExists) {
+        //Remove selected class from all guilds
+        [...document.getElementById("guildCollection").children].forEach(guild => {
+            guild.classList.remove("selected");
+        });
+        //add selected class to new selected guild
+        document.querySelector('[data-guild-id="'+ newGuildId +'"]').classList.add("selected");
+        //Change current guild name
+        //Change current channel name
+        document.getElementById("guildName").innerHTML = newGuildName;
+        //Update selected channel id
+        selectedGuildId = newGuildId;
+        //Update url and history
+        //if(addToHistory) updateHistory();
+
+        updateChannelList();
+    }
+    else {
+        //TODO: Show no channel selected page
+    }
 }
 
 
@@ -109,7 +138,6 @@ const updateHistory = () => {
 
 //Callback when user clicks back button
 window.onpopstate = () => {
-    //history.back();
     //get current url, parse it, and load correct guild & channel
     selectedGuildId = getIdFromURL("guild");
     selectedChannelId = getIdFromURL("channel");
@@ -119,7 +147,7 @@ window.onpopstate = () => {
 
 
 //get init channel list if guild is selected
-if(selectedGuildId) updateChannelList();
+if(selectedGuildId) changeGuild(selectedGuildId, true);
 
 
 //Make 3 dots icon
@@ -144,6 +172,8 @@ const addGuild = guild => {
     guildDiv.dataset.guildId = guild.guild_id;
     guildDiv.dataset.guildName = guild.name;
     setupTooltip(guildDiv, guildDiv.dataset.guildName);
+    guild.addEventListener("click", () => {changeGuild(guild.guild_id, true)});
+
 
     let imgContainer = document.createElement("div");
     imgContainer.classList.add("img-circle");
@@ -182,7 +212,8 @@ const setupTooltip = (guildDiv, message) => {
 //setup tool tip for all guilds that were rendered server side
 [...document.getElementById("guildCollection").children].forEach(guild => {
     setupTooltip(guild, guild.dataset.guildName);
-})
+    guild.addEventListener("click", () => {changeGuild(guild.dataset.guildId, true)});
+});
 
 setupTooltip(document.getElementById("createGuildBtn"), "Add Guild");
 

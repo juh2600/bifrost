@@ -29,7 +29,19 @@ const db = require('./db/dal');
 logger.info('Instantiated globals.');
 
 logger.info('Configuring routes...');
-let routeFiles = ['frontend', 'api/v0/guilds', 'api/v0/text-channels', 'api/v0/messages', 'api/v0/users', 'api/v0/icons']; //, 'api'];
+let routeFiles = [
+'frontend'
+	, 'api/v0/guilds'
+	, 'api/v0/text-channels'
+	, 'api/v0/messages'
+	, 'api/v0/users'
+	, 'api/v0/icons'
+	, 'api/v1/guilds'
+	, 'api/v1/text-channels'
+	, 'api/v1/messages'
+	, 'api/v1/users'
+	, 'api/v1/icons'
+];
 const routeManager = require('./routes/manager');
 routeFiles.forEach((file) => {
 	logger.info(`Adding ${file} routes...`);

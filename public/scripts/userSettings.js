@@ -99,3 +99,7 @@ const validateForm = () => {
     return false;
   }
 };
+
+const logout = () => {
+  location.replace("http://localhost:3000/logout");
+};

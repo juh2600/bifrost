@@ -30,10 +30,9 @@ app.use(
     secret: "top-secret",
     resave: false,
     saveUninitialized: true,
-    //cookie: { secure: true },
   })
 );
-//////////
+///////////
 
 logger.info("Configured Express.");
 
@@ -63,4 +62,16 @@ routeFiles.forEach((file) => {
 logger.info("Configured routes.");
 
 logger.info(`Listening on port ${process.env.PORT}`);
-app.listen(process.env.PORT);
+
+////////// socket.io
+const socketio = require("socket.io");
+const server = require("http").createServer(app);
+const io = socketio(server);
+
+io.on("connection", (socket) => {
+  console.log("Socket connected: ");
+
+  socket.emit("message", "Client-Side Connected!");
+});
+///////////
+server.listen(process.env.PORT);

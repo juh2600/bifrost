@@ -1,4 +1,5 @@
 const logger = require("logger").get("frontend");
+//const socket = io();
 
 const dal = {
   getGuilds: async () => {
@@ -67,53 +68,111 @@ const dal = {
   },
 };
 
+const usersArray = [];
+
 const index = (req, res) => {
-  res.render("index", {
-    // key: value
-  });
+  if (req.session.username) {
+    res.redirect("/app");
+  } else {
+    res.render("index", {
+      // key: value
+    });
+  }
+  console.log(usersArray);
 };
 
 const app = (req, res) => {
-  dal.getGuilds().then((dalGuildList) => {
-    res.render("app", {
-      guildList: dalGuildList,
+  if (req.session.username) {
+    dal.getGuilds().then((dalGuildList) => {
+      res.render("app", {
+        guildList: dalGuildList,
+      });
     });
-  });
+  } else {
+    res.redirect("/");
+  }
+  console.log(JSON.stringify(req.session));
 };
 
 const signUp = (req, res) => {
-  req.session.destroy();
-  res.render("signUp", {
-    // key: value
-  });
-  console.log(JSON.stringify(req.session));
+  if (req.session.username) {
+    res.redirect("/app");
+  } else {
+    res.render("signUp", {
+      // key: value
+    });
+  }
 };
 
 const logIn = (req, res) => {
-  req.session.user = "Cody";
-  res.render("logIn", {
-    // key: value
-  });
-  console.log(JSON.stringify(req.session));
+  if (req.session.username) {
+    res.redirect("/app");
+  } else {
+    res.render("logIn", {
+      // key: value
+    });
+  }
 };
 
 const createGuild = (req, res) => {
-  res.render("createGuild", {
-    // key: value
-  });
+  if (req.session.username) {
+    res.render("createGuild", {
+      // key: value
+    });
+  } else {
+    res.redirect("/");
+  }
 };
 const guildSettings = (req, res) => {
-  res.render("guildSettings", {
-    // key: value
-  });
+  if (req.session.username) {
+    res.render("guildSettings", {
+      // key: value
+    });
+  } else {
+    res.redirect("/");
+  }
 };
 const userSettings = (req, res) => {
-  res.render("userSettings", {
-    // key: value
+  if (req.session.username) {
+    res.render("userSettings", {
+      // key: value
+    });
+  } else {
+    res.redirect("/");
+  }
+};
+
+//////////
+const createUser = (req, res) => {
+  const user = {
+    username: req.body.username,
+    email: req.body.email,
+    password: req.body.password,
+    newUserIcon: req.body.newUserIcon,
+  };
+  usersArray.push(user);
+  res.redirect("/");
+};
+
+const authorize = (req, res) => {
+  usersArray.forEach((item, index) => {
+    if (item.email === req.body.email && item.password === req.body.password) {
+      req.session.username = item.username;
+      res.redirect("/app");
+    } else {
+      res.redirect("/login");
+    }
   });
 };
 
-const createUser = (req, res) => {};
+const logout = (req, res) => {
+  console.log(JSON.stringify(req.session));
+  req.session.destroy();
+  res.redirect("/");
+  console.log(JSON.stringify(req.session));
+};
+
+//////////
 
 const routes = [
   {
@@ -132,9 +191,24 @@ const routes = [
     handler: signUp,
   },
   {
+    uri: "/signUpComplete",
+    methods: ["post"],
+    handler: createUser,
+  },
+  {
     uri: "/logIn",
     methods: ["get"],
     handler: logIn,
+  },
+  {
+    uri: "/authorize",
+    methods: ["post"],
+    handler: authorize,
+  },
+  {
+    uri: "/logout",
+    methods: ["get"],
+    handler: logout,
   },
   {
     uri: "/guilds/create",

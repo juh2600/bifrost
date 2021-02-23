@@ -282,6 +282,19 @@ const schemas = {
 		}
 		, [ // validators
 		])
+	, icons: new Schema('icons'
+		, ['icon_id'] // keys
+		, ['icon_id'] // requireds
+		, [] // nullables
+		, ['icon_id'] // immutables
+		, ['icon_id'] // automatics
+		, [] // update keys
+		, { // type samples
+			'icon_id': new Long()
+		}
+		, [ // validators
+			(obj, isUpdate) => { return isUpdate ? ['An attempt was made to update an icon, but this operation is not permitted'] : []; }
+		])
 };
 
 // adds things like 'guild_id < ?' to the list of constraints supplied

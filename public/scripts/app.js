@@ -2,6 +2,8 @@ let selectedGuildId;
 let selectedChannelId;
 
 let channelList;
+let messagesList = [];
+let usersList = [];
 
 //Get current guild and channel ids out of the URL if they are present
 const getIdFromURL = (typeOfID) => {
@@ -59,7 +61,6 @@ const createChannelList = (channelList, addToHistory) => {
 
 //Get messages for new channel, change selected channel styles
 const changeChannel = (newChannelId, addToHistory) => {
-    console.log("ff");
     let newChannelExists = false;
     let newChannelName;
     //Search list for new channel
@@ -86,17 +87,98 @@ const changeChannel = (newChannelId, addToHistory) => {
         if(addToHistory) updateHistory();
 
         //Repopulate messages
-        populateMessages();
+        getMessages();
     }
     return newChannelExists;
 }
 
 
 //TODO: Request messages for new channel
-const populateMessages = () => {
-
+const getMessages = () => {
+    fetch(`/api/v0/guilds/${selectedGuildId}/text-channels/${selectedChannelId}/messages`)
+    .then(response => response.json())
+    .then(data => {
+        messagesList = data;
+        clearMessagesArea();
+        populateMessages();
+    });
 }
 
+const clearMessagesArea = () => {
+    document.getElementById("chatArea").innerHTML = "";
+}
+
+//Create message div for each message and append to screen
+const populateMessages = () => {
+    messagesList.forEach(message => {
+        addMessage(message);
+    });
+}
+
+const addMessage = message => {
+    let div = document.createElement("div");
+        div.classList.add("message");
+        div.dataset.messageId = message.message_id;
+
+        let imgContainer = document.createElement("div");
+        imgContainer.classList.add("img-circle");
+
+        let image = document.createElement("img");
+
+        let user = getUserById(message.author);
+        console.log(message.author);
+        console.log(user);
+        image.src = "/api/v0/icons/" + user.icon_id;
+        image.classList.add("img");
+        imgContainer.appendChild(image);
+
+
+        let messageSection = document.createElement("div");
+        messageSection.classList.add("message-section");
+
+        let titleBar = document.createElement("div");
+        titleBar.classList.add("title-bar");
+
+        let userName = document.createElement("p");
+        userName.classList.add("username");
+        userName.innerHTML = user.name;
+
+        let timestamp = document.createElement("span");
+        timestamp.classList.add("timestamp");
+        //TODO: FIX LATER
+        timestamp.innerHTML = "timestamp";
+
+        titleBar.appendChild(userName);
+        titleBar.appendChild(timestamp);
+
+
+        let messageContent = document.createElement("p");
+        messageContent.classList.add("content");
+        messageContent.innerHTML = message.body;
+
+        messageSection.appendChild(titleBar);
+        messageSection.appendChild(messageContent);
+        
+
+        div.appendChild(imgContainer);
+        div.appendChild(messageSection);
+
+        document.getElementById("chatArea").appendChild(div);
+}
+
+
+const getUserById = userId => {
+    usersList.forEach(user => {
+        if(user.user_id == userId) return user;
+    });
+    return {
+        "user_id": "-1",
+        "name": "Deleted User",
+        "icon_id": "",
+        "email": "",
+        "discriminator": 1234
+    }
+}
 
 const changeGuild = (newGuildId, addToHistory) => {
     let newGuildExists = false;
@@ -144,9 +226,6 @@ window.onpopstate = () => {
     changeGuild(selectedGuildId, false);
 }
 
-
-//get init channel list if guild is selected
-if(selectedGuildId) changeGuild(selectedGuildId, true);
 
 
 //Make 3 dots icon
@@ -232,3 +311,13 @@ document.getElementById("currentUser").addEventListener("click", () => {
     window.location.href = `/users/${document.getElementById("currentUser").dataset.userId}/settings`;
 });
 
+
+//Get and store list of users
+fetch("/api/v0/users")
+.then(response => response.json())
+.then(data => {
+    console.log(data);
+    usersList = data;
+    //get init channel list if guild is selected
+    if(selectedGuildId) changeGuild(selectedGuildId, true);
+});

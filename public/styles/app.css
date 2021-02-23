@@ -91,11 +91,11 @@
     color:var(--color-text-1);
 }
 
-.guild-list::-webkit-scrollbar, .user-list::-webkit-scrollbar, .channel-list::-webkit-scrollbar {
+.guild-list::-webkit-scrollbar, .user-list::-webkit-scrollbar, .channel-list::-webkit-scrollbar, .chat-area::-webkit-scrollbar {
     display: none;
 }
 /* Hide scrollbar for IE, Edge and Firefox */
-.guild-list, .user-list, .channel-list {
+.guild-list, .user-list, .channel-list, .chat-area {
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
 }
@@ -113,8 +113,8 @@
     flex-wrap: nowrap;
 }
 .guild {
-    width:3.5em;
-    height:3.5em;
+    width:3.2em;
+    height:3.2em;
     cursor:pointer;
     margin-bottom: 0.5em;
     padding:0.25em;
@@ -199,9 +199,7 @@
 
 #guildName {
     margin:0 0.5em;
-    display:flex;
-    flex-direction: column;
-    justify-content: center;
+    align-self: center;
     width:100%;
     text-overflow: ellipsis;
     overflow:hidden;
@@ -310,13 +308,18 @@
     cursor:pointer;
     width:100%;
     box-sizing: border-box;
+    border-radius: 6px;
+    margin-bottom: 2px;
 
+}
+
+.channel:hover {
+    background-color: var(--color-bg-3);
 }
 
 .channel.selected {
     color:var(--color-text-2);
     background-color: var(--color-bg-3);
-    border-radius: 6px;
     
 }
 .channel > p {
@@ -347,4 +350,29 @@
     overflow: hidden;
     white-space: nowrap;
 
+}
+
+
+/*#############################
+          Messages
+###############################*/
+
+#chatArea {
+    overflow-x: hidden;
+}
+
+.message {
+    display:grid;
+    grid-template-columns: 3em 1fr;
+    margin:0.5em 0;
+}
+.message p {
+    margin:0;
+    box-sizing: border-box;
+}
+
+.message > .img-circle {
+    width:  2em;
+    height: 2em;
+    margin:0 auto;
 }

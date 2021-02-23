@@ -44,7 +44,7 @@ const getTextChannels = (req, res) => {
 const getTextChannel = (req, res) => {
 	db.getChannels({channel_id: req.params.channel_id})
 		.then(channels => {
-			if (!channels.length) res.status(404).send();
+			if (!channels.length) res.sendStatus(404);
 			else res.json(channels[0]);
 		})
 		.catch(handle(500, req, res));

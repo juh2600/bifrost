@@ -44,7 +44,7 @@ const getGuilds = (req, res) => {
 const getGuild = (req, res) => {
 	db.getGuilds({guild_id: req.params.guild_id})
 		.then(guilds => {
-			if (!guilds.length) res.status(404).send();
+			if (!guilds.length) res.sendStatus(404);
 			else res.json(guilds[0]);
 		})
 		.catch(handle(500, req, res));

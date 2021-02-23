@@ -44,7 +44,7 @@ const getUsers = (req, res) => {
 const getUser = (req, res) => {
 	db.getUsers({user_id: req.params.user_id})
 		.then(users => {
-			if (!users.length) res.status(404).send();
+			if (!users.length) res.sendStatus(404);
 			else res.json(guilds[0]);
 		})
 		.catch(handle(500, req, res));

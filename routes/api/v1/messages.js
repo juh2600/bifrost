@@ -44,7 +44,7 @@ const getMessages = (req, res) => {
 const getMessage = (req, res) => {
 	db.getMessages({message_id: req.params.message_id})
 		.then(message => {
-			if (!messages.length) res.status(404).send();
+			if (!messages.length) res.sendStatus(404);
 			else res.json(messages[0]);
 		})
 		.catch(handle(500, req, res));

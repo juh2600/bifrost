@@ -19,7 +19,7 @@
                          "guild-list  guild-name    channel-name  profile-area"
                          "guild-list  channel-list  chat-area     user-list"
                          "guild-list  channel-list  message-area  user-list";
-    grid-template-columns: 5.5em 14em 1fr 14em;
+    grid-template-columns: 5em 14em 1fr 14em;
     grid-template-rows: 2em 3em 1fr 3em;
     font-family: "Rubik", sans-serif;
     height:100%;

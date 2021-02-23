@@ -22,7 +22,7 @@ selectedGuildId = getIdFromURL("guild");
 selectedChannelId = getIdFromURL("channel");
 
 
-const updateChannelList = () => {
+const updateChannelList = (addToHistory) => {
     clearChannelList();
     fetch(`/api/v0/guilds/${selectedGuildId}/text-channels`)
     .then(response => response.json())
@@ -30,13 +30,13 @@ const updateChannelList = () => {
         channelList = data;
         //sort by position
         channelList.sort((a, b) => (a.position > b.position) ? 1 : -1);
-        createChannelList(data);
+        createChannelList(data, addToHistory);
     });
 }
 const clearChannelList = () => {
     document.getElementById("channelList").innerHTML = "";   
 }
-const createChannelList = (channelList) => {
+const createChannelList = (channelList, addToHistory) => {
     //create divs and append to container
     channelList.forEach(channel => {
         let div = document.createElement("div");
@@ -51,14 +51,15 @@ const createChannelList = (channelList) => {
 
     //show selected channel. if channel is invalid or unspecified,show first channel in list
     if(selectedChannelId) {
-        if(!changeChannel(selectedChannelId, true)) changeChannel(channelList[0].channel_id, true);
+        if(!changeChannel(selectedChannelId, addToHistory)) changeChannel(channelList[0].channel_id, addToHistory);
     }
-    else changeChannel(channelList[0].channel_id, true);
+    else changeChannel(channelList[0].channel_id, addToHistory);
 }
 
 
 //Get messages for new channel, change selected channel styles
 const changeChannel = (newChannelId, addToHistory) => {
+    console.log("ff");
     let newChannelExists = false;
     let newChannelName;
     //Search list for new channel
@@ -122,8 +123,7 @@ const changeGuild = (newGuildId, addToHistory) => {
         selectedGuildId = newGuildId;
         //Update url and history
         //if(addToHistory) updateHistory();
-
-        updateChannelList();
+        updateChannelList(addToHistory);
     }
     else {
         //TODO: Show no channel selected page
@@ -142,7 +142,6 @@ window.onpopstate = () => {
     selectedGuildId = getIdFromURL("guild");
     selectedChannelId = getIdFromURL("channel");
     changeGuild(selectedGuildId, false);
-    changeChannel(selectedChannelId, false);
 }
 
 

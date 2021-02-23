@@ -159,10 +159,9 @@ const authorize = (req, res) => {
     if (item.email === req.body.email && item.password === req.body.password) {
       req.session.username = item.username;
       res.redirect("/app");
-    } else {
-      res.redirect("/login");
     }
   });
+  res.redirect("/login");
 };
 
 const logout = (req, res) => {

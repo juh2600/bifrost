@@ -25,7 +25,7 @@ const createGuild = (req, res) => {
 			.then(guild => {
 				res
 					.status(201)
-					.location('/guilds/' + guild.guild_id)
+					.location(`/guilds/${guild.guild_id}`)
 					.json(guild);
 			})
 			.catch(handle(500, req, res));
@@ -60,7 +60,6 @@ const updateGuild = (req, res) => {
 			res.status(204).end();
 		})
 		.catch(handle(400, req, res));
-	//res.json(Object.assign({guild_id: req.params.guild_id, name: "Your Ad Here", icon_id: "811417505498361856"}, req.body));
 };
 
 const deleteGuild = (req, res) => {
@@ -69,7 +68,7 @@ const deleteGuild = (req, res) => {
 			res.statusMessage = 'Deleted';
 			res.status(204).end();
 		})
-	.catch(handle(500, req, res));
+		.catch(handle(500, req, res));
 };
 
 const expect = (obj, names, errors) => {

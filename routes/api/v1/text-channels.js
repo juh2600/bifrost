@@ -81,27 +81,27 @@ const expect = (obj, names, errors) => {
 
 const routes = [
 	{
-		uri: '/api/v0/guilds/:guild_id/text-channels',
+		uri: '/api/v1/guilds/:guild_id/text-channels',
 		methods: ['post'],
 		handler: createTextChannel
 	}
 	, {
-		uri: '/api/v0/guilds/:guild_id/text-channels',
+		uri: '/api/v1/guilds/:guild_id/text-channels',
 		methods: ['get'],
 		handler: getTextChannels
 	}
 	, {
-		uri: '/api/v0/guilds/:guild_id/text-channels/:channel_id',
+		uri: '/api/v1/guilds/:guild_id/text-channels/:channel_id',
 		methods: ['get'],
 		handler: getTextChannel
 	}
 	, {
-		uri: '/api/v0/guilds/:guild_id/text-channels/:channel_id',
+		uri: '/api/v1/guilds/:guild_id/text-channels/:channel_id',
 		methods: ['put'],
 		handler: updateTextChannel
 	}
 	, {
-		uri: '/api/v0/guilds/:guild_id/text-channels/:channel_id',
+		uri: '/api/v1/guilds/:guild_id/text-channels/:channel_id',
 		methods: ['delete'],
 		handler: deleteTextChannel
 	}

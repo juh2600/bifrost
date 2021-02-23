@@ -29,7 +29,7 @@ const db = require('./db/dal');
 logger.info('Instantiated globals.');
 
 logger.info('Configuring routes...');
-let routeFiles = ['frontend', 'api/v0/guilds', 'api/v0/text-channels', 'api/v0/messages', 'api/v0/users', 'api/v0/icons']; //, 'api'];
+let routeFiles = ['frontend']; //, 'api'];
 const routeManager = require('./routes/manager');
 routeFiles.forEach((file) => {
 	logger.info(`Adding ${file} routes...`);
@@ -37,7 +37,6 @@ routeFiles.forEach((file) => {
 	if(component.configure) component.configure({
 		// pass stuff to routing files here
 		// dependency injection :tm:
-		db
 	});
 	routeManager.apply(app, component);
 	logger.info(`Added ${file} routes.`);
@@ -47,3 +46,7 @@ logger.info('Configured routes.');
 
 logger.info(`Listening on port ${process.env.PORT}`);
 app.listen(process.env.PORT);
+
+module.exports = {
+	db, app
+};

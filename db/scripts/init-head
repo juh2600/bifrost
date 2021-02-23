@@ -1,0 +1,2 @@
+#!/bin/sh
+docker run --name scylla-head --hostname scylla-head -p 9042:9042 --memory=2G --volume /var/lib/scylla:/var/lib/scylla -d scylladb/scylla --smp 2

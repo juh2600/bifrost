@@ -9,6 +9,12 @@ const epoch = 1420070400000; // ms between 1970 and 2015
 const bucket_size = 1000 * 60 * 60 * 24 * 10; // ms per ten days
 const snowmachine = new (require('snowflake-generator'))(epoch);
 // represents the Discord Epoch, in 2015 or something
+const discriminator_cap = 10000; // permit #0000 to #9999
+
+const hasher = require('argon2');
+const hash_options = {
+	type: hasher.argon2id
+};
 
 const getBucket = (timestamp, errors = []) => {
 	timestamp = coerceToLong(timestamp, errors);
@@ -17,6 +23,8 @@ const getBucket = (timestamp, errors = []) => {
 
 // cassandra-driver:
 // https://docs.datastax.com/en/developer/nodejs-driver/4.6/api/class.Client/
+
+// TODO: enforce foreign key constraints
 
 class Schema {
 	constructor(name, keys = [], requireds = [], nullables = [], immutables = [], automatics = [], update_keys = [], typeSamples = {}, validators = [], permitNulls = false) {
@@ -254,8 +262,25 @@ const schemas = {
 			, 'channel_id': new Long()
 			, 'name': ''
 		}
-		, [
+		, [ // validators
 			(record, isUpdate) => {return ((isUpdate && record.name === undefined) || (/^[a-z-]{1,64}$/.test(record.name) && /^[a-z]/.test(record.name) && /[a-z]$/.test(record.name) && !(/--/.test(record.name))))? [] : [`Channel name must be composed only of lowercase a-z and hyphens, with no more than one consecutive hyphen, starting and ending with a letter, but ${record.name} was supplied`]}
+		])
+	, users: new Schema('users'
+		, ['user_id', 'name', 'discriminator', 'password', 'email', 'icon_id'] // keys
+		, ['user_id'] // requireds
+		, [] // nullables
+		, ['user_id'] // immutables
+		, ['user_id', 'discriminator'] // automatics
+		, ['user_id'] // update keys
+		, { // type samples
+			'user_id': new Long()
+			, 'name': ''
+			, 'discriminator': 0
+			, 'password': ''
+			, 'email': ''
+			, 'icon_id': new Long()
+		}
+		, [ // validators
 		])
 };
 
@@ -484,6 +509,7 @@ const createChannel = async (guild_snowflake, name, position = -1) => {
 		.then(() => convertTypesForDistribution(record));
 };
 
+// TODO consider removing before and after; they're kinda useless, innit?
 // returns list of channel descriptions, or throws
 const getChannels = async (guild_snowflake, options = {
 	before: undefined
@@ -810,9 +836,176 @@ const deleteMessage = async (channel_snowflake, message_snowflake) => {
 	})).then(() => {});
 };
 
+/*************************************************************************
+ * users
+ */
+// returns description of user, or throws
+const createUser = async (name, email, password, icon_snowflake) => {
+	const errors = [];
+	if (name === undefined || name === null)
+		errors.push(`A name must be passed, but ${name} was supplied`);
+	if (email === undefined || email === null)
+		errors.push(`A email must be passed, but ${email} was supplied`);
+	if (password === undefined || password === null)
+		errors.push(`A password must be passed, but ${password} was supplied`);
+	if (icon_snowflake === undefined || icon_snowflake === null)
+		errors.push(`An icon snowflake must be passed, but ${icon_snowflake} was supplied`);
+	else icon_snowflake = coerceToLong(icon_snowflake, errors);
+	if (errors.length) {
+		throw errors;
+	}
+
+	// TODO validate email using Schema::validators
+	// TODO ^ Consider secondary index on emails to allow filtering by equality/fast check whether email is taken
+	const used_discrims = await getUsers({name}).then(users => users.map(user => user.discriminator));
+	if (used_discrims.length >= discriminator_cap)
+		throw [`Too many users already have the name ${name}; please choose another name`];
+	let discriminator = Math.round(Math.random()*10000);
+	do {
+		discriminator += 1;
+		discriminator %= 10000;
+	} while (used_discrims.includes(discriminator));
+
+	// FIXME what errors can this throw? how should we handle them?
+	return hasher.hash(password, hash_options)
+		.catch(e => {
+			logger.error(e);
+			throw ['An error occurred in the process of hashing the supplied password. Please report this error to the developers, along with this number: ' + snowmachine.generate().snowflake];
+		}) // use the number as a timestamp to find out when the thing happened. not very useful since none of the information is timestamped... TODO add timestamps to logger
+		.then(hash => {
+
+			const record = {
+				user_id: coerceToLong(snowmachine.generate().snowflake)
+				, discriminator
+				, name
+				, email
+				, password: hash
+				, icon_id: icon_snowflake
+			};
+
+			return db.execute(...schemas.users.getInsertStmt(record))
+				.then(() => convertTypesForDistribution(record))
+			;
+		});
+};
+
+// returns list of user descriptions, or throws
+const getUsers = async (options = {
+	user_id: undefined
+	, limit: undefined
+}) => {
+	const keys = Object.keys(options);
+	const constraints = [];
+	let limit = '';
+	const params = [];
+	const errors = [];
+
+	// catch passing other junk as the options
+	if (options === null || options.constructor.name !== 'Object') 
+		errors.push(`An optional object containing filtering keys was expected, but ${options} was supplied`);
+
+	addSnowflakeConstraint('user_id', 'user_id =', options, constraints, params, errors);
+	limit = generateResultLimit(options.limit, params, errors);
+
+	if (errors.length) {
+		throw errors;
+	}
+
+	let opt_string = '';
+	if (constraints.length) opt_string = 'WHERE ';
+	opt_string += constraints.join(' AND ');
+	opt_string += limit;
+
+	// FIXME don't leak hashes! ever! what does that mean? dunno. make up your mind
+	return db.execute(...schemas.users.getSelectStmt(opt_string, params))
+		.then(res => res.rows)
+		.then(rows => rows.map(convertTypesForDistribution))
+	;
+};
+
+// returns or throws
+// FIXME require the user to supply their password, at least if they're changing their password. could just require for any change
+// FIXME automatically change discriminator if necessary
+const updateUser = async (user_snowflake, changes) => {
+	const errors = [];
+
+	if (user_snowflake === undefined || user_snowflake === null)
+		errors.push(`A user snowflake must be passed, but ${user_snowflake} was supplied`);
+	else user_snowflake = coerceToLong(user_snowflake, errors);
+	if (changes === undefined || changes === null || changes.constructor.name !== 'Object' || Object.keys(changes).length < 1)
+		errors.push(`An object describing changes to be made must be passed, but ${changes} was supplied`);
+	if (changes && changes.icon_id !== undefined)
+		changes.icon_id = coerceToLong(changes.icon_id, errors);
+
+	if (errors.length) {
+		throw errors;
+	}
+
+	return getUsers({user_id: user_snowflake})
+		.then(rows => rows.length > 0)
+		.then(recordExists => {
+			if (recordExists)
+				return db.execute(...schemas.users.getUpdateStmt(Object.assign({}, {user_id: user_snowflake}, changes)))
+					.then(() => {})
+			;
+			else
+				throw [`Only existing users may be updated, but no user with id ${user_snowflake} was found`];
+		});
+};
+
+// returns or throws
+const deleteUser = async (user_snowflake) => {
+	const errors = [];
+	if (user_snowflake === undefined || user_snowflake === null)
+		errors.push(`A user snowflake must be passed, but ${user_snowflake} was supplied`);
+	else user_snowflake = coerceToLong(user_snowflake, errors);
+	if (errors.length) {
+		throw errors;
+	}
+
+	return db.execute(...schemas.users.getDeleteStmt({
+		user_id: user_snowflake
+	})).then(() => {});
+};
+
+/*************************************************************************
+ * icons
+ */
+// returns description of user, or throws
+const createIcon = async () => {
+	const errors = [];
+	if (errors.length) {
+		throw errors;
+	}
+
+	const record = {
+		icon_id: coerceToLong(snowmachine.generate().snowflake)
+	};
+
+	return db.execute(...schemas.users.getInsertStmt(record))
+		.then(() => convertTypesForDistribution(record))
+	;
+};
+
+// TODO add userExists, guildExists, etc.
+// returns list of user descriptions, or throws
+const iconExists = async (icon_id) => {
+	const errors = [];
+	icon_id = coerceToLong(icon_id, errors);
+
+	if (errors.length) {
+		throw errors;
+	}
+
+	return db.execute('SELECT * FROM icons WHERE icon_id = ?', [icon_id], { prepare: true })
+		.then(res => res.rows.length > 0)
+	;
+};
 module.exports = {
 	Schema, schemas
 	, createGuild, getGuilds, updateGuild, deleteGuild
 	, createChannel, getChannels, updateChannel, deleteChannel
 	, createMessage, getMessages, updateMessage, deleteMessage
+	, createUser, getUsers, updateUser, deleteUser
+	, createIcon, iconExists
 };

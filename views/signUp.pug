@@ -14,7 +14,7 @@ block content
                     img#profileImg.img(src="https://www.gravatar.com/avatar/" + Math.floor(Math.random() * 15 + 1) + "?s=200&d=retro")
                 button#removeImageBtn(type="button").link remove
             section.form-area
-                form(onsubmit="return validateForm()" method="post" action="/signUpComplete")
+                form#signupForm(onsubmit="return validateForm()" method="post" action="/signUpComplete")
                     .form-block
                         label.input-label Username
                         input#usernameInput.input-field(type="text", name="username")

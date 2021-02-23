@@ -18,7 +18,7 @@ const createMessage = (req, res) => {
 
 const getMessages = (req, res) => {
 	res.json([
-		  {"channel_id": req.params.channel_id, "message_id": "811434223427874816", "author": "811435623419441152", "body": "Sam Ramaham's Auto Zone and Stripper Dome is closed now"}
+		  {"channel_id": req.params.channel_id, "message_id": "811434223427874816", "author": "811410903487692800", "body": "Sam Ramaham's Auto Zone and Stripper Dome is closed now"}
 		, {"channel_id": req.params.channel_id, "message_id": "811434225793462272", "author": "811435623423635456", "body": "Albania is a cool place"}
 		, {"channel_id": req.params.channel_id, "message_id": "811434227521515520", "author": "811435623427829760", "body": "Comfort Zone 130 :sunglasses:"}
 		, {"channel_id": req.params.channel_id, "message_id": "811434229165682688", "author": "811435623427829761", "body": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaauuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu"}

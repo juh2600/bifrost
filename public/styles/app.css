@@ -1,16 +1,31 @@
+/*#############################
+        Color Variables
+###############################*/
+:root {
+    --color-text-1: #fff;
+    --color-text-2: #eee;
+    --color-text-3: #999;
+  }
+
+
+
+/*#############################
+            Main
+###############################*/
+
 .main {
     display:grid;
     grid-template-areas: "bar-area    bar-area      bar-area      profile-area"
                          "guild-list  guild-name    channel-name  profile-area"
                          "guild-list  channel-list  chat-area     user-list"
                          "guild-list  channel-list  message-area  user-list";
-    grid-template-columns: 5.5em 14em 1fr 14em;
+    grid-template-columns: 5em 14em 1fr 14em;
     grid-template-rows: 2em 3em 1fr 3em;
     font-family: "Rubik", sans-serif;
     height:100%;
     width:100%;
     box-sizing: border-box;
-    color:white;
+    color:var(--color-text-2);
 }
 
 
@@ -31,15 +46,6 @@
     background-color: var(--color-bg-1);
     overflow-x: hidden;
 }
-.guild-list::-webkit-scrollbar {
-    display: none;
-}
-/* Hide scrollbar for IE, Edge and Firefox */
-.guild-list {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-}
-
 .guild-name {
     grid-area: guild-name;
     background-color: var(--color-bg-2);
@@ -82,8 +88,18 @@
     width:90%;
     margin:0 auto;
     background-color: var(--color-bg-4);
-    color:white;
+    color:var(--color-text-1);
 }
+
+.guild-list::-webkit-scrollbar, .user-list::-webkit-scrollbar, .channel-list::-webkit-scrollbar, .chat-area::-webkit-scrollbar {
+    display: none;
+}
+/* Hide scrollbar for IE, Edge and Firefox */
+.guild-list, .user-list, .channel-list, .chat-area {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
 
 /*#############################
           Guild List
@@ -97,8 +113,8 @@
     flex-wrap: nowrap;
 }
 .guild {
-    width:55px;
-    height:55px;
+    width:3.2em;
+    height:3.2em;
     cursor:pointer;
     margin-bottom: 0.5em;
     padding:0.25em;
@@ -142,7 +158,7 @@
 }
 
 #createGuildBtn:hover > div {
-    color:#fff;
+    color:var(--color-text-1);
     background-color: var(--color-success);
 }
 
@@ -150,7 +166,7 @@
 #tooltip {
     display: block;
     position: fixed;
-    color: #fff;
+    color: var(--color-text-2);
     background: var(--color-bg-1);
     text-align: center;
     padding:0.5em 0.65em;
@@ -174,6 +190,22 @@
 /*#############################
           Guild Name
 ###############################*/
+.guild-name {
+    width:100%;
+    overflow:hidden;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
+}
+
+#guildName {
+    margin:0 0.5em;
+    align-self: center;
+    width:100%;
+    text-overflow: ellipsis;
+    overflow:hidden;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
 
 #guildSettingsBtn {
     cursor:pointer;
@@ -188,8 +220,159 @@
     box-sizing: border-box;
 }
 .three-dots > div {
-    background-color: #fff;
+    background-color: var(--color-text-3);
     width:4px;
     height:4px;
     border-radius: 100%;
+}
+
+/*#############################
+        Profile Section
+###############################*/
+
+.profile-area {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding:1.5em 0.5em 0.5em 0.5em;
+}
+.profile-area > .user {
+    cursor: pointer;
+}
+.profile-area > .user .name-container .name {
+    color:var(--color-text-1);
+}
+
+
+/*#############################
+          User List
+###############################*/
+
+.user-list {
+    padding:0.5em;
+    overflow-x: hidden;
+}
+.user {
+    width:100%;
+    display:flex;
+    padding:0.5em;
+    align-items: center;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    flex-wrap: nowrap;
+    font-size: 0.9em;
+
+}
+.user .name-container {
+    text-overflow:ellipsis;
+    width:75%;
+
+}
+.user .name-container p {
+    overflow:hidden;
+    text-overflow:ellipsis;
+    margin:0;
+}
+.user .name-container .name {
+    color:var(--color-text-2);
+}
+.user .name-container .discriminator {
+    color:var(--color-text-3);
+    
+}
+.user .icon {
+    width:40px;
+    height:40px;
+    margin-right: 0.5em;
+}
+
+
+
+/*#############################
+          Channel List
+###############################*/
+#channelList {
+    padding:0.5em;
+}
+.channel-list > p {
+    padding: 0 1em;
+    margin-bottom:0;
+    color:var(--color-text-3);
+}
+
+.channel {
+    color:var(--color-text-3);
+    padding:0.5em;
+    cursor:pointer;
+    width:100%;
+    box-sizing: border-box;
+    border-radius: 6px;
+    margin-bottom: 2px;
+
+}
+
+.channel:hover {
+    background-color: var(--color-bg-3);
+}
+
+.channel.selected {
+    color:var(--color-text-2);
+    background-color: var(--color-bg-3);
+    
+}
+.channel > p {
+    text-overflow:ellipsis;
+    overflow: hidden;
+    margin:0;
+    white-space: nowrap;
+
+}
+
+/*#############################
+          Channel Name
+###############################*/
+.channel-name {
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 100%;
+    overflow: hidden;
+
+}
+#channelName {
+    margin:0;
+    margin-left:0.5em;
+    box-sizing: border-box;
+    text-overflow:ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+
+}
+
+
+/*#############################
+          Messages
+###############################*/
+
+#chatArea {
+    overflow-x: hidden;
+}
+
+.message {
+    display:grid;
+    grid-template-columns: 3em 1fr;
+    margin:0.5em 0;
+}
+.message p {
+    margin:0;
+    box-sizing: border-box;
+}
+
+.message > .img-circle {
+    width:  2em;
+    height: 2em;
+    margin:0 auto;
 }

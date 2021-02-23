@@ -47,6 +47,7 @@ let routeFiles = [
   "api/v0/text-channels",
   "api/v0/messages",
   "api/v0/users",
+  "api/v0/icons",
 ]; //, 'api'];
 const routeManager = require("./routes/manager");
 routeFiles.forEach((file) => {

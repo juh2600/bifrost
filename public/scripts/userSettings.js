@@ -1,4 +1,6 @@
 let imageURL = document.getElementById("userImage").src;
+let imageHasBeenChanged = false;
+let user_id = document.getElementById("userIdField").value;
 
 document.getElementById("emailInput").addEventListener("input", () => {
   validateEmail();
@@ -49,6 +51,7 @@ const updateDefaultImage = () => {
 
 document.getElementById("iconInput").addEventListener("input", () => {
   validateIcon();
+  imageHasBeenChanged = true;
   document.getElementById("iconInput").value = "";
 });
 
@@ -56,7 +59,7 @@ const validateIcon = () => {
   let input = document.getElementById("iconInput").value;
   console.log(input);
   let iconRegex = /\.(jpg|png|jpeg|svg|jfif|pjpeg|pjp)$/i;
-  isValid = iconRegex.test(input);
+  isValid = iconRegex.test(input) || input == "";
   let iconErrorMsg = document.getElementById("iconErrorMsg");
   isValid
     ? iconErrorMsg.classList.add("hidden")
@@ -102,4 +105,44 @@ const validateForm = () => {
 
 const logout = () => {
   location.replace("http://localhost:3000/logout");
+};
+
+//Intercept the form submit and post from here instead
+document
+  .getElementById("updateUserForm")
+  .addEventListener("submit", (event) => {
+    event.preventDefault();
+    //Post image and get icon_id
+    //TODO: Fix below: Dont know how to post image
+    if (imageHasBeenChanged) {
+      fetch("/api/v0/icons", {
+        method: "post",
+        body: imageURL,
+      })
+        .then((response) => response.json())
+        .then(updateUser)
+        .then((response) => response.json())
+        .then((data) => {
+          window.location.href = "/app";
+        });
+    } else {
+      updateGuild({})
+        .then((response) => response.json())
+        .then((data) => {
+          window.location.href = "/app";
+        });
+    }
+  });
+
+const updateUser = async (data) => {
+  let formData = {
+    name: document.getElementById("usernameInput").value,
+    email: document.getElementById("emailInput").value,
+  };
+  if (data.icon_id) formData.icon_id = data.icon_id;
+
+  return fetch(`/api/v0/users/${user_id}`, {
+    method: "put",
+    body: JSON.stringify(formData),
+  });
 };

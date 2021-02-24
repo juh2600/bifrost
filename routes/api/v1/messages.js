@@ -4,7 +4,6 @@ const snowmachine = new (require('snowflake-generator'))(1420070400000);
 let db;
 const configure = (obj) => {
 	db = obj['db'];
-	console.log(obj, db);
 };
 
 const handle = (code, req, res) => {

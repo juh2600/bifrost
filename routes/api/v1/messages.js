@@ -35,14 +35,14 @@ const createMessage = (req, res) => {
 // TODO add limit
 // verify 400/500
 const getMessages = (req, res) => {
-	db.getMessages()
+	db.getMessages(req.params.channel_id)
 		.then(messages => res.json(guilds))
 		.catch(handle(500, req, res));
 };
 
 // verify 400/500
 const getMessage = (req, res) => {
-	db.getMessages({message_id: req.params.message_id})
+	db.getMessages(req.params.channel_id, {message_id: req.params.message_id})
 		.then(message => {
 			if (!messages.length) res.sendStatus(404);
 			else res.json(messages[0]);

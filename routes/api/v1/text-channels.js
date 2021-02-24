@@ -35,14 +35,14 @@ const createTextChannel = (req, res) => {
 // TODO add limit
 // verify 400/500
 const getTextChannels = (req, res) => {
-	db.getChannels()
+	db.getChannels(req.params.guild_id)
 		.then(channels => res.json(channels))
 		.catch(handle(500, req, res));
 };
 
 // verify 400/500
 const getTextChannel = (req, res) => {
-	db.getChannels({channel_id: req.params.channel_id})
+	db.getChannels(req.params.guild_id, {channel_id: req.params.channel_id})
 		.then(channels => {
 			if (!channels.length) res.sendStatus(404);
 			else res.json(channels[0]);

@@ -653,7 +653,7 @@ const clearChannels = async (guild_snowflake) => {
 		throw errors;
 	}
 
-	return db.execute('TRUNCATE TABLE channels_by_guild WHERE guild_id = ?', [guild_snowflake], { prepare: true }).then(() => {});
+	return db.execute('DELETE FROM channels_by_guild WHERE guild_id = ?', [guild_snowflake], { prepare: true }).then(() => {});
 };
 
 

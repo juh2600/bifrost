@@ -110,4 +110,4 @@ const routes = [
 ];
 
 
-module.exports = { logger, routes }
+module.exports = { logger, routes, configure }

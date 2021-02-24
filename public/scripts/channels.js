@@ -45,7 +45,7 @@ const initializePage = () => {
 
 
 const getData = () => {
-    fetch(`/api/${APIVERSION}/guilds/1/text-channels`)
+    fetch(`/api/${APIVERSION}/guilds/${guild_id}/text-channels`)
     .then(response => response.json())
     .then(data => {
         populateData(data);
@@ -105,16 +105,23 @@ const formatInputField = () => {
     let inputValue = document.getElementById("newChannelName").value;
     inputValue = inputValue.replaceAll(" ", "-");
     inputValue = inputValue.replaceAll("--", "-");
-    inputValue = inputValue.replaceAll(/[^a-z-]/g, "");
+    inputValue = inputValue.replaceAll(/[^a-z0-9-]/g, "");
     inputValue = inputValue.toLowerCase();
     document.getElementById("newChannelName").value = inputValue;
 }
 
 
 const updateChannels = () => {
+    channelList.forEach(channel => {
+        channel.position = parseInt(channel.position);
+    });
+
     return fetch(`/api/${APIVERSION}/guilds/${guild_id}/text-channels`, {
         method: "put",
-        body: JSON.stringify(channelList)
+        body: JSON.stringify(channelList),
+        headers: {
+            'Content-Type': 'application/json'
+        }
     });
 }
 

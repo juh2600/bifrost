@@ -48,9 +48,13 @@ const createGuild = (req, res) => {
   });
 };
 const guildSettings = (req, res) => {
-	res.render('guildSettings', {
-    guild_id: req.params.snowflake
-	});
+  db.getGuilds({"guild_id": req.params.snowflake}).then(dbGuild => {
+    if(dbGuild.length > 0){
+      res.render('guildSettings', {
+        guild: dbGuild[0]
+      });
+    }
+  });
 };
 const userSettings = (req, res) => {
 	res.render('userSettings', {

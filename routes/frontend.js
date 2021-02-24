@@ -3,7 +3,6 @@ const logger = require("logger").get("frontend");
 let db;
 const configure = (obj) => {
 	db = obj['db'];
-	console.log(obj, db);
 };
 
 const handle = (code, req, res) => {

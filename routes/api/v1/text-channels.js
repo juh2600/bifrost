@@ -70,8 +70,13 @@ const updateTextChannels = (req, res) => {
 	// soooooo, we'll just...delete all the channels and add them back! ;D
 	// FIXME use a batch! it's like transactions???
 	const errors = [];
-	if (req.body === undefined || req.body === null || req.body.constructor.name !== 'Array')
+	if (req.body === undefined || req.body === null)
 		errors.push(`An array of channel descriptions was expected, but ${req.body} was supplied`);
+	else if (req.body.constructor.name !== 'Array') {
+		console.error(' ==== BAD ==== ');
+		console.error(req.body);
+		errors.push(`An array of channel descriptions was expected, but ${JSON.stringify(req.body, null, '\t')} was supplied`);
+	}
 	if (errors.length) {
 		handle(400, req, res)(errors);
 		return;

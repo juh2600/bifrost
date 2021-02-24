@@ -251,7 +251,7 @@ const schemas = {
 		})
 	, channels_by_guild: new Schema('channels_by_guild'
 		, ['guild_id', 'position', 'channel_id', 'name'] // keys
-		, ['guild_id'] // requireds
+		, ['guild_id', 'channel_id'] // requireds // i just added channel_id, that might be wrong
 		, [] // nullables
 		, ['guild_id', 'channel_id'] // immutables
 		, ['channel_id'] // automatics
@@ -264,6 +264,22 @@ const schemas = {
 		}
 		, [ // validators
 			(record, isUpdate) => {return ((isUpdate && record.name === undefined) || (/^[a-z-]{1,64}$/.test(record.name) && /^[a-z]/.test(record.name) && /[a-z]$/.test(record.name) && !(/--/.test(record.name))))? [] : [`Channel name must be composed only of lowercase a-z and hyphens, with no more than one consecutive hyphen, starting and ending with a letter, but ${record.name} was supplied`]}
+		])
+	, messages_by_channel_bucket: new Schema('messages_by_channel_bucket'
+		, ['channel_id', 'bucket', 'message_id', 'author_id', 'body'] // keys
+		, ['channel_id', 'bucket', 'message_id'] // requireds
+		, [] // nullables
+		, ['channel_id', 'bucket', 'message_id', 'author_id'] // immutables
+		, ['channel_id', 'bucket', 'message_id'] // automatics
+		, ['channel_id', 'bucket', 'message_id'] // update keys
+		, { // type samples
+			'channel_id': new Long()
+			, 'bucket': 0
+			, 'message_id': new Long()
+			, 'author_id': new Long()
+			, 'body': ''
+		}
+		, [ // validators
 		])
 	, users: new Schema('users'
 		, ['user_id', 'name', 'discriminator', 'password', 'email', 'icon_id'] // keys

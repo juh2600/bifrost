@@ -8,6 +8,8 @@ const configure = (obj) => {
 
 const handle = (code, req, res) => {
 	return errors => {
+		console.error(' ==== BAD ==== ');
+		console.error(errors);
 		res
 			.status(code)
 			.json(errors)
@@ -34,8 +36,10 @@ const createMessage = (req, res) => {
 // TODO add limit
 // verify 400/500
 const getMessages = (req, res) => {
-	db.getMessages(req.params.channel_id)
-		.then(messages => res.json(guilds))
+	const query = req.query;
+	if (query.limit) query.limit -= 0;
+	db.getMessages(req.params.channel_id, req.query)
+		.then(messages => res.json(messages))
 		.catch(handle(500, req, res));
 };
 

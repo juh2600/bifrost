@@ -94,7 +94,7 @@ const changeChannel = (newChannelId, addToHistory) => {
 
 
 const getMessages = () => {
-    fetch(`/api/${APIVERSION}/guilds/${selectedGuildId}/text-channels/${selectedChannelId}/messages`)
+    fetch(`/api/${APIVERSION}/guilds/${selectedGuildId}/text-channels/${selectedChannelId}/messages?limit=32`)
     .then(response => response.json())
     .then(data => {
         messagesList = data;

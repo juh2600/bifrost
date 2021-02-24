@@ -124,10 +124,9 @@ const addMessage = message => {
 
         let image = document.createElement("img");
 
-        let user = getUserById(message.author);
-        console.log(message.author);
-        console.log(user);
-        image.src = "/api/v0/icons/" + user.icon_id;
+        let currUser = getUserById(message.author_id);
+        console.log(currUser);
+        image.src = "/api/v0/icons/" + currUser.icon_id;
         image.classList.add("img");
         imgContainer.appendChild(image);
 
@@ -140,7 +139,7 @@ const addMessage = message => {
 
         let userName = document.createElement("p");
         userName.classList.add("username");
-        userName.innerHTML = user.name;
+        userName.innerHTML = currUser.name;
 
         let timestamp = document.createElement("span");
         timestamp.classList.add("timestamp");
@@ -167,16 +166,18 @@ const addMessage = message => {
 
 
 const getUserById = userId => {
-    usersList.forEach(user => {
-        if(user.user_id == userId) return user;
-    });
-    return {
+    let userObj = {
         "user_id": "-1",
         "name": "Deleted User",
-        "icon_id": "",
+        "icon_id": "1",
         "email": "",
         "discriminator": 1234
     }
+    usersList.forEach(user => {
+        console.log(user.user_id == userId);
+        if(user.user_id == userId) userObj = user;
+    });
+    return userObj;
 }
 
 const changeGuild = (newGuildId, addToHistory) => {

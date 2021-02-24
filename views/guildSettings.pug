@@ -5,7 +5,7 @@ block style
     script(defer, src="/scripts/guildSettings.js") 
     script(defer, src="/scripts/channels.js") 
 block content
-    input#guildIdField(type="hidden" value=guild_id) 
+    input#guildIdField(type="hidden" value=guild.guild_id) 
     section.main
          form#updateGuildForm(onsubmit="return validateForm()" method="post")
             section.content
@@ -17,12 +17,12 @@ block content
                         div.guild-form
                             div.image-area
                                 div.img-circle.img-large
-                                    img#guildImage(src="https://ui-avatars.com/api/?background=random&name=Bi+Frost", alt="Guild Icon").img
+                                    img#guildImage(src="https://ui-avatars.com/api/?background=random&name=Bi+Frost", alt="Guild Icon", value=guild.icon_id).img
                                 button#removeImageBtn(type="button").link remove
                             div.input-area
                                 div.form-block
                                     label.input-label Guild Name
-                                    input#guildNameInput(type="text", name="guildName" placeholder="Guild Name").input-field
+                                    input#guildNameInput(type="text", name="guildName", placeholder="Guild Name", value=guild.name).input-field
                                     span#guildNameErrorMsg.error-message.hidden You did it wrong sir 
                                 div.form-block
                                     label.input-label Guild Icon

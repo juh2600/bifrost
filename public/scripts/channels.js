@@ -111,7 +111,7 @@ const formatInputField = () => {
 }
 
 
-const updateChannelList = () => {
+const updateChannels = () => {
     return fetch(`/api/${APIVERSION}/guilds/${guild_id}/text-channels`, {
         method: "put",
         body: JSON.stringify(channelList)

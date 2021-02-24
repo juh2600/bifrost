@@ -81,12 +81,12 @@ const routes = [
     handler: app,
   },
   {
-    uri: "/signUp",
+    uri: "/signup",
     methods: ["get"],
     handler: signUp,
   },
   {
-    uri: "/logIn",
+    uri: "/login",
     methods: ["get"],
     handler: logIn,
   },

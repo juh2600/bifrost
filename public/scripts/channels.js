@@ -69,10 +69,11 @@ const addChannel = (channel) => {
     channel.name = (channel.name.charAt(0) == "-") ? channel.name.slice(1) : channel.name;
 
     let newChannel = createChannel(channel.name);
-    newChannel.dataset.guild_id = "Placeholder";
+    newChannel.dataset.guild_id = guild_id;
     newChannel.dataset.name = channel.name;
     if(channel.position !== undefined) newChannel.dataset.position = channel.position;
-    else newChannel.dataset.position = parseInt(channelList[channelList.length-1].position) + 1;
+    else if(channelList.length > 0) newChannel.dataset.position = parseInt(channelList[channelList.length-1].position) + 1;
+    else newChannel.dataset.position = 0;
     if(channel.channel_id) newChannel.dataset.channel_id = channel.channel_id;
     channelContainer.appendChild(newChannel);
     document.getElementById("newChannelName").value = "";
@@ -108,6 +109,15 @@ const formatInputField = () => {
     inputValue = inputValue.toLowerCase();
     document.getElementById("newChannelName").value = inputValue;
 }
+
+
+const updateChannelList = () => {
+    return fetch(`/api/${APIVERSION}/guilds/${guild_id}/text-channels`, {
+        method: "put",
+        body: JSON.stringify(channelList)
+    });
+}
+
 
 initializePage();
 

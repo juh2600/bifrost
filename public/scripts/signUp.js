@@ -5,7 +5,7 @@ let confirmInputId = document.getElementById("confirmInput");
 let iconInputId = document.getElementById("iconInput");
 let profileImgId = document.getElementById("profileImg");
 
-let imgUrl =
+let imgURL =
   "https://www.gravatar.com/avatar/" +
   Math.floor(Math.random() * 15 + 1) +
   "?s=200&d=retro";
@@ -139,7 +139,7 @@ document.getElementById("signupForm").addEventListener("submit", event => {
   //TODO: Fix below: Dont know how to post image
   fetch(`/api/${APIVERSION}/icons`, {
       method: "post",
-      body: imageURL
+      body: imgURL
   }).then(response => (
       response.json()
   )).then(data => {

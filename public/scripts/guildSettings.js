@@ -104,15 +104,14 @@ document.getElementById("updateGuildForm").addEventListener("submit", event => {
         }).then(response => (
             response.json()
         )).then(updateGuild
-        ).then(response => (
-            response.json()
-        )).then(data => {
+        ).then(updateChannelList
+        ).then(data => {
             window.location.href = "/app/" + guild_id;
         });
     } else {
-        updateGuild({}).then(response => (
-            response.json()
-        )).then(data => {
+        updateGuild({})
+        .then(updateChannelList
+        ).then(data => {
             window.location.href = "/app/" + guild_id;
         });
     }

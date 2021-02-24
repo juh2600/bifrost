@@ -11,7 +11,7 @@ block content
                 h1.header-title Log In
                 img.bifrost-logo(src="/images/Bifrost_Logo.svg")
             section.form-area
-                form(action="/login" method="post") 
+                form#loginForm(onsubmit="return validateForm()" method="post") 
                     .form-block
                         label.input-label Email
                         input#emailInput.input-field(type="text", name="email")

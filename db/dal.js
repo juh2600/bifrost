@@ -800,9 +800,9 @@ const getMessages = async (channel_snowflake, options = {
 	// - all of the above items
 	// - our before and after times are defined and reasonable
 	// next let's add them to our list of constraints
-	constraints.push('message_id <= ?');
-	params.push(options.before);
 	constraints.push('message_id >= ?');
+	params.push(options.before);
+	constraints.push('message_id <= ?');
 	params.push(options.after);
 	// we now certainly know:
 	// - all of the above items
@@ -844,8 +844,12 @@ const getMessages = async (channel_snowflake, options = {
 	// next we'll execute queries until we have enough messages to satisfy the limit, or until we run out of buckets, whichever comes first
 	const messages = []; // here we'll accumulate messages that match the criteria
 	let bucket = starting_bucket;
+	//logger.debug(query);
+	//logger.debug(`Searching buckets ${earliest_bucket} to ${latest_bucket}, starting with ${starting_bucket}`);
 	while (earliest_bucket <= bucket && bucket <= latest_bucket && options.limit > 0) { // options.limit will decrease as we gather messages
 		params[0] = bucket;
+		//logger.debug('Bucket: ' + bucket);
+		//console.log(params.map(param => param.toString()));
 		new_messages = await db.execute(query, params, { prepare: true }).catch(error => errors.push(error));
 		// so yeah. it's possible that the db will throw an error somehow, still...idk how but i'd rather be prepared-ish
 		// so if we see an error, we'll happily forward it on to the unsuspecting caller, who will now know about our database's

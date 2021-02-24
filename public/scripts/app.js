@@ -93,7 +93,6 @@ const changeChannel = (newChannelId, addToHistory) => {
 }
 
 
-//TODO: Request messages for new channel
 const getMessages = () => {
     fetch(`/api/v0/guilds/${selectedGuildId}/text-channels/${selectedChannelId}/messages`)
     .then(response => response.json())
@@ -206,9 +205,14 @@ const changeGuild = (newGuildId, addToHistory) => {
         //Update url and history
         //if(addToHistory) updateHistory();
         updateChannelList(addToHistory);
+
+
+        //Hide elements that are displayed when no channel is selected
+        hideEmptyScreen();
     }
     else {
         //TODO: Show no channel selected page
+        showEmptyScreen();
     }
 }
 
@@ -224,6 +228,25 @@ window.onpopstate = () => {
     selectedGuildId = getIdFromURL("guild");
     selectedChannelId = getIdFromURL("channel");
     changeGuild(selectedGuildId, false);
+}
+
+
+//Page shown when no channel is selected
+const showEmptyScreen = () => {
+    //hide text channels label
+    document.getElementById("channelListLabel").classList.add("hidden");
+
+    //show cumpus
+    document.getElementById("cumpusSection").classList.remove("hidden");
+
+}
+
+const hideEmptyScreen = () => {
+    //show text channels label
+    document.getElementById("channelListLabel").classList.remove("hidden");
+
+    //hide cumpus
+    document.getElementById("cumpusSection").classList.add("hidden");
 }
 
 
@@ -320,4 +343,5 @@ fetch("/api/v0/users")
     usersList = data;
     //get init channel list if guild is selected
     if(selectedGuildId) changeGuild(selectedGuildId, true);
+    else showEmptyScreen();
 });

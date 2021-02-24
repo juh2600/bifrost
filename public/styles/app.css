@@ -3,7 +3,7 @@
 ###############################*/
 :root {
     --color-text-1: #fff;
-    --color-text-2: #eee;
+    --color-text-2: #ddd;
     --color-text-3: #999;
   }
 
@@ -293,15 +293,21 @@
 /*#############################
           Channel List
 ###############################*/
+
+
 #channelList {
     padding:0.5em;
 }
 .channel-list > p {
+    visibility: visible;
     padding: 0 1em;
     margin-bottom:0;
     color:var(--color-text-3);
 }
 
+#channelListLabel.hidden {
+    visibility: hidden;
+}
 .channel {
     color:var(--color-text-3);
     padding:0.5em;
@@ -330,6 +336,9 @@
 
 }
 
+
+
+
 /*#############################
           Channel Name
 ###############################*/
@@ -356,23 +365,60 @@
 /*#############################
           Messages
 ###############################*/
+.chat-area {
+    position:relative;
 
+}
 #chatArea {
     overflow-x: hidden;
 }
 
 .message {
     display:grid;
-    grid-template-columns: 3em 1fr;
-    margin:0.5em 0;
+    grid-template-columns: 3em minmax(0, 1fr);
+    margin:1em 0;
+    padding: 0 0.5em;
+    width:100%;
+    box-sizing: border-box;
 }
 .message p {
     margin:0;
     box-sizing: border-box;
 }
+.message > .message-section {
+    width:100%;
+    box-sizing: border-box;
+}
+.message > .message-section > .title-bar {
+    padding-bottom: 0.25em;
+}
+.message > .message-section > .title-bar > .username {
+    display:inline-block;
+    color:var(--color-text-1);
+}
+.message > .message-section > .title-bar > .timestamp {
+    color:var(--color-text-3);
+    margin-left: 0.5em;
+}
 
+.message > .message-section > .content {
+    color:#bbb;
+    overflow-wrap: break-word;
+}
 .message > .img-circle {
     width:  2em;
     height: 2em;
     margin:0 auto;
+}
+
+
+
+
+#cumpusSection {
+    width:80%;
+    position: absolute;
+    top: 45%;
+    left:50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
 }

@@ -38,12 +38,15 @@ block content
 
 
         div.channel-list
-            p Text Channels:
+            p#channelListLabel Text Channels:
             div#channelList
 
 
-        div#chatArea.chat-area
-
+        div.chat-area
+            div#cumpusSection
+                img(src="../images/Cat_Wumpus.svg")
+                p There is no channel here. Select a guild on the left.
+            div#chatArea
 
         div.user-list
             each user in userList

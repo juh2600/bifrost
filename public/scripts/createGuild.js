@@ -82,7 +82,7 @@ document.getElementById("createGuildForm").addEventListener("submit", event => {
     event.preventDefault();
     //Post image and get icon_id
     //TODO: Fix below: Dont know how to post image
-    fetch("/api/v0/icons", {
+    fetch(`/api/${APIVERSION}/icons`, {
         method: "post",
         body: imageURL
     }).then(response => (
@@ -92,7 +92,7 @@ document.getElementById("createGuildForm").addEventListener("submit", event => {
             "name": document.getElementById("guildNameInput").value,
             "icon_id": data.icon_id
         }
-        return fetch("/api/v0/guilds", {
+        return fetch(`/api/${APIVERSION}/guilds`, {
             method: "post",
             body: JSON.stringify(formData)
         });

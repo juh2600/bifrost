@@ -137,7 +137,7 @@ document.getElementById("signupForm").addEventListener("submit", event => {
   event.preventDefault();
   //Post image and get icon_id
   //TODO: Fix below: Dont know how to post image
-  fetch("/api/v0/icons", {
+  fetch(`/api/${APIVERSION}/icons`, {
       method: "post",
       body: imageURL
   }).then(response => (
@@ -149,7 +149,7 @@ document.getElementById("signupForm").addEventListener("submit", event => {
           "password": document.getElementById("passwordInput").value,
           "icon_id": data.icon_id
       }
-      return fetch("/api/v0/users", {
+      return fetch(`/api/${APIVERSION}/users`, {
           method: "post",
           body: JSON.stringify(formData)
       });

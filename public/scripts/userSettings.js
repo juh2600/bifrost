@@ -112,7 +112,7 @@ document.getElementById("updateUserForm").addEventListener("submit", event => {
   //Post image and get icon_id
   //TODO: Fix below: Dont know how to post image
   if(imageHasBeenChanged) {
-      fetch("/api/v0/icons", {
+      fetch(`/api/${APIVERSION}/icons`, {
           method: "post",
           body: imageURL
       }).then(response => (
@@ -141,7 +141,7 @@ const updateUser = async(data) => {
   }
   if(data.icon_id) formData.icon_id = data.icon_id;
 
-  return fetch(`/api/v0/users/${user_id}`, {
+  return fetch(`/api/${APIVERSION}/users/${user_id}`, {
       method: "put",
       body: JSON.stringify(formData)
   });

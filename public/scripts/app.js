@@ -26,7 +26,7 @@ selectedChannelId = getIdFromURL("channel");
 
 const updateChannelList = (addToHistory) => {
     clearChannelList();
-    fetch(`/api/v0/guilds/${selectedGuildId}/text-channels`)
+    fetch(`/api/${APIVERSION}/guilds/${selectedGuildId}/text-channels`)
     .then(response => response.json())
     .then(data => {
         channelList = data;
@@ -94,7 +94,7 @@ const changeChannel = (newChannelId, addToHistory) => {
 
 
 const getMessages = () => {
-    fetch(`/api/v0/guilds/${selectedGuildId}/text-channels/${selectedChannelId}/messages`)
+    fetch(`/api/${APIVERSION}/guilds/${selectedGuildId}/text-channels/${selectedChannelId}/messages`)
     .then(response => response.json())
     .then(data => {
         messagesList = data;
@@ -336,7 +336,7 @@ document.getElementById("currentUser").addEventListener("click", () => {
 
 
 //Get and store list of users
-fetch("/api/v0/users")
+fetch(`/api/${APIVERSION}/users`)
 .then(response => response.json())
 .then(data => {
     console.log(data);

@@ -45,7 +45,7 @@ const initializePage = () => {
 
 
 const getData = () => {
-    fetch("/api/v0/guilds/1/text-channels")
+    fetch(`/api/${APIVERSION}/guilds/1/text-channels`)
     .then(response => response.json())
     .then(data => {
         populateData(data);

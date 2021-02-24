@@ -70,6 +70,13 @@ const updateTextChannels = (req, res) => {
 	// soooooo, we'll just...delete all the channels and add them back! ;D
 	// FIXME use a batch! it's like transactions???
 	const errors = [];
+	if (req.body === undefined || req.body === null || req.body.constructor.name !== 'Array')
+		errors.push(`An array of channel descriptions was expected, but ${req.body} was supplied`);
+	if (errors.length) {
+		handle(400, req, res)(errors);
+		return;
+		// FIXME ugly??
+	};
 	db.clearChannels(req.params.guild_id).then(async () => {
 		for (let channel of req.body.sort((a,b) => a.position < b.position ? -1 : 1)) {
 			if (req.body.channel_id) {

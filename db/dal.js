@@ -522,6 +522,39 @@ const createChannel = async (guild_snowflake, name, position = -1) => {
 		.then(() => convertTypesForDistribution(record));
 };
 
+const addChannelToGuild = async (guild_snowflake, channel_snowflake, name, position = -1) => {
+	const errors = [];
+	if (guild_snowflake === undefined || guild_snowflake === null)
+		errors.push(`A guild snowflake must be passed, but ${guild_snowflake} was supplied`);
+	else guild_snowflake = coerceToLong(guild_snowflake, errors);
+	if (channel_snowflake === undefined || channel_snowflake === null)
+		errors.push(`A channel snowflake must be passed, but ${channel_snowflake} was supplied`);
+	else channel_snowflake = coerceToLong(channel_snowflake, errors);
+	if (name === undefined || name === null)
+		errors.push(`A name must be passed, but ${name} was supplied`);
+	if (position === null || position.constructor.name !== 'Number')
+		errors.push(`An optional position may be passed, but ${position} was supplied`);
+	if (errors.length) {
+		throw errors;
+	}
+
+	if (!(position > 0)) { // this handles strings and bad guys lmao end me // this shouldn't matter; catch type errors above
+		// by default, append the channel to the end of the guild
+		position = await getChannels(guild_snowflake).then(rows => rows.length);
+		console.log('using position ' + position);
+	} else position = position - 0; // coerce number type
+
+	const record = {
+		guild_id: guild_snowflake
+		, channel_id: channel_snowflake
+		, name
+		, position
+	};
+
+	return db.execute(...schemas.channels_by_guild.getInsertStmt(record))
+		.then(() => convertTypesForDistribution(record));
+};
+
 // TODO consider removing before and after; they're kinda useless, innit?
 // returns list of channel descriptions, or throws
 const getChannels = async (guild_snowflake, options = {
@@ -609,6 +642,18 @@ const deleteChannel = async (guild_snowflake, channel_snowflake) => {
 		guild_id: guild_snowflake
 		, channel_id: channel_snowflake
 	})).then(() => {});
+};
+
+const clearChannels = async (guild_snowflake) => {
+	const errors = [];
+	if (guild_snowflake === undefined || guild_snowflake === null)
+		errors.push(`A guild snowflake must be passed, but ${guild_snowflake} was supplied`);
+	else guild_snowflake = coerceToLong(guild_snowflake, errors);
+	if (errors.length) {
+		throw errors;
+	}
+
+	return db.execute('TRUNCATE TABLE channels_by_guild WHERE guild_id = ?', [guild_snowflake], { prepare: true }).then(() => {});
 };
 
 
@@ -1014,10 +1059,20 @@ const iconExists = async (icon_id) => {
 		.then(res => res.rows.length > 0)
 	;
 };
+
+const executeRaw = async (stmt, params) => {
+	return db.execute(stmt, params, { prepare: true });
+};
+
+// [{query: '', params: []}]
+const executeBatch = async (stmts) => {
+	return db.batch(stmts, { prepare: true });
+};
+
 module.exports = {
-	Schema, schemas
+	Schema, schemas, executeRaw, executeBatch
 	, createGuild, getGuilds, updateGuild, deleteGuild
-	, createChannel, getChannels, updateChannel, deleteChannel
+	, createChannel, getChannels, updateChannel, deleteChannel, clearChannels, addChannelToGuild
 	, createMessage, getMessages, updateMessage, deleteMessage
 	, createUser, getUsers, updateUser, deleteUser
 	, createIcon, iconExists

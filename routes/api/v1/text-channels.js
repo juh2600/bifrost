@@ -1,6 +1,8 @@
 const logger = require('logger').get('text-channels');
 const snowmachine = new (require('snowflake-generator'))(1420070400000);
 
+const numericSort = (a,b) => a < b ? -1 : 1;
+
 let db;
 const configure = (obj) => {
 	db = obj['db'];
@@ -9,9 +11,10 @@ const configure = (obj) => {
 
 const handle = (code, req, res) => {
 	return errors => {
+		console.log(errors);
 		res
 			.status(code)
-			.json(errors)
+			.json(errors);
 	};
 };
 
@@ -57,16 +60,41 @@ const updateTextChannel = (req, res) => {
 	})
 		.then(() => {
 			res.statusMessage = 'Updated';
-			res.status(204).end();
+			res.sendStatus(204);
 		})
 		.catch(handle(400, req, res));
+};
+
+const updateTextChannels = (req, res) => {
+	// okay so, when we remove a channel from a guild, it's not really gone
+	// it's just not associated with the guild
+	// soooooo, we'll just...delete all the channels and add them back! ;D
+	// FIXME use a batch! it's like transactions???
+	const errors = [];
+	db.clearChannels(req.params.guild_id).then(async () => {
+		for (let channel of req.body.sort((a,b) => a.position < b.position ? -1 : 1)) {
+			if (req.body.channel_id) {
+				// FIXME verify that the channel exists
+				await db.addChannelToGuild(req.params.guild_id, channel.channel_id, channel.name, channel.position).catch(e => errors.push(...e));
+			}
+			else {
+				await db.createChannel(req.params.guild_id, channel.name, channel.position).catch(e => errors.push(...e));
+			}
+		}
+		if (errors.length) {
+			throw errors;
+		}
+	}).then(() => {
+		res.statusMessage = 'Updated';
+		res.sendStatus(204);
+	}).catch(handle(500, req, res));
 };
 
 const deleteTextChannel = (req, res) => {
 	db.deleteChannel(req.params.guild_id, req.params.channel_id)
 		.then(() => {
 			res.statusMessage = 'Deleted';
-			res.status(204).end();
+			res.sendStatus(204);
 		})
 		.catch(handle(500, req, res));
 };
@@ -94,6 +122,11 @@ const routes = [
 		uri: '/api/v1/guilds/:guild_id/text-channels/:channel_id',
 		methods: ['get'],
 		handler: getTextChannel
+	}
+	, {
+		uri: '/api/v1/guilds/:guild_id/text-channels',
+		methods: ['put'],
+		handler: updateTextChannels
 	}
 	, {
 		uri: '/api/v1/guilds/:guild_id/text-channels/:channel_id',

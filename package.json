@@ -27,6 +27,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "logger": "github:josephreed2600/logger#master",
+    "multer": "^1.4.2",
     "path": "^0.12.7",
     "pug": "^3.0.0",
     "snowflake-generator": "0.0.3"

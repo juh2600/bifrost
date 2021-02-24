@@ -6,7 +6,6 @@ const numericSort = (a,b) => a < b ? -1 : 1;
 let db;
 const configure = (obj) => {
 	db = obj['db'];
-	console.log(obj, db);
 };
 
 const handle = (code, req, res) => {

@@ -119,10 +119,20 @@ document.getElementById("createGuildForm").addEventListener("submit", event => {
             body: JSON.stringify(formData)
 					, headers: new Headers({'Content-Type': 'application/json'})
         });
-    }).then(response => (
-        response.json()
-    )).then(data => {
-        window.location.href = "/app/" + data.guild_id;
+    })
+		.then(response => response.json())
+		.then(guild => {
+			return fetch(`/api/${APIVERSION}/guilds/${guild.guild_id}/text-channels`, {
+				method: 'POST'
+				, body: JSON.stringify({
+					name: 'general'
+				})
+				, headers: new Headers({'Content-Type': 'application/json'})
+			});
+		})
+		.then(response => response.json())
+		.then(channel => {
+        window.location.href = "/app/" + channel.guild_id + '/' + channel.channel_id;
     });
 
 });

@@ -1,5 +1,8 @@
 let imageURL = document.getElementById("guildImage").src;
+let fileInput = document.getElementById("iconInput")
+let iconFile = null;
 
+// FIXME allow sending default guild icon
 
 document.getElementById("guildNameInput").addEventListener("input", () => {
     validateGuildName();
@@ -40,7 +43,8 @@ document.getElementById("iconInput").addEventListener("input", () => {
         imageURL = window.URL.createObjectURL(document.getElementById("iconInput").files[0]);
         updateGuildIcon(imageURL);
     }
-    document.getElementById("iconInput").value = "";
+	iconFile = document.getElementById("iconInput").files[0];
+	document.getElementById("iconInput").value = "";
 });
 
 const validateIcon = () => {
@@ -82,19 +86,22 @@ document.getElementById("createGuildForm").addEventListener("submit", event => {
     event.preventDefault();
     //Post image and get icon_id
     //TODO: Fix below: Dont know how to post image
+	const formData = new FormData();
+	formData.append('icon', iconFile);
     fetch(`/api/${APIVERSION}/icons`, {
         method: "post",
-        body: imageURL
+        body: formData
     }).then(response => (
         response.json()
     )).then(data => {
         let formData = {
             "name": document.getElementById("guildNameInput").value,
             "icon_id": data.icon_id
-        }
+        };
         return fetch(`/api/${APIVERSION}/guilds`, {
             method: "post",
             body: JSON.stringify(formData)
+					, headers: new Headers({'Content-Type': 'application/json'})
         });
     }).then(response => (
         response.json()

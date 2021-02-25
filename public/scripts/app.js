@@ -126,7 +126,7 @@ const addMessage = message => {
 
         let currUser = getUserById(message.author_id);
         console.log(currUser);
-        image.src = "/api/v0/icons/" + currUser.icon_id;
+        image.src = `/api/${APIVERSION}/icons/` + currUser.icon_id;
         image.classList.add("img");
         imgContainer.appendChild(image);
 
@@ -281,7 +281,7 @@ const addGuild = guild => {
     imgContainer.classList.add("img-circle");
 
     let image = document.createElement("img");
-    image.src = "/api/v0/icons/" + guild.icon_id;
+    image.src = `/api/${APIVERSION}/icons/` + guild.icon_id;
     image.classList.add("img");
 
     imgContainer.appendChild(image);

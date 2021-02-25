@@ -299,14 +299,15 @@ const schemas = {
 		, [ // validators
 		])
 	, icons: new Schema('icons'
-		, ['icon_id'] // keys
+		, ['icon_id', 'url'] // keys
 		, ['icon_id'] // requireds
 		, [] // nullables
-		, ['icon_id'] // immutables
+		, ['icon_id', 'url'] // immutables
 		, ['icon_id'] // automatics
 		, [] // update keys
 		, { // type samples
 			'icon_id': new Long()
+			, 'url': ''
 		}
 		, [ // validators
 			(obj, isUpdate) => { return isUpdate ? ['An attempt was made to update an icon, but this operation is not permitted'] : []; }
@@ -1050,18 +1051,37 @@ const deleteUser = async (user_snowflake) => {
  * icons
  */
 // returns description of user, or throws
-const createIcon = async () => {
+const createIcon = async (url) => {
 	const errors = [];
+	// FIXME validate URL
+	if (url === undefined || url === null)
+		errors.push(`A url must be passed, but ${url} was supplied`);
 	if (errors.length) {
 		throw errors;
 	}
 
 	const record = {
 		icon_id: coerceToLong(snowmachine.generate().snowflake)
+		, url
 	};
 
-	return db.execute(...schemas.users.getInsertStmt(record))
+	return db.execute(...schemas.icons.getInsertStmt(record))
 		.then(() => convertTypesForDistribution(record))
+	;
+};
+
+const getIcon  = async (icon_id) => {
+	const errors = [];
+	icon_id = coerceToLong(icon_id, errors);
+
+	if (errors.length) {
+		throw errors;
+	}
+
+	return db.execute('SELECT * FROM icons WHERE icon_id = ?', [icon_id], { prepare: true })
+		.then(res => res.rows)
+		.then(rows => convertTypesForDistribution(rows[0]))
+		.catch(e => null);
 	;
 };
 
@@ -1095,5 +1115,5 @@ module.exports = {
 	, createChannel, getChannels, updateChannel, deleteChannel, clearChannels, addChannelToGuild
 	, createMessage, getMessages, updateMessage, deleteMessage
 	, createUser, getUsers, updateUser, deleteUser
-	, createIcon, iconExists
+	, createIcon, getIcon, iconExists
 };

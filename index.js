@@ -70,9 +70,20 @@ const server = require("http").createServer(app);
 const io = socketio(server);
 
 io.on("connection", (socket) => {
-  console.log("Socket connected: ");
+  socket.on("old room", (room) => {
+    socket.leave(room);
+  });
+  socket.on("new room", (room) => {
+    socket.join(room);
+  });
 
-  socket.emit("message", "Client-Side Connected!");
+  socket.on("message", (msg) => {
+    console.log(msg);
+  });
+  socket.on("chatMessage", (msg) => {
+    io.to(msg.currentChannel).emit("message", msg.body);
+  });
 });
+
 ///////////
 server.listen(process.env.PORT);

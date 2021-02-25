@@ -181,60 +181,58 @@ const dal = {
 const usersArray = [];
 
 const index = (req, res) => {
-  if (req.session.username) {
-    res.redirect("/app");
-  } else {
-    res.render("index", {
-      // key: value
-    });
-  }
-  console.log(usersArray);
+  // if (req.session.username) {
+  //   res.redirect("/app");
+  // } else {
+  res.render("index", {
+    // key: value
+  });
+  // }
+  // console.log(usersArray);
 };
 
 const app = (req, res) => {
-  if (req.session.username) {
-    dal.getGuilds().then((dalGuildList) => {
-      dal.getUsers().then((dalUsersList) => {
-        res.render("app", {
-          guildList: dalGuildList,
-          userList: dalUsersList,
-        });
+  // if (req.session.username) {
+  dal.getGuilds().then((dalGuildList) => {
+    dal.getUsers().then((dalUsersList) => {
+      res.render("app", {
+        guildList: dalGuildList,
+        userList: dalUsersList,
       });
     });
-  } else {
-    res.redirect("/");
-  }
+  });
+
   console.log(JSON.stringify(req.session));
 };
 
 const signUp = (req, res) => {
-  if (req.session.username) {
-    res.redirect("/app");
-  } else {
-    res.render("signUp", {
-      // key: value
-    });
-  }
+  // if (req.session.username) {
+  //   res.redirect("/app");
+  // } else {
+  res.render("signUp", {
+    // key: value
+  });
+  // }
 };
 
 const logIn = (req, res) => {
-  if (req.session.username) {
-    res.redirect("/app");
-  } else {
-    res.render("logIn", {
-      // key: value
-    });
-  }
+  // if (req.session.username) {
+  //   res.redirect("/app");
+  // } else {
+  res.render("logIn", {
+    // key: value
+  });
+  // }
 };
 
 const createGuild = (req, res) => {
-  if (req.session.username) {
-    res.render("createGuild", {
-      // key: value
-    });
-  } else {
-    res.redirect("/");
-  }
+  // if (req.session.username) {
+  res.render("createGuild", {
+    // key: value
+  });
+  // } else {
+  //   res.redirect("/");
+  // }
 };
 
 //////////

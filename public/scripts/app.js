@@ -81,8 +81,11 @@ const changeChannel = (newChannelId, addToHistory) => {
       .classList.add("selected");
     //Change current channel name
     document.getElementById("channelName").innerHTML = `#${newChannelName}`;
+
     //Update selected channel id
+    socket.emit("old room", selectedChannelId);
     selectedChannelId = newChannelId;
+    socket.emit("new room", selectedChannelId);
 
     //Update url and history
     if (addToHistory) updateHistory();
@@ -90,6 +93,7 @@ const changeChannel = (newChannelId, addToHistory) => {
     //Repopulate messages
     getMessages();
   }
+
   return newChannelExists;
 };
 
@@ -167,7 +171,7 @@ const addMessage = (message) => {
 
 const getUserById = (userId) => {
   usersList.forEach((user) => {
-    if (user.user_id == userId) return user;
+    if (user.user_id === userId) return user;
   });
   return {
     user_id: "-1",

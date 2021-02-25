@@ -1,8 +1,8 @@
 extends layout.pug
 block style
     link(rel='stylesheet' href='/styles/app.css')
-    script(defer, src="/scripts/app.js") 
     script(defer, src="/socket.io/socket.io.js")
+    script(defer, src="/scripts/app.js")   
     script(defer, src="/scripts/iosocket.js") 
 block content
     div#tooltip
@@ -56,5 +56,5 @@ block content
                         p.name #{user.name}
                         p.discriminator ##{user.discriminator}
         div.message-area
-            input(type="text", name="message" placeholder="Message").input-field
+            input#message-input(type="text", name="message" placeholder="Message").input-field
             

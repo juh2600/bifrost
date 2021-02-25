@@ -94,6 +94,7 @@ document.getElementById("createGuildForm").addEventListener("submit", event => {
 	//Post image and get icon_id
 	//TODO: Fix below: Dont know how to post image
 
+	if (validateForm()) {
 
 	updateDefaultImageMaybe();
 
@@ -139,5 +140,6 @@ document.getElementById("createGuildForm").addEventListener("submit", event => {
 		.then(channel => {
         window.location.href = "/app/" + channel.guild_id + '/' + channel.channel_id;
     });
+}
 
 });

@@ -1,5 +1,6 @@
 const logger = require("logger").get("frontend");
 //const socket = io();
+const apiVersion = 'v1';
 
 let db;
 const configure = (obj) => {
@@ -30,7 +31,8 @@ const app = (req, res) => {
     db.getUsers().then(dbUsersList => {
       res.render("app", {
         guildList: dbGuildList,
-        userList: dbUsersList
+        userList: dbUsersList,
+				apiVersion
       });
     });
   });
@@ -95,6 +97,7 @@ const guildSettings = (req, res) => {
     if(dbGuild.length > 0){
       res.render('guildSettings', {
         guild: dbGuild[0]
+				, apiVersion
       });
     }
   });

@@ -2,6 +2,7 @@ extends layout.pug
 block style
     link(rel='stylesheet' href='/styles/guildSettings.css')
     script(defer, src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js")
+    script(defer, src="/scripts/util.js") 
     script(defer, src="/scripts/appSettings.js") 
     script(defer, src="/scripts/guildSettings.js") 
     script(defer, src="/scripts/channels.js") 
@@ -18,7 +19,8 @@ block content
                         div.guild-form
                             div.image-area
                                 div.img-circle.img-large
-                                    img#guildImage(src="https://ui-avatars.com/api/?background=random&name=Bi+Frost", alt="Guild Icon", value=guild.icon_id).img
+                                    //- img#guildImage(src='guild.icon_id, alt="Guild Icon", value=guild.icon_id).img
+                                    img#guildImage(src=`/api/${apiVersion}/icons/` + guild.icon_id, alt="Guild Icon", value=guild.icon_id).img
                                 button#removeImageBtn(type="button").link remove
                             div.input-area
                                 div.form-block

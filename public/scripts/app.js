@@ -130,7 +130,7 @@ const addMessage = message => {
 
         let currUser = getUserById(message.author_id);
         console.log(currUser);
-        image.src = "/api/v0/icons/" + currUser.icon_id;
+        image.src = `/api/${APIVERSION}/icons/` + currUser.icon_id;
         image.classList.add("img");
         imgContainer.appendChild(image);
 
@@ -271,27 +271,26 @@ document.getElementById("createGuildBtn").addEventListener("click", () => {
 });
 
 //Add guild to list of guilds. Pass in a guild object
-const addGuild = (guild) => {
-  let guildDiv = document.createElement("div");
-  guildDiv.classList.add("guild");
-  guildDiv.dataset.guildId = guild.guild_id;
-  guildDiv.dataset.guildName = guild.name;
-  setupTooltip(guildDiv, guildDiv.dataset.guildName);
-  guild.addEventListener("click", () => {
-    changeGuild(guild.guild_id, true);
-  });
+const addGuild = guild => {
+    let guildDiv = document.createElement("div");
+    guildDiv.classList.add("guild");
+    guildDiv.dataset.guildId = guild.guild_id;
+    guildDiv.dataset.guildName = guild.name;
+    setupTooltip(guildDiv, guildDiv.dataset.guildName);
+    guild.addEventListener("click", () => {changeGuild(guild.guild_id, true)});
 
-  let imgContainer = document.createElement("div");
-  imgContainer.classList.add("img-circle");
 
-  let image = document.createElement("img");
-  image.src = "/api/v0/icons/" + guild.icon_id;
-  image.classList.add("img");
+    let imgContainer = document.createElement("div");
+    imgContainer.classList.add("img-circle");
 
-  imgContainer.appendChild(image);
-  guildDiv.appendChild(imgContainer);
-  document.getElementById("guildCollection").appendChild(guildDiv);
-};
+    let image = document.createElement("img");
+    image.src = `/api/${APIVERSION}/icons/` + guild.icon_id;
+    image.classList.add("img");
+
+    imgContainer.appendChild(image);
+    guildDiv.appendChild(imgContainer);
+    document.getElementById("guildCollection").appendChild(guildDiv);
+}
 
 //Delete guild by ID
 const removeGuild = (guildId) => {

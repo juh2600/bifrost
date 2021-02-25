@@ -9,11 +9,12 @@ require("dotenv").config();
 
 const logger = require("logger").get("main");
 
-logger.info("Requiring packages...");
-const express = require("express");
-const path = require("path");
-const bodyParser = require("body-parser");
-logger.info("Required packages.");
+logger.info('Requiring packages...');
+const express = require('express');
+const path = require('path');
+const bodyParser = require('body-parser');
+const upload = require('multer')({ dest: __dirname + '/public/icons' });
+logger.info('Required packages.');
 
 logger.info("Configuring Express...");
 const app = express();
@@ -62,6 +63,7 @@ routeFiles.forEach((file) => {
 		// pass stuff to routing files here
 		// dependency injection :tm:
 		db
+		, upload
 	});
 	routeManager.apply(app, component);
 	logger.info(`Added ${file} routes.`);

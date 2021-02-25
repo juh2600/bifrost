@@ -27,6 +27,7 @@ CREATE TABLE bifrost.messages_by_channel_bucket (
 
 CREATE TABLE bifrost.icons (
   icon_id bigint,
+  url text,
   PRIMARY KEY (icon_id)
   );
 

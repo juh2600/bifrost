@@ -109,15 +109,15 @@ document.getElementById("iconInput").addEventListener("input", () => {
 });
 
 const validateIcon = () => {
-  let input = iconInputId.value;
-  console.log(input);
-  let iconRegex = /\.(jpg|png|jpeg|svg|jfif|pjpeg|pjp)$/i;
-  isValid = iconRegex.test(input) || input == "";
-  let iconErrorMsg = document.getElementById("iconErrorMsg");
-  isValid
-    ? iconErrorMsg.classList.add("hidden")
-    : iconErrorMsg.classList.remove("hidden");
-  return isValid;
+	let input = iconInputId.value;
+	console.log(input);
+	let iconRegex = /\.(jpg|png|jpeg|svg|jfif|pjpeg|pjp)$/i;
+	isValid = iconRegex.test(input) || input == "";
+	let iconErrorMsg = document.getElementById("iconErrorMsg");
+	isValid
+		? iconErrorMsg.classList.add("hidden")
+		: iconErrorMsg.classList.remove("hidden");
+	return isValid;
 };
 
 const updateUserIcon = (imgURL) => {
@@ -136,20 +136,11 @@ const validateForm = () => {
 };
 
 const removeImage = () => {
-    updateDefaultImage();
+	updateDefaultImage();
 	iconFile = null;
 };
 
 document.getElementById("removeImageBtn").addEventListener("click", removeImage);
-
-	/*
-document.getElementById("removeImageBtn").addEventListener("click", () => {
-  profileImgId.src =
-    "https://www.gravatar.com/avatar/" +
-    Math.floor(Math.random() * 15 + 1) +
-    "?s=200&d=retro";
-});
-		*/
 
 
 

@@ -4,15 +4,8 @@ let iconFile = null;
 let imageHasBeenChanged = false;
 let guild_id = document.getElementById("guildIdField").value;
 
-document.getElementById("deleteGuildBtn").addEventListener("click", () => {
-    deleteGuild();
-});
 
-const deleteGuild = () => {
-    console.log("delete");
-    //TODO: api delete fetch request
-}
-
+// TODO inline stuff
 document.getElementById("guildNameInput").addEventListener("input", () => {
     validateGuildName();
 });
@@ -30,13 +23,17 @@ const validateGuildName = () => {
     else if(!isShortEnough) guildNameErrorMsg.innerHTML = "Guild name is too long";
 
     let isValid = areCharactersValid && isShortEnough && isLongEnough;
-    isValid ? guildNameErrorMsg.classList.add("hidden"):guildNameErrorMsg.classList.remove("hidden");
+    isValid
+		? guildNameErrorMsg.classList.add("hidden")
+		: guildNameErrorMsg.classList.remove("hidden");
     return isValid;
-}
+};
 
 const updateDefaultImageMaybe = () => {
-	if(imageURL.includes("https://ui-avatars.com/api/?")) updateDefaultImage();
+	if(imageURL.includes("https://ui-avatars.com/api/?"))
+		updateDefaultImage();
 };
+
 document.getElementById("guildNameInput").addEventListener("focusout", updateDefaultImageMaybe);
 
 const updateDefaultImage = () => {
@@ -46,7 +43,7 @@ const updateDefaultImage = () => {
     console.log(guildName);
     imageURL = `https://ui-avatars.com/api/?background=${getUniqueColor()}&name=` + guildName;
     updateGuildIcon(imageURL);
-}
+};
 
 
 
@@ -61,21 +58,27 @@ document.getElementById("iconInput").addEventListener("input", () => {
 });
 
 const validateIcon = () => {
-    let input = document.getElementById("iconInput").value;
-    console.log(input);
-    let iconRegex = /\.(jpg|png|jpeg|svg|jfif|pjpeg|pjp)$/i;
-    isValid = iconRegex.test(input) || input == "";
-    let iconErrorMsg = document.getElementById("iconErrorMsg");
-    isValid ? iconErrorMsg.classList.add("hidden"): iconErrorMsg.classList.remove("hidden");
+	let input = document.getElementById("iconInput").value;
+	console.log(input);
+	let iconRegex = /\.(jpg|png|jpeg|svg|jfif|pjpeg|pjp)$/i;
+	isValid = iconRegex.test(input) || input == "";
+	let iconErrorMsg = document.getElementById("iconErrorMsg");
+	isValid
+		? iconErrorMsg.classList.add("hidden")
+		: iconErrorMsg.classList.remove("hidden");
+	return isValid;
+};
 
-    return isValid;
-}
 
+const deleteGuild = () => {
+	//TODO: api delete fetch request
+	console.log("delete");
+};
+document.getElementById("deleteGuildBtn").addEventListener("click", deleteGuild);
 
-
-const updateGuildIcon = imgURL => {
+const updateGuildIcon = (imgURL) => {
     document.getElementById("guildImage").src = imgURL;
-}
+};
 
 
 const validateForm = () => {
@@ -83,16 +86,17 @@ const validateForm = () => {
         if(!validateIcon()) updateDefaultImage();
         return false;
     }
-}
+	return true;
+};
 
-
-document.getElementById("removeImageBtn").addEventListener("click", () => {removeImage();});
 
 const removeImage = () => {
-    updateDefaultImage();
+	updateDefaultImage();
 	iconFile = null;
-imageHasBeenChanged = true;
-} 
+	imageHasBeenChanged = true;
+};
+
+document.getElementById("removeImageBtn").addEventListener("click", removeImage);
 
 
 
@@ -118,21 +122,21 @@ document.getElementById("updateGuildForm").addEventListener("submit", event => {
 		, body: JSON.stringify({url: imageURL})
 		, headers: new Headers({'Content-Type': 'application/json'})
 	};
-    if(imageHasBeenChanged) {
-    fetch(`/api/${APIVERSION}/icons`, iconPostOptions)
-				.then(response => response.json())
-				.then(updateGuild)
-				.then(updateChannels)
-				.then(() => {
-            window.location.href = "/app/" + guild_id;
-        });
-    } else {
-        updateGuild({})
-        .then(updateChannels
-        ).then(() => {
-            window.location.href = "/app/" + guild_id;
-        });
-    }
+	if(imageHasBeenChanged) {
+		fetch(`/api/${APIVERSION}/icons`, iconPostOptions)
+			.then(response => response.json())
+			.then(updateGuild)
+			.then(updateChannels)
+			.then(() => {
+				window.location.href = "/app/" + guild_id;
+			});
+	} else {
+		updateGuild({})
+			.then(updateChannels)
+			.then(() => {
+				window.location.href = "/app/" + guild_id;
+			});
+	}
 
 });
 
@@ -140,11 +144,11 @@ const updateGuild = async (icon) => {
     let formData = {
         "name": document.getElementById("guildNameInput").value
     }
-    if(icon && icon.icon_id) formData.icon_id = icon.icon_id;
+	if(icon && icon.icon_id) formData.icon_id = icon.icon_id;
 
     return fetch(`/api/${APIVERSION}/guilds/${guild_id}`, {
         method: "put",
         body: JSON.stringify(formData)
 				, headers: new Headers({'Content-Type': 'application/json'})
     });
-}
+};

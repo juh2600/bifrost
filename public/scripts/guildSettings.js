@@ -6,9 +6,15 @@ document.getElementById("deleteGuildBtn").addEventListener("click", () => {
     deleteGuild();
 });
 
+//Delete guild
 const deleteGuild = () => {
     console.log("delete");
-    //TODO: api delete fetch request
+    fetch(`/api/${APIVERSION}/guilds/${guild_id}`, {
+        method: "delete",
+        body: imageURL
+    }).then(response => (
+        window.location.href = "/app"
+    ));
 }
 
 

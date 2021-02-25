@@ -1,17 +1,18 @@
 let imageURL = document.getElementById("guildImage").src;
-let fileInput = document.getElementById("iconInput")
+let fileInput = document.getElementById("iconInput");
 let iconFile = null;
 
+// TODO inline this
 document.getElementById("guildNameInput").addEventListener("input", () => {
     validateGuildName();
 });
+
 const validateGuildName = () => {
     let input = document.getElementById("guildNameInput").value;
     let guildNameRegex = /^[a-zA-Z0-9_ ]+$/;
     let areCharactersValid = guildNameRegex.test(input);
     let isLongEnough = input.length > 0;
     let isShortEnough = input.length < 65;
-
     let guildNameErrorMsg = document.getElementById("guildNameErrorMsg");
 
     if(!isLongEnough) guildNameErrorMsg.innerHTML = "Guild name is too short";
@@ -19,13 +20,16 @@ const validateGuildName = () => {
     else if(!isShortEnough) guildNameErrorMsg.innerHTML = "Guild name is too long";
 
     let isValid = areCharactersValid && isShortEnough && isLongEnough;
-    isValid ? guildNameErrorMsg.classList.add("hidden"):guildNameErrorMsg.classList.remove("hidden");
+    isValid
+		? guildNameErrorMsg.classList.add("hidden")
+		: guildNameErrorMsg.classList.remove("hidden");
     return isValid;
-}
+};
 
 const updateDefaultImageMaybe = () => {
 	if(imageURL.includes("https://ui-avatars.com/api/?")) updateDefaultImage();
 };
+
 document.getElementById("guildNameInput").addEventListener("focusout", updateDefaultImageMaybe);
 
 const updateDefaultImage = () => {
@@ -35,7 +39,7 @@ const updateDefaultImage = () => {
     console.log(guildName);
     imageURL = `https://ui-avatars.com/api/?background=${getUniqueColor()}&name=` + guildName;
     updateGuildIcon(imageURL);
-}
+};
 
 
 
@@ -54,40 +58,41 @@ const validateIcon = () => {
     let iconRegex = /\.(jpg|png|jpeg|svg|jfif|pjpeg|pjp)$/i;
     isValid = iconRegex.test(input) || input == "";
     let iconErrorMsg = document.getElementById("iconErrorMsg");
-    isValid ? iconErrorMsg.classList.add("hidden"): iconErrorMsg.classList.remove("hidden");
-
+    isValid
+		? iconErrorMsg.classList.add("hidden")
+		: iconErrorMsg.classList.remove("hidden");
     return isValid;
-}
+};
 
-
-
-const updateGuildIcon = imgURL => {
+const updateGuildIcon = (imgURL) => {
     document.getElementById("guildImage").src = imgURL;
-}
+};
 
 
 const validateForm = () => {
     if(!validateGuildName()) {
-        if(!validateIcon()) updateDefaultImage();
+        if(!validateIcon())
+				updateDefaultImage();
         return false;
     }
-}
-
-
-document.getElementById("removeImageBtn").addEventListener("click", () => {removeImage();});
+	return true;
+};
 
 const removeImage = () => {
     updateDefaultImage();
 	iconFile = null;
-} 
+};
+
+document.getElementById("removeImageBtn").addEventListener("click", removeImage);
+
 
 
 
 //Intercept the form submit and post from here instead
 document.getElementById("createGuildForm").addEventListener("submit", event => {
-    event.preventDefault();
-    //Post image and get icon_id
-    //TODO: Fix below: Dont know how to post image
+	event.preventDefault();
+	//Post image and get icon_id
+	//TODO: Fix below: Dont know how to post image
 
 
 	updateDefaultImageMaybe();
@@ -109,10 +114,11 @@ document.getElementById("createGuildForm").addEventListener("submit", event => {
     fetch(`/api/${APIVERSION}/icons`, iconPostOptions)
 		.then(response => response.json())
 		.then(data => {
-        let formData = {
-            "name": document.getElementById("guildNameInput").value,
-            "icon_id": data.icon_id
-        };
+			let formData = {
+				"name": document.getElementById("guildNameInput").value,
+				"icon_id": data.icon_id
+			};
+
         return fetch(`/api/${APIVERSION}/guilds`, {
             method: "post",
             body: JSON.stringify(formData)

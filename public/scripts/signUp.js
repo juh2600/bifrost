@@ -1,3 +1,6 @@
+let imageURL = document.getElementById("profileImg").src;
+let fileInput = document.getElementById("iconInput");
+let iconFile = null;
 let usernameInputId = document.getElementById("usernameInput");
 let emailInputId = document.getElementById("emailInput");
 let passwordInputId = document.getElementById("passwordInput");
@@ -5,13 +8,15 @@ let confirmInputId = document.getElementById("confirmInput");
 let iconInputId = document.getElementById("iconInput");
 let profileImgId = document.getElementById("profileImg");
 
-let imgURL =
-  "https://www.gravatar.com/avatar/" +
-  Math.floor(Math.random() * 15 + 1) +
-  "?s=200&d=retro";
-
 usernameInputId.addEventListener("input", () => {
   validateUsername();
+});
+
+let imgURL = `https://www.gravatar.com/avatar/${Math.floor(Math.random() * 15 + 1)}?s=200&d=retro`;
+
+// TODO inline this
+emailInputId.addEventListener("input", () => {
+  validateEmail();
 });
 
 const validateUsername = () => {
@@ -20,12 +25,10 @@ const validateUsername = () => {
   let areCharactersValid = usernameRegex.test(input);
   let isLongEnough = input.length > 0;
   let isShortEnough = input.length < 65;
-
   let usernameErrorMsg = document.getElementById("usernameErrorMsg");
 
   if (!isLongEnough) usernameErrorMsg.innerHTML = "Username is too short";
-  else if (!areCharactersValid)
-    usernameErrorMsg.innerHTML = "Invalid character(s)";
+  else if (!areCharactersValid) usernameErrorMsg.innerHTML = "Invalid character(s)";
   else if (!isShortEnough) usernameErrorMsg.innerHTML = "Username is too long";
 
   let isValid = areCharactersValid && isShortEnough && isLongEnough;
@@ -34,10 +37,6 @@ const validateUsername = () => {
     : usernameErrorMsg.classList.remove("hidden");
   return isValid;
 };
-
-emailInputId.addEventListener("input", () => {
-  validateEmail();
-});
 
 const validateEmail = () => {
   let input = emailInputId.value;
@@ -83,25 +82,41 @@ const confirmPassword = () => {
   return isValid;
 };
 
-iconInputId.addEventListener("input", () => {
-  validateIcon();
+const updateDefaultImageMaybe = () => {
+	if(imageURL.includes(`https://www.gravatar.com/avatar/`)) updateDefaultImage();
+};
+
+document.getElementById("usernameInput").addEventListener("focusout", updateDefaultImageMaybe);
+
+const updateDefaultImage = () => {
+    let userName = document.getElementById("usernameInput").value;
+	// FIXME should probably (also) use encodeURIComponent
+    userName = userName.replaceAll(/[ _]/g, "+");
+    console.log(userName);
+    imageURL = imgURL;
+    updateUserIcon(imageURL);
+};
+
+
+
+document.getElementById("iconInput").addEventListener("input", () => {
+    if( validateIcon()) {
+        imageURL = window.URL.createObjectURL(document.getElementById("iconInput").files[0]);
+        updateUserIcon(imageURL);
+    }
+	iconFile = document.getElementById("iconInput").files[0];
+	document.getElementById("iconInput").value = "";
 });
 
 const validateIcon = () => {
   let input = iconInputId.value;
   console.log(input);
-  let iconRegex = /\.(jpg|png|jpeg|svg|jfif|pjpeg|pjp)$/;
+  let iconRegex = /\.(jpg|png|jpeg|svg|jfif|pjpeg|pjp)$/i;
   isValid = iconRegex.test(input) || input == "";
   let iconErrorMsg = document.getElementById("iconErrorMsg");
   isValid
     ? iconErrorMsg.classList.add("hidden")
     : iconErrorMsg.classList.remove("hidden");
-
-  if (isValid) {
-    let url = window.URL.createObjectURL(iconInputId.files[0]);
-    updateUserIcon(url);
-  }
-
   return isValid;
 };
 
@@ -117,46 +132,72 @@ const validateForm = () => {
     confirmPassword(),
   ];
   let isValid = validators.reduce((a, b) => a && b);
-  if (!isValid) {
-    return false;
-  }
+	return isValid;
 };
 
+const removeImage = () => {
+    updateDefaultImage();
+	iconFile = null;
+};
+
+document.getElementById("removeImageBtn").addEventListener("click", removeImage);
+
+	/*
 document.getElementById("removeImageBtn").addEventListener("click", () => {
   profileImgId.src =
     "https://www.gravatar.com/avatar/" +
     Math.floor(Math.random() * 15 + 1) +
     "?s=200&d=retro";
 });
-
+		*/
 
 
 
 //Intercept the form submit and post from here instead
 document.getElementById("signupForm").addEventListener("submit", event => {
-  event.preventDefault();
-  //Post image and get icon_id
-  //TODO: Fix below: Dont know how to post image
-  fetch(`/api/${APIVERSION}/icons`, {
-      method: "post",
-      body: imgURL
-  }).then(response => (
-      response.json()
-  )).then(data => {
-      let formData = {
-          "name": document.getElementById("usernameInput").value,
-          "email": document.getElementById("emailInput").value,
-          "password": document.getElementById("passwordInput").value,
-          "icon_id": data.icon_id
-      }
+	event.preventDefault();
+	//Post image and get icon_id
+	//TODO: Fix below: Dont know how to post image
+
+
+	if (validateForm()) {
+	updateDefaultImageMaybe();
+
+	// If we have an image file, then send that
+	// otherwise, send the image src of the preview
+	// either way, use the snowflake we get back in the user post
+	const formData = new FormData(); // may or may not use this, i know
+	formData.append('icon', iconFile);
+	const iconPostOptions = (iconFile) ? {
+		method: 'POST'
+		, body: formData
+	} : {
+		method: 'POST'
+		, body: JSON.stringify({url: imageURL})
+		, headers: new Headers({'Content-Type': 'application/json'})
+	};
+
+    fetch(`/api/${APIVERSION}/icons`, iconPostOptions)
+		.then(response => response.json())
+		.then(data => {
+			let formData = {
+				"name": document.getElementById("usernameInput").value,
+				"email": document.getElementById("emailInput").value,
+				"password": document.getElementById("passwordInput").value,
+				"icon_id": data.icon_id
+			};
+
       return fetch(`/api/${APIVERSION}/users`, {
           method: "post",
           body: JSON.stringify(formData)
+					, headers: new Headers({'Content-Type': 'application/json'})
       });
-  }).then(response => (
-      response.json()
-  )).then(data => {
+  })
+		.then(() => {
       window.location.href = "/login";
   });
 
+	}
 });
+
+document.addEventListener('DOMContentLoaded', updateDefaultImage);

@@ -4,13 +4,18 @@ let channelContainer = document.getElementsByClassName('channel-container')[0];
 
 const setupEventListeners = () => {
     document.getElementById("addChannelBtn").addEventListener("click", () => {
-        formatInputField();
-        addChannel({"name":document.getElementById("newChannelName").value});
-        updateChannelList();
+        clickAddChannelBtn();
     });
     document.getElementById("newChannelName").addEventListener("input", () => {
         formatInputField();
     });
+}
+
+const clickAddChannelBtn = () => {
+    formatInputField();
+    addChannel({"name":document.getElementById("newChannelName").value});
+    updateChannelList();
+    document.body.scrollTop = document.body.scrollHeight;
 }
 
 const createChannel = (channelName) => {
@@ -19,6 +24,7 @@ const createChannel = (channelName) => {
 
     let drag = document.createElement('div');
     drag.classList.add('drag');
+    drag.appendChild(createDragIcon());
 
     let name = document.createElement('p');
     name.classList.add('channel-name');
@@ -38,6 +44,18 @@ const createChannel = (channelName) => {
     return channel;
 }
 
+const createDragIcon = () => {
+    let container = document.createElement("div");
+    container.classList.add("hamburger-icon");
+    let topBar = document.createElement("div");
+    let midBar = document.createElement("div");
+    let botBar = document.createElement("div");
+    container.appendChild(topBar);
+    container.appendChild(midBar);
+    container.appendChild(botBar);
+    return container;
+
+}
 
 const initializePage = () => {
     getData();
@@ -124,6 +142,27 @@ const updateChannels = () => {
         }
     });
 }
+
+
+
+//Prevent form from submitting when pressing enter
+document.getElementById("newChannelName").addEventListener("keypress", (evt) => {
+    if (evt.key === "Enter") {
+        evt.preventDefault();
+        //Create channel when enter is pressed if input field has data
+        if(document.getElementById("newChannelName").value) {
+            clickAddChannelBtn();
+        }
+    }
+});
+
+
+//Allow channels to be sorted
+Sortable.create(channelListContainer, {
+    handle: '.drag',
+    animation: 100
+});
+
 
 
 initializePage();

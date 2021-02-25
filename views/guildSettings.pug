@@ -1,6 +1,7 @@
 extends layout.pug
 block style
     link(rel='stylesheet' href='/styles/guildSettings.css')
+    script(defer, src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js")
     script(defer, src="/scripts/appSettings.js") 
     script(defer, src="/scripts/guildSettings.js") 
     script(defer, src="/scripts/channels.js") 
@@ -33,7 +34,7 @@ block content
                                     span#iconErrorMsg.error-message.hidden Incorrect file type
                         div.channel-area
                             h2 Channels
-                            div.channel-container
+                            div.channel-container#channelListContainer
                                 //- This is where channels get imported                             
                             //- Add new channel box
                             div.channel.add

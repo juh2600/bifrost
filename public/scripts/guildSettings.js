@@ -101,6 +101,12 @@ const removeImage = () => {
 //Intercept the form submit and post from here instead
 document.getElementById("updateGuildForm").addEventListener("submit", event => {
     event.preventDefault();
+
+    //Renumber the positions of the channels
+    updatePositions();
+    //Update the js object containing the channel list
+    updateChannelList();
+
     //Post image and get icon_id
     //TODO: Fix below: Dont know how to post image
     if(imageHasBeenChanged) {

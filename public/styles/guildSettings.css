@@ -111,6 +111,7 @@ h2 {
 
 .channel-name {
     margin:0;
+    align-self: center;
 }
 
 .channel-delete {
@@ -160,6 +161,32 @@ h2 {
 .form-block .buttons > .input-label, .form-block .buttons > button {
     display:inline-block;
 }
+
+
+.hamburger-icon {
+    cursor: pointer;
+    display:flex;
+    flex-direction:column;
+    justify-content: space-around;
+    max-width: 20px;
+    margin: auto;
+    height:100%;
+    box-sizing: border-box;
+}
+.hamburger-icon > div {
+    height:2px;
+    width:100%;
+    background-color: #333;
+    box-sizing: border-box;
+    border-radius: 2px;
+
+}
+
+.drag {
+    box-sizing: border-box;
+
+}
+
 
 .link {
     color:var(--color-danger);

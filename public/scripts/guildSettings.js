@@ -87,10 +87,7 @@ const validateIcon = () => {
 };
 
 
-const deleteGuild = () => {
-	//TODO: api delete fetch request
-	console.log("delete");
-};
+
 document.getElementById("deleteGuildBtn").addEventListener("click", deleteGuild);
 
 const updateGuildIcon = (imgURL) => {

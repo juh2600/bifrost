@@ -25,15 +25,17 @@ const validateGuildName = () => {
     return isValid;
 }
 
-document.getElementById("guildNameInput").addEventListener("focusout", () => {
-    if(imageURL.includes("https://ui-avatars.com/api/?")) updateDefaultImage();
-});
+const updateDefaultImageMaybe = () => {
+	if(imageURL.includes("https://ui-avatars.com/api/?")) updateDefaultImage();
+};
+document.getElementById("guildNameInput").addEventListener("focusout", updateDefaultImageMaybe);
 
 const updateDefaultImage = () => {
     let guildName = document.getElementById("guildNameInput").value;
+	// FIXME should probably (also) use encodeURIComponent
     guildName = guildName.replaceAll(/[ _]/g, "+");
     console.log(guildName);
-    imageURL = "https://ui-avatars.com/api/?background=random&name=" + guildName;
+    imageURL = `https://ui-avatars.com/api/?background=${getUniqueColor()}&name=` + guildName;
     updateGuildIcon(imageURL);
 }
 
@@ -77,6 +79,7 @@ document.getElementById("removeImageBtn").addEventListener("click", () => {remov
 
 const removeImage = () => {
     updateDefaultImage();
+	iconFile = null;
 } 
 
 
@@ -86,14 +89,27 @@ document.getElementById("createGuildForm").addEventListener("submit", event => {
     event.preventDefault();
     //Post image and get icon_id
     //TODO: Fix below: Dont know how to post image
-	const formData = new FormData();
+
+
+	updateDefaultImageMaybe();
+
+	// If we have an image file, then send that
+	// otherwise, send the image src of the preview
+	// either way, use the snowflake we get back in the guild post
+	const formData = new FormData(); // may or may not use this, i know
 	formData.append('icon', iconFile);
-    fetch(`/api/${APIVERSION}/icons`, {
-        method: "post",
-        body: formData
-    }).then(response => (
-        response.json()
-    )).then(data => {
+	const iconPostOptions = (iconFile) ? {
+		method: 'POST'
+		, body: formData
+	} : {
+		method: 'POST'
+		, body: JSON.stringify({url: imageURL})
+		, headers: new Headers({'Content-Type': 'application/json'})
+	};
+
+    fetch(`/api/${APIVERSION}/icons`, iconPostOptions)
+		.then(response => response.json())
+		.then(data => {
         let formData = {
             "name": document.getElementById("guildNameInput").value,
             "icon_id": data.icon_id

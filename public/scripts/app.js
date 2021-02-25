@@ -7,22 +7,20 @@ let usersList = [];
 
 //Get current guild and channel ids out of the URL if they are present
 const getIdFromURL = (typeOfID) => {
-    let url = window.location.href;
-    if(typeOfID == "guild") {
-        try {
-            return (url.split("/app")[1].split("/")[1]);
-        } catch (error) {}
-    }
-    else if (typeOfID = "channel") {
-        try {
-            return (url.split("/app")[1].split("/")[2]);
-        } catch (error) {}
-    }
-    return null;
-}
+  let url = window.location.href;
+  if (typeOfID == "guild") {
+    try {
+      return url.split("/app")[1].split("/")[1];
+    } catch (error) {}
+  } else if ((typeOfID = "channel")) {
+    try {
+      return url.split("/app")[1].split("/")[2];
+    } catch (error) {}
+  }
+  return null;
+};
 selectedGuildId = getIdFromURL("guild");
 selectedChannelId = getIdFromURL("channel");
-
 
 const updateChannelList = (addToHistory) => {
     clearChannelList();
@@ -34,64 +32,70 @@ const updateChannelList = (addToHistory) => {
         channelList.sort((a, b) => (a.position > b.position) ? 1 : -1);
         createChannelList(data, addToHistory);
     });
-}
+};
 const clearChannelList = () => {
-    document.getElementById("channelList").innerHTML = "";   
-}
+  document.getElementById("channelList").innerHTML = "";
+};
 const createChannelList = (channelList, addToHistory) => {
-    //create divs and append to container
-    channelList.forEach(channel => {
-        let div = document.createElement("div");
-        div.classList.add("channel");
-        div.dataset.channelId = channel.channel_id;
-        div.addEventListener("click", () => changeChannel(channel.channel_id, true));
-        let name = document.createElement("p");
-        name.innerHTML = "#" + channel.name;
-        div.appendChild(name);
-        document.getElementById("channelList").appendChild(div);
-    });
+  //create divs and append to container
+  channelList.forEach((channel) => {
+    let div = document.createElement("div");
+    div.classList.add("channel");
+    div.dataset.channelId = channel.channel_id;
+    div.addEventListener("click", () =>
+      changeChannel(channel.channel_id, true)
+    );
+    let name = document.createElement("p");
+    name.innerHTML = "#" + channel.name;
+    div.appendChild(name);
+    document.getElementById("channelList").appendChild(div);
+  });
 
-    //show selected channel. if channel is invalid or unspecified,show first channel in list
-    if(selectedChannelId) {
-        if(!changeChannel(selectedChannelId, addToHistory)) changeChannel(channelList[0].channel_id, addToHistory);
-    }
-    else changeChannel(channelList[0].channel_id, addToHistory);
-}
-
+  //show selected channel. if channel is invalid or unspecified,show first channel in list
+  if (selectedChannelId) {
+    if (!changeChannel(selectedChannelId, addToHistory))
+      changeChannel(channelList[0].channel_id, addToHistory);
+  } else changeChannel(channelList[0].channel_id, addToHistory);
+};
 
 //Get messages for new channel, change selected channel styles
 const changeChannel = (newChannelId, addToHistory) => {
-    let newChannelExists = false;
-    let newChannelName;
-    //Search list for new channel
-    channelList.forEach(channel => {
-        if(channel.channel_id == newChannelId) {
-            newChannelExists = true;
-            newChannelName = channel.name;
-        }
-    });
-    //if new channel exists, switch to it
-    if(newChannelExists) {
-        //Remove selected from all channels
-        [...document.getElementById("channelList").children].forEach(channel => {
-            channel.classList.remove("selected");
-        });
-        //add selected class to new selected channel
-        document.querySelector('[data-channel-id="'+ newChannelId +'"]').classList.add("selected");
-        //Change current channel name
-        document.getElementById("channelName").innerHTML = `#${newChannelName}`;
-        //Update selected channel id
-        selectedChannelId = newChannelId;
-        
-        //Update url and history
-        if(addToHistory) updateHistory();
-
-        //Repopulate messages
-        getMessages();
+  let newChannelExists = false;
+  let newChannelName;
+  //Search list for new channel
+  channelList.forEach((channel) => {
+    if (channel.channel_id == newChannelId) {
+      newChannelExists = true;
+      newChannelName = channel.name;
     }
-    return newChannelExists;
-}
+  });
+  //if new channel exists, switch to it
+  if (newChannelExists) {
+    //Remove selected from all channels
+    [...document.getElementById("channelList").children].forEach((channel) => {
+      channel.classList.remove("selected");
+    });
+    //add selected class to new selected channel
+    document
+      .querySelector('[data-channel-id="' + newChannelId + '"]')
+      .classList.add("selected");
+    //Change current channel name
+    document.getElementById("channelName").innerHTML = `#${newChannelName}`;
 
+    //Update selected channel id
+    socket.emit("old room", selectedChannelId);
+    selectedChannelId = newChannelId;
+    socket.emit("new room", selectedChannelId);
+
+    //Update url and history
+    if (addToHistory) updateHistory();
+
+    //Repopulate messages
+    getMessages();
+  }
+
+  return newChannelExists;
+};
 
 const getMessages = () => {
     fetch(`/api/${APIVERSION}/guilds/${selectedGuildId}/text-channels/${selectedChannelId}/messages?limit=32`)
@@ -101,11 +105,11 @@ const getMessages = () => {
         clearMessagesArea();
         populateMessages();
     });
-}
+};
 
 const clearMessagesArea = () => {
-    document.getElementById("chatArea").innerHTML = "";
-}
+  document.getElementById("chatArea").innerHTML = "";
+};
 
 //Create message div for each message and append to screen
 const populateMessages = () => {
@@ -212,16 +216,16 @@ const changeGuild = (newGuildId, addToHistory) => {
         hideEmptyScreen();
     }
     else {
-        //TODO: Show no channel selected page
+        //Show no channel selected page
         showEmptyScreen();
     }
 }
 
 
 const updateHistory = () => {
-    let newURL = `/app/${selectedGuildId}/${selectedChannelId}`;
-    history.pushState("What I was typing before", "", newURL);
-}
+  let newURL = `/app/${selectedGuildId}/${selectedChannelId}`;
+  history.pushState("What I was typing before", "", newURL);
+};
 
 //Callback when user clicks back button
 window.onpopstate = () => {
@@ -253,88 +257,89 @@ const hideEmptyScreen = () => {
 
 
 //Make 3 dots icon
-document.getElementById("guildSettingsBtn").innerHTML = "<div class='three-dots'><div></div><div></div><div></div></div>";
+document.getElementById("guildSettingsBtn").innerHTML =
+  "<div class='three-dots'><div></div><div></div><div></div></div>";
 
 document.getElementById("guildSettingsBtn").addEventListener("click", () => {
-    //Route to guild settings
-    window.location.href = `/guilds/${selectedGuildId}/settings`;
+  //Route to guild settings
+  window.location.href = `/guilds/${selectedGuildId}/settings`;
 });
-
 
 document.getElementById("createGuildBtn").addEventListener("click", () => {
-    //Route to createGuild page
-    window.location.href = "/guilds/create";
+  //Route to createGuild page
+  window.location.href = "/guilds/create";
 });
 
-
 //Add guild to list of guilds. Pass in a guild object
-const addGuild = guild => {
-    let guildDiv = document.createElement("div");
-    guildDiv.classList.add("guild");
-    guildDiv.dataset.guildId = guild.guild_id;
-    guildDiv.dataset.guildName = guild.name;
-    setupTooltip(guildDiv, guildDiv.dataset.guildName);
-    guild.addEventListener("click", () => {changeGuild(guild.guild_id, true)});
+const addGuild = (guild) => {
+  let guildDiv = document.createElement("div");
+  guildDiv.classList.add("guild");
+  guildDiv.dataset.guildId = guild.guild_id;
+  guildDiv.dataset.guildName = guild.name;
+  setupTooltip(guildDiv, guildDiv.dataset.guildName);
+  guild.addEventListener("click", () => {
+    changeGuild(guild.guild_id, true);
+  });
 
+  let imgContainer = document.createElement("div");
+  imgContainer.classList.add("img-circle");
 
-    let imgContainer = document.createElement("div");
-    imgContainer.classList.add("img-circle");
+  let image = document.createElement("img");
+  image.src = "/api/v0/icons/" + guild.icon_id;
+  image.classList.add("img");
 
-    let image = document.createElement("img");
-    image.src = "/api/v0/icons/" + guild.icon_id;
-    image.classList.add("img");
-
-    imgContainer.appendChild(image);
-    guildDiv.appendChild(imgContainer);
-    document.getElementById("guildCollection").appendChild(guildDiv);
-}
+  imgContainer.appendChild(image);
+  guildDiv.appendChild(imgContainer);
+  document.getElementById("guildCollection").appendChild(guildDiv);
+};
 
 //Delete guild by ID
-const removeGuild = guildId => {
-    document.getElementById("guildCollection").querySelector(`[data-guild-id='${guildId}']`).remove();
-}
+const removeGuild = (guildId) => {
+  document
+    .getElementById("guildCollection")
+    .querySelector(`[data-guild-id='${guildId}']`)
+    .remove();
+};
 
-
-
-//Show guild name on hover 
+//Show guild name on hover
 const setupTooltip = (guildDiv, message) => {
-    let tooltip = document.getElementById("tooltip");
-    guildDiv.addEventListener("mouseover", () => {
-        tooltip.style.display = "block";
-        tooltip.style.left = offset(guildDiv).left + 85;
-        tooltip.style.top = offset(guildDiv).top + 17;
-        tooltip.innerHTML = message;
-    });
-    guildDiv.addEventListener("mouseout", () => {
-        tooltip.style.display = "none";
-    });
-
-}
+  let tooltip = document.getElementById("tooltip");
+  guildDiv.addEventListener("mouseover", () => {
+    tooltip.style.display = "block";
+    tooltip.style.left = offset(guildDiv).left + 85;
+    tooltip.style.top = offset(guildDiv).top + 17;
+    tooltip.innerHTML = message;
+  });
+  guildDiv.addEventListener("mouseout", () => {
+    tooltip.style.display = "none";
+  });
+};
 
 //setup tool tip for all guilds that were rendered server side
-[...document.getElementById("guildCollection").children].forEach(guild => {
-    setupTooltip(guild, guild.dataset.guildName);
-    guild.addEventListener("click", () => {changeGuild(guild.dataset.guildId, true)});
+[...document.getElementById("guildCollection").children].forEach((guild) => {
+  setupTooltip(guild, guild.dataset.guildName);
+  guild.addEventListener("click", () => {
+    changeGuild(guild.dataset.guildId, true);
+  });
 });
 
 setupTooltip(document.getElementById("createGuildBtn"), "Add Guild");
 
-
 //https://plainjs.com/javascript/styles/get-the-position-of-an-element-relative-to-the-document-24/
 //Used to get the position of an element on the screen
 const offset = (el) => {
-    let rect = el.getBoundingClientRect(),
+  let rect = el.getBoundingClientRect(),
     scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
     scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    return { top: rect.top + scrollTop, left: rect.left + scrollLeft }
-}
-
+  return { top: rect.top + scrollTop, left: rect.left + scrollLeft };
+};
 
 //Route to user settings when click on profile
 document.getElementById("currentUser").addEventListener("click", () => {
-    window.location.href = `/users/${document.getElementById("currentUser").dataset.userId}/settings`;
+  window.location.href = `/users/${
+    document.getElementById("currentUser").dataset.userId
+  }/settings`;
 });
-
 
 //Get and store list of users
 fetch(`/api/${APIVERSION}/users`)

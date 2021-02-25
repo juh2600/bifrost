@@ -2,7 +2,6 @@ let imageURL = document.getElementById("userImage").src;
 let imageHasBeenChanged = false;
 let user_id = document.getElementById("userIdField").value;
 
-
 document.getElementById("emailInput").addEventListener("input", () => {
   validateEmail();
 });
@@ -104,7 +103,9 @@ const validateForm = () => {
   }
 };
 
-
+const logout = () => {
+  location.replace("http://localhost:3000/logout");
+};
 
 //Intercept the form submit and post from here instead
 document.getElementById("updateUserForm").addEventListener("submit", event => {
@@ -122,27 +123,25 @@ document.getElementById("updateUserForm").addEventListener("submit", event => {
           response.json()
       )).then(data => {
           window.location.href = "/app";
-      });
-  } else {
-      updateGuild({}).then(response => (
-          response.json()
-      )).then(data => {
+        });
+    } else {
+      updateGuild({})
+        .then((response) => response.json())
+        .then((data) => {
           window.location.href = "/app";
-      });
-  }
+        });
+    }
+  });
 
-});
-
-
-const updateUser = async(data) => {
+const updateUser = async (data) => {
   let formData = {
-      "name": document.getElementById("usernameInput").value,
-      "email": document.getElementById("emailInput").value
-  }
-  if(data.icon_id) formData.icon_id = data.icon_id;
+    name: document.getElementById("usernameInput").value,
+    email: document.getElementById("emailInput").value,
+  };
+  if (data.icon_id) formData.icon_id = data.icon_id;
 
   return fetch(`/api/${APIVERSION}/users/${user_id}`, {
       method: "put",
       body: JSON.stringify(formData)
   });
-}
+};

@@ -54,6 +54,7 @@ const guildSettings = (req, res) => {
     if(dbGuild.length > 0){
       res.render('guildSettings', {
         guild: dbGuild[0]
+				, apiVersion
       });
     }
   });

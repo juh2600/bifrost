@@ -2,8 +2,6 @@ let imageURL = document.getElementById("guildImage").src;
 let fileInput = document.getElementById("iconInput")
 let iconFile = null;
 
-// FIXME allow sending default guild icon
-
 document.getElementById("guildNameInput").addEventListener("input", () => {
     validateGuildName();
 });
@@ -38,6 +36,7 @@ const updateDefaultImage = () => {
     imageURL = `https://ui-avatars.com/api/?background=${getUniqueColor()}&name=` + guildName;
     updateGuildIcon(imageURL);
 }
+
 
 
 document.getElementById("iconInput").addEventListener("input", () => {

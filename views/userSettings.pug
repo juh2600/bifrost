@@ -4,7 +4,7 @@ block style
     script(defer, src="/scripts/appSettings.js") 
     script(defer, src="/scripts/userSettings.js") 
 block content
-    input#userIdField(type="hidden" value=user_id) 
+    input#userIdField(type="hidden" value=currUser.user_id) 
     section.main
         form#updateUserForm(onsubmit="return validateForm()" method="post")
             section.content
@@ -23,7 +23,7 @@ block content
                         div.input-area
                             div.form-block
                                 label.input-label Email
-                                input#emailInput(type="text", name="newEmail", placeholder="Email", value=currUser.email).input-field
+                                input#emailInput(type="text", name="newEmail", placeholder="Email", value=currUser.email, disabled).input-field
                                 span#emailErrorMsg.error-message.hidden Invalid email
                             div.form-block
                                 label.input-label Username

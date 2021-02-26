@@ -285,7 +285,7 @@ const schemas = {
 		, ['user_id', 'name', 'discriminator', 'password', 'email', 'icon_id'] // keys
 		, ['user_id'] // requireds
 		, [] // nullables
-		, ['user_id'] // immutables
+		, ['user_id', 'email'] // immutables
 		, ['user_id', 'discriminator'] // automatics
 		, ['user_id'] // update keys
 		, { // type samples

@@ -51,12 +51,16 @@ const updateDefaultImageMaybe = () => {
 };
 
 document.getElementById("usernameInput").addEventListener("focusout", updateDefaultImageMaybe);
+document.getElementById("usernameInput").addEventListener("input", () => {
+  document.getElementById("usernamePreview").innerHTML = document.getElementById("usernameInput").value;
+});
 
 const updateDefaultImage = () => {
     let userName = document.getElementById("usernameInput").value;
 	// FIXME should probably (also) use encodeURIComponent
     userName = userName.replaceAll(/[ _]/g, "+");
     console.log(userName);
+    imgURL = defaultImage;
     updateUserIcon(imgURL);
 };
 

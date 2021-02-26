@@ -85,6 +85,11 @@ h1 {
     display:block;
     margin:0.5em auto 0 auto;
 }
+
+input[type="text"]:disabled {
+    background-color: #ccc;
+}
+
 @media all and (min-height:500px) {
     .button-area {
         align-items: flex-start;

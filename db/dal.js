@@ -998,6 +998,7 @@ const getUsers = async (options = {
 	// FIXME don't leak hashes! ever! what does that mean? dunno. make up your mind
 	return db.execute(...schemas.users.getSelectStmt(opt_string, params))
 		.then(res => res.rows)
+		.then(rows => rows.map(row => { delete row.password; return row; }))
 		.then(rows => rows.map(convertTypesForDistribution))
 	;
 };

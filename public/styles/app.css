@@ -68,6 +68,8 @@
 .chat-area {
   grid-area: chat-area;
   background-color: var(--color-bg-3);
+  overflow-x: hidden;
+
 }
 .message-area {
   grid-area: message-area;

@@ -1,6 +1,6 @@
 const socket = io();
 
-const chatAreaId = document.getElementById("chatArea");
+const chatAreaId = document.getElementsByClassName("chat-area")[0];
 
 //TODO: Send message to dal. dal sends message to db. I lost my train of thot
 // done! -- jtreed

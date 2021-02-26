@@ -145,8 +145,11 @@ const guildSettings = (req, res) => {
   });
 };
 const userSettings = (req, res) => {
-  res.render("userSettings", {
-    user_id: req.params.snowflake,
+  db.getUsers({"user_id": req.params.snowflake}).then(dbUser => {
+    res.render("userSettings", {
+      apiVersion,
+      currUser: dbUser[0]
+    });
   });
 };
 

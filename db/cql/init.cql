@@ -38,5 +38,7 @@ CREATE TABLE bifrost.users (
   email text,
   password text,
   icon_id bigint,
-  PRIMARY KEY (user_id)
-  );
+  PRIMARY KEY (user_id, email)
+  ) WITH CLUSTERING ORDER BY (email ASC);
+
+CREATE INDEX user_email_idx ON bifrost.users (email) ;

@@ -26,14 +26,20 @@ app.use(bodyParser.json());
 
 ////////// express-session
 const session = require("express-session");
+// FIXME implement suggestions at https://blog.jscrambler.com/best-practices-for-secure-session-management-in-node/
 app.use(
   session({
-    secret: "top-secret",
-    resave: false,
-    saveUninitialized: true,
+    secret: "top-secret" // FIXME move to sekrits or .env or something
+    //, resave: false
+    , saveUninitialized: false
   })
 );
 ///////////
+
+app.use((req, res, next) => {
+	console.log(req.session);
+	next();
+});
 
 logger.info("Configured Express.");
 

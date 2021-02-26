@@ -1047,6 +1047,19 @@ const deleteUser = async (user_snowflake) => {
 	})).then(() => {});
 };
 
+// returns a stringified snowflake or null, always---never throws
+const authenticate = async (email, password) => {
+	return db.execute('SELECT user_id, password FROM users WHERE email = ?;', [email], { prepare: true })
+		//.then(res => { console.log('Response', res); return res; })
+		.then(res => res.rows[0])
+		.then(async pair => {
+			if (await hasher.verify(pair.password, password))
+				return pair.user_id.toString();
+			return null;
+		})
+		.catch(() => null);
+};
+
 /*************************************************************************
  * icons
  */
@@ -1112,8 +1125,8 @@ const executeBatch = async (stmts) => {
 module.exports = {
 	Schema, schemas, executeRaw, executeBatch
 	, createGuild, getGuilds, updateGuild, deleteGuild
-	, createChannel, getChannels, updateChannel, deleteChannel, clearChannels, addChannelToGuild
+	, createChannel, getChannels, updateChannel, deleteChannel, clearChannels, addChannelToGuild // FIXME that last one doesn't work yet
 	, createMessage, getMessages, updateMessage, deleteMessage
-	, createUser, getUsers, updateUser, deleteUser
+	, createUser, getUsers, updateUser, deleteUser, authenticate
 	, createIcon, getIcon, iconExists
 };

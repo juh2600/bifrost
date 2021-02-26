@@ -21,12 +21,12 @@ block content
 
         //- TODO: get data from session
         div.profile-area
-            div#currentUser.user(data-user-id = "6969696969696969")
+            div#currentUser.user(data-user-id = user.user_id)
                 div.icon.img-circle
-                    img(src=`/api/${apiVersion}/icons/` + "12345678").img
+                    img(src=`/api/${apiVersion}/icons/${user.icon_id}`).img
                 div.name-container 
-                    p.name Foggy
-                    p.discriminator #1645
+                    p.name #{user.name}
+                    p.discriminator ##{user.discriminator}
 
 
         div.guild-list

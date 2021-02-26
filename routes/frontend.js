@@ -9,6 +9,7 @@ const configure = (obj) => {
 
 const handle = (code, req, res) => {
 	return errors => {
+		console.error(errors);
 		res
 			.status(code)
 			.json(errors)
@@ -28,14 +29,20 @@ const index = (req, res) => {
 
 const app = (req, res) => {
   db.getGuilds().then(dbGuildList => {
-    db.getUsers().then(dbUsersList => {
-      res.render("app", {
+    return db.getUsers().then(dbUsersList => {
+			const data = {
         guildList: dbGuildList,
         userList: dbUsersList,
+				user: dbUsersList.filter(user => user.user_id == req.session.user_id)[0],
 				apiVersion
-      });
+      };
+			if (!data.user) throw ['User not found']
+			console.log(data);
+			console.log(req.session);
+      res.render("app", data);
     });
-  });
+  })
+	.catch(handle(500, req, res));
 
   console.log(JSON.stringify(req.session));
 };
@@ -72,6 +79,7 @@ const createGuild = (req, res) => {
 
 //////////
 const createUser = (req, res) => {
+	/*
   const user = {
     username: req.body.username,
     email: req.body.email,
@@ -79,10 +87,23 @@ const createUser = (req, res) => {
     newUserIcon: req.body.newUserIcon,
   };
   usersArray.push(user);
+	*/
   res.redirect("/");
 };
 
-const authorize = (req, res) => {
+// Shall create the session if they pass, or not do that if they don't
+const attemptLogIn = (req, res) => {
+	db.authenticate(req.body.email, req.body.password)
+		.then(user_id => {
+		if (user_id) {
+			req.session.user_id = user_id;
+			res.status(303).location('/app').end();
+			return;
+		}
+		res.sendStatus(401);
+		return;
+	});
+	/*
   usersArray.forEach((item, index) => {
     if (item.email === req.body.email && item.password === req.body.password) {
       req.session.username = item.username;
@@ -90,6 +111,27 @@ const authorize = (req, res) => {
     }
   });
   res.redirect("/login");
+	*/
+};
+
+const authorize = (req, res) => {
+	/*
+  usersArray.forEach((item, index) => {
+    if (item.email === req.body.email && item.password === req.body.password) {
+      req.session.username = item.username;
+      res.redirect("/app");
+    }
+  });
+  res.redirect("/login");
+	*/
+	db.authenticate(req.body.email, req.body.password).then(user_id => {
+		if (user_id) {
+			res.sendStatus(200);
+			return;
+		}
+		res.sendStatus(401);
+		return;
+	});
 };
 
 const guildSettings = (req, res) => {
@@ -144,11 +186,19 @@ const routes = [
     handler: signUp,
   },
   {
+		desc: "Accepts nothing; returns 200 OK with login page",
     uri: "/login",
     methods: ["get"],
     handler: logIn,
   },
   {
+		desc: "Accepts an email and password; returns either 303 See Other to /app or 401 Unauthorized",
+    uri: "/login",
+    methods: ["post"],
+    handler: attemptLogIn,
+  },
+  {
+		desc: "Accepts an email and password; returns either 200 OK or 401 Unauthorized",
     uri: "/authorize",
     methods: ["post"],
     handler: authorize,

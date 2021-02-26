@@ -17,12 +17,24 @@ document.getElementById("loginForm").addEventListener("submit", event => {
         password: document.getElementById("passwordInput").value
     }
     //TODO: ROUTE DOESNT EXIST YET. ROUTE TO APP IF DATA IS 200
-    fetch(`/login`, {
+    fetch(`/authorize`, {
         method: "post",
-        body: userObj
+        body: JSON.stringify(userObj)
+			, headers: new Headers({'Content-Type':'application/json'})
     }).then(response => {
         console.log(response);
+			if (response.ok) {
         //TODO: If response returns a 200, route to app page
+			fetch(`/login`, {
+					method: "post",
+					body: JSON.stringify(userObj)
+				, headers: new Headers({'Content-Type':'application/json'})
+			})
+				.then(res => {
+					window.location = res.url;
+				});
+			} else {
         //IF not, stay here and show errors
+			}
     });
 });

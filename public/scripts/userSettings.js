@@ -1,8 +1,10 @@
-let imageURL = document.getElementById("userImage").src;
+let imgURL = document.getElementById("userImage").src;
 let fileInput = document.getElementById("iconInput")
 let iconFile = null;
 let imageHasBeenChanged = false;
 let user_id = document.getElementById("userIdField").value;
+let defaultImage = `https://www.gravatar.com/avatar/${Math.floor(Math.random() * 15 + 1)}?s=200&d=retro`;
+
 
 document.getElementById("emailInput").addEventListener("input", () => {
   validateEmail();
@@ -44,19 +46,22 @@ const validateUsername = () => {
 };
 
 const updateDefaultImageMaybe = () => {
-	if(imageURL.includes(`https://www.gravatar.com/avatar/`))
+	if(imgURL.includes(`https://www.gravatar.com/avatar/`))
 		updateDefaultImage();
 };
 
 document.getElementById("usernameInput").addEventListener("focusout", updateDefaultImageMaybe);
+document.getElementById("usernameInput").addEventListener("input", () => {
+  document.getElementById("usernamePreview").innerHTML = document.getElementById("usernameInput").value;
+});
 
 const updateDefaultImage = () => {
     let userName = document.getElementById("usernameInput").value;
 	// FIXME should probably (also) use encodeURIComponent
     userName = userName.replaceAll(/[ _]/g, "+");
     console.log(userName);
-    imageURL = imgURL;
-    updateUserIcon(imageURL);
+    imgURL = defaultImage;
+    updateUserIcon(imgURL);
 };
 
 
@@ -136,7 +141,7 @@ document.getElementById("updateUserForm").addEventListener("submit", event => {
 		, body: formData
 	} : {
 		method: 'POST'
-		, body: JSON.stringify({url: imageURL})
+		, body: JSON.stringify({url: imgURL})
 		, headers: new Headers({'Content-Type': 'application/json'})
 	};
   if(imageHasBeenChanged) {

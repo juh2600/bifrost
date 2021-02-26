@@ -26,19 +26,28 @@ app.use(bodyParser.json());
 
 ////////// express-session
 const session = require("express-session");
+// FIXME implement suggestions at https://blog.jscrambler.com/best-practices-for-secure-session-management-in-node/
 app.use(
   session({
-    secret: "top-secret",
-    resave: false,
-    saveUninitialized: true,
+    secret: "top-secret" // FIXME move to sekrits or .env or something
+    //, resave: false
+    , saveUninitialized: false
   })
 );
 ///////////
+
+app.use((req, res, next) => {
+	console.log(req.session);
+	next();
+});
 
 logger.info("Configured Express.");
 
 logger.info('Instantiating globals...');
 const db = require('./db/dal');
+////////// socket.io
+const socketyBoi = require('./sockets')({db, app});
+///////////
 logger.info('Instantiated globals.');
 
 logger.info('Configuring routes...');
@@ -74,26 +83,4 @@ logger.info("Configured routes.");
 
 logger.info(`Listening on port ${process.env.PORT}`);
 
-////////// socket.io
-const socketio = require("socket.io");
-const server = require("http").createServer(app);
-const io = socketio(server);
-
-io.on("connection", (socket) => {
-  socket.on("old room", (room) => {
-    socket.leave(room);
-  });
-  socket.on("new room", (room) => {
-    socket.join(room);
-  });
-
-  socket.on("message", (msg) => {
-    console.log(msg);
-  });
-  socket.on("chatMessage", (msg) => {
-    io.to(msg.currentChannel).emit("message", msg.body);
-  });
-});
-
-///////////
-server.listen(process.env.PORT);
+socketyBoi.listen(process.env.PORT); // ??

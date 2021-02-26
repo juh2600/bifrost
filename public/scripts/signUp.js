@@ -93,8 +93,7 @@ const updateDefaultImage = () => {
 	// FIXME should probably (also) use encodeURIComponent
     userName = userName.replaceAll(/[ _]/g, "+");
     console.log(userName);
-    imageURL = imgURL;
-    updateUserIcon(imageURL);
+    updateUserIcon(imgURL);
 };
 
 

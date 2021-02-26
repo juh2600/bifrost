@@ -4,7 +4,7 @@ block style
     script(defer, src="/scripts/appSettings.js") 
     script(defer, src="/scripts/userSettings.js") 
 block content
-    input#userIdField(type="hidden" value=user_id) 
+    input#userIdField(type="hidden" value=currUser.user_id) 
     section.main
         form#updateUserForm(onsubmit="return validateForm()" method="post")
             section.content
@@ -15,20 +15,20 @@ block content
                     div.guild-form
                         div.img-container
                             div.img-circle.img-large
-                                img#userImage(src="https://www.gravatar.com/avatar/" + Math.floor(Math.random() * 15 + 1) + "?s=200&d=retro" alt="User Icon").img
+                                img#userImage(src=`/api/${apiVersion}/icons/${currUser.icon_id}` alt="User Icon").img
                             button#removeImageBtn(type="button").link remove
-                            p#usernamePreview Username
-                            p#discrimatorPreview #1645
+                            p#usernamePreview #{currUser.name}
+                            p#discriminatorPreview ##{currUser.discriminator}
                             button#logoutBtn(onclick="logout()" type="button").btn.btn-outline-red.logout Logout 
                         div.input-area
                             div.form-block
                                 label.input-label Email
-                                input#emailInput(type="text", name="newEmail" placeholder="Email").input-field
+                                input#emailInput(type="text", name="newEmail", placeholder="Email", value=currUser.email, disabled).input-field
                                 span#emailErrorMsg.error-message.hidden Invalid email
                             div.form-block
                                 label.input-label Username
-                                input#usernameInput(type="text", name="newUsername" placeholder="Username").input-field
-                                span#usernameErrorMsg.error-message.hidden You did it wrong sir 
+                                input#usernameInput(type="text", name="newUsername", placeholder="Username", value=currUser.name).input-field
+                                span#usernameErrorMsg.error-message.hidden Username is too long 
                             div.form-block
                                 label.input-label User Icon
                                 label.input-label.file-input.btn.btn-purple Upload Image

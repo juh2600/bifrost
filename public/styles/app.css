@@ -414,7 +414,7 @@
 
 
 
-#cumpusSection {
+#cumpusSection, .no-channel-div {
     width:80%;
     position: absolute;
     top: 45%;

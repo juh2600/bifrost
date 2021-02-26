@@ -27,6 +27,14 @@ const index = (req, res) => {
   // console.log(usersArray);
 };
 
+const requireAuth = (req, res, next) => {
+	if (req.session.user_id) {
+		next();
+	} else {
+		res.redirect('/');
+	}
+};
+
 const app = (req, res) => {
   db.getGuilds().then(dbGuildList => {
     return db.getUsers().then(dbUsersList => {
@@ -36,7 +44,10 @@ const app = (req, res) => {
 				user: dbUsersList.filter(user => user.user_id == req.session.user_id)[0],
 				apiVersion
       };
-			if (!data.user) throw ['User not found']
+			if (!data.user) {
+				res.redirect('/');
+				return;
+			}
 			console.log(data);
 			console.log(req.session);
       res.render("app", data);
@@ -78,18 +89,6 @@ const createGuild = (req, res) => {
 };
 
 //////////
-const createUser = (req, res) => {
-	/*
-  const user = {
-    username: req.body.username,
-    email: req.body.email,
-    password: req.body.password,
-    newUserIcon: req.body.newUserIcon,
-  };
-  usersArray.push(user);
-	*/
-  res.redirect("/");
-};
 
 // Shall create the session if they pass, or not do that if they don't
 const attemptLogIn = (req, res) => {
@@ -103,27 +102,9 @@ const attemptLogIn = (req, res) => {
 		res.sendStatus(401);
 		return;
 	});
-	/*
-  usersArray.forEach((item, index) => {
-    if (item.email === req.body.email && item.password === req.body.password) {
-      req.session.username = item.username;
-      res.redirect("/app");
-    }
-  });
-  res.redirect("/login");
-	*/
 };
 
 const authorize = (req, res) => {
-	/*
-  usersArray.forEach((item, index) => {
-    if (item.email === req.body.email && item.password === req.body.password) {
-      req.session.username = item.username;
-      res.redirect("/app");
-    }
-  });
-  res.redirect("/login");
-	*/
 	db.authenticate(req.body.email, req.body.password).then(user_id => {
 		if (user_id) {
 			res.sendStatus(200);
@@ -169,19 +150,9 @@ const routes = [
     handler: index,
   },
   {
-    uri: "/app",
+		uri: ["/app", "/app/:guild_id", "/app/:guild_id/:channel_id"],
     methods: ["get"],
-    handler: app,
-  },
-  {
-    uri: "/app/:guild_id",
-    methods: ["get"],
-    handler: app,
-  },
-  {
-    uri: "/app/:guild_id/:channel_id",
-    methods: ["get"],
-    handler: app,
+    handler: [requireAuth, app]
   },
   {
     uri: "/signup",
@@ -214,17 +185,17 @@ const routes = [
   {
     uri: "/guilds/create",
     methods: ["get"],
-    handler: createGuild,
+    handler: [requireAuth, createGuild]
   },
   {
     uri: "/guilds/:snowflake/settings",
     methods: ["get"],
-    handler: guildSettings,
+    handler: [requireAuth, guildSettings]
   },
   {
     uri: "/users/:snowflake/settings",
     methods: ["get"],
-    handler: userSettings,
+    handler: [requireAuth, userSettings]
   },
 ];
 

@@ -64,6 +64,7 @@ const createIcon = (req, res) => {
 
 // takes in ???? returns URL/path to image
 // for now, it looks like `file' is just a description of the file, since multer has already uploaded it
+// TODO make this go somewhere else pls thx
 const uploadImageFile = (file) => {
 	return '/icons/' + file.filename;
 };
@@ -77,7 +78,7 @@ const getIcon = (req, res) => {
 			//else res.sendFile('bolb.png', {root: path.join('./', 'icons')});
 			else res.redirect(icon.url);
 		})
-		.catch(handle(500, res, req));
+		.catch(handle(500, req, res));
 };
 
 

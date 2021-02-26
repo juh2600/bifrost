@@ -308,7 +308,7 @@ const hideNoChannelScreen = () => {
     //console.log(e);
   }
   //enable input field
-  document.getElementById("message-input").disabled = true;
+  document.getElementById("message-input").disabled = false;
   console.log("hide no channel screen");
 }
 

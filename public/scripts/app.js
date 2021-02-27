@@ -128,7 +128,9 @@ const getMessages = () => {
   )
     .then((response) => response.json())
     .then((data) => {
-      messagesList = data;
+      messagesList = data.sort((a, b) =>
+        a.message_id < b.message_id ? -1 : 1
+      );
       clearMessagesArea();
       populateMessages();
     });
@@ -305,7 +307,7 @@ const hideNoChannelScreen = () => {
     //console.log(e);
   }
   //enable input field
-  document.getElementById("message-input").disabled = true;
+  document.getElementById("message-input").disabled = false;
   console.log("hide no channel screen");
 };
 

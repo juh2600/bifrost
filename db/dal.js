@@ -791,19 +791,19 @@ const getMessages = async (channel_snowflake, options = {
 	// next let's ensure that our start and end times are both defined and reasonable
 	const now = coerceToLong(snowmachine.generate().snowflake);
 	const dawn = channel_snowflake;
-	if (!options.before || options.before.lessThan(dawn))
-		options.before = dawn;
-	if (!options.after || options.after.greaterThan(now))
-		options.after = now;
-	if (options.before.greaterThan(options.after))
+	if (!options.before || options.before.greaterThan(now))
+		options.before = now;
+	if (!options.after || options.after.lessThan(dawn))
+		options.after = dawn;
+	if (options.before.lessThan(options.after))
 		errors.push(`The 'before' timestamp (${options.before}) occurs after the 'after' timestamp (${options.after}), which is an impossible scenario`);
 	// we now certainly know:
 	// - all of the above items
 	// - our before and after times are defined and reasonable
 	// next let's add them to our list of constraints
-	constraints.push('message_id >= ?');
-	params.push(options.before);
 	constraints.push('message_id <= ?');
+	params.push(options.before);
+	constraints.push('message_id >= ?');
 	params.push(options.after);
 	// we now certainly know:
 	// - all of the above items
@@ -811,7 +811,7 @@ const getMessages = async (channel_snowflake, options = {
 	// next let's determine our earliest, latest, and starting buckets
 	const earliest_bucket = getBucket(options.after, errors);
 	const latest_bucket = getBucket(options.before, errors);
-	const starting_bucket = search_direction == 1 ? earliest_bucket : latest_bucket;
+	const starting_bucket = search_direction === 1 ? earliest_bucket : latest_bucket;
 	// this was the last opportunity for pre-database errors to be pushed, so let's flush them out one last time
 	if (errors.length) {
 		throw errors;
@@ -846,12 +846,15 @@ const getMessages = async (channel_snowflake, options = {
 	const messages = []; // here we'll accumulate messages that match the criteria
 	let bucket = starting_bucket;
 	//logger.debug(query);
-	//logger.debug(`Searching buckets ${earliest_bucket} to ${latest_bucket}, starting with ${starting_bucket}`);
+	//logger.debug(`Searching buckets ${earliest_bucket} to ${latest_bucket}, starting with ${starting_bucket} and hopping by ${search_direction}`);
 	while (earliest_bucket <= bucket && bucket <= latest_bucket && options.limit > 0) { // options.limit will decrease as we gather messages
 		params[0] = bucket;
-		//logger.debug('Bucket: ' + bucket);
+		//logger.debug(`Looking for ${options.limit} messages in ${bucket}`);
 		//console.log(params.map(param => param.toString()));
-		new_messages = await db.execute(query, params, { prepare: true }).catch(error => errors.push(error));
+		new_messages = await db
+			.execute(query, params, { prepare: true })
+			.then(res => res.rows)
+			.catch(error => errors.push(error));
 		// so yeah. it's possible that the db will throw an error somehow, still...idk how but i'd rather be prepared-ish
 		// so if we see an error, we'll happily forward it on to the unsuspecting caller, who will now know about our database's
 		// internals and not really have a clue how to fix the problem probably. yeah. sounds good
@@ -859,12 +862,17 @@ const getMessages = async (channel_snowflake, options = {
 			throw errors;
 		}
 		messages.push(...new_messages);
+		//console.log(new_messages);
+		//console.log(new_messages.length);
 		options.limit -= new_messages.length; // yeah, i think that was a pretty good idea! good job, question-asker
 		params.pop();
 		params.push(options.limit);
+		//logger.debug(`Leaving ${bucket}; still need ${options.limit} messages`);
+		bucket += search_direction;
 	}
 	// so by now we've either gathered enough messages or checked all the buckets in our time frame
 	// let's blow this popsicle stand
+	//console.log(messages.map(convertTypesForDistribution));
 	return messages;
 };
 
@@ -1059,6 +1067,7 @@ const authenticate = async (email, password) => {
 			return null;
 		})
 		.catch(() => null);
+		//.catch((e) => {console.log(e); return null;});
 };
 
 /*************************************************************************

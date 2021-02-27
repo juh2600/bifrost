@@ -126,7 +126,7 @@ const getMessages = () => {
     fetch(`/api/${APIVERSION}/guilds/${selectedGuildId}/text-channels/${selectedChannelId}/messages?limit=32`)
     .then(response => response.json())
     .then(data => {
-        messagesList = data;
+        messagesList = data.sort((a,b) => a.message_id < b.message_id ? -1 : 1);
         clearMessagesArea();
         populateMessages();
     });

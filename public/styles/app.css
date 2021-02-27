@@ -18,6 +18,7 @@
     "guild-list  guild-name    channel-name  profile-area"
     "guild-list  channel-list  chat-area     user-list"
     "guild-list  channel-list  message-area  user-list";
+  background-color: var(--color-bg-2);
   grid-template-columns: 5em 14em 1fr 14em;
   grid-template-rows: 2em 3em 1fr 3em;
   font-family: "Rubik", sans-serif;
@@ -25,6 +26,7 @@
   width: 100%;
   box-sizing: border-box;
   color: var(--color-text-2);
+  position: relative;
 }
 
 /*#############################
@@ -51,10 +53,7 @@
   display: flex;
   justify-content: space-between;
 }
-.channel-list {
-  grid-area: channel-list;
-  background-color: var(--color-bg-2);
-}
+
 .user-list {
   grid-area: user-list;
   background-color: var(--color-bg-2);
@@ -102,6 +101,10 @@
 .chat-area {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+  -webkit-transition: transform 1s ease;
+  -moz-transition: transform 1s ease;
+  -o-transition: transform 1s ease;
+  transition: transform 1s ease;
 }
 
 /*#############################
@@ -195,6 +198,10 @@
   overflow: hidden;
   text-overflow: ellipsis;
   box-sizing: border-box;
+  -webkit-transition: transform 1s ease;
+  -moz-transition: transform 1s ease;
+  -o-transition: transform 1s ease;
+  transition: transform 1s ease;
 }
 
 #guildName {
@@ -236,6 +243,10 @@
   align-items: center;
   justify-content: center;
   padding: 1.5em 0.5em 0.5em 0.5em;
+  -webkit-transition: transform 1s ease;
+  -moz-transition: transform 1s ease;
+  -o-transition: transform 1s ease;
+  transition: transform 1s ease;
 }
 .profile-area > .user {
   cursor: pointer;
@@ -251,6 +262,10 @@
 .user-list {
   padding: 0.5em;
   overflow-x: hidden;
+  -webkit-transition: transform 1s ease;
+  -moz-transition: transform 1s ease;
+  -o-transition: transform 1s ease;
+  transition: transform 1s ease;
 }
 .user {
   width: 100%;
@@ -335,8 +350,9 @@
 ###############################*/
 .channel-name {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
   box-sizing: border-box;
   width: 100%;
   overflow: hidden;
@@ -348,6 +364,34 @@
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+}
+
+#friends {
+  display: none;
+  padding-right: 0.75em;
+  cursor: pointer;
+  -webkit-transition: transform 1s ease;
+  -moz-transition: transform 1s ease;
+  -o-transition: transform 1s ease;
+  transition: transform 1s ease;
+}
+/* #friends:hover {
+  transform: translateX(-300px);
+} */
+#serverChannel {
+  display: none;
+  padding-left: 0.75em;
+  cursor: pointer;
+  -webkit-transition: transform 1s ease;
+  -moz-transition: transform 1s ease;
+  -o-transition: transform 1s ease;
+  transition: transform 1s ease;
+}
+
+.fas {
+  color: var(--color-text-3);
+  background-color: var(--color-bg-3);
+  padding: 13px;
 }
 
 /*#############################
@@ -406,4 +450,66 @@
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
+}
+
+/* Mobile */
+@media all and (max-width: 825px) {
+  .main {
+    grid-template-columns: 0em 0em 1fr 0em;
+    overflow-x: hidden;
+  }
+
+  .profile-area {
+    position: absolute;
+    width: 13em;
+    right: -14em;
+  }
+  .user-list {
+    position: absolute;
+    width: 13em;
+    right: -14em;
+    height: calc(100% - 1em);
+  }
+
+  .guild-name {
+    position: absolute;
+    width: 14em;
+    height: 3em;
+    left: -14em;
+  }
+
+  .guild-list {
+    position: absolute;
+    width: 5em;
+    z-index: 10;
+    height: 100%;
+    left: -5em;
+  }
+
+  .channel-list {
+    position: absolute;
+    width: 14em;
+    height: calc(100% - 5em);
+    top: 5em;
+    left: -14em;
+    z-index: 5;
+    background-color: var(--color-bg-2);
+  }
+
+  #friends {
+    display: block;
+    position: absolute;
+    right: 0em;
+  }
+
+  #serverChannel {
+    display: block;
+    position: absolute;
+    left: 0em;
+    z-index: 5;
+  }
+
+  #channelName {
+    margin-left: 3em;
+  }
 }

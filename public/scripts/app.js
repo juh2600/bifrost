@@ -23,14 +23,14 @@ selectedGuildId = getIdFromURL("guild");
 selectedChannelId = getIdFromURL("channel");
 
 const updateChannelList = (addToHistory) => {
-    clearChannelList();
-    fetch(`/api/${APIVERSION}/guilds/${selectedGuildId}/text-channels`)
-    .then(response => response.json())
-    .then(data => {
-        channelList = data;
-        //sort by position
-        channelList.sort((a, b) => (a.position > b.position) ? 1 : -1);
-        createChannelList(data, addToHistory);
+  clearChannelList();
+  fetch(`/api/${APIVERSION}/guilds/${selectedGuildId}/text-channels`)
+    .then((response) => response.json())
+    .then((data) => {
+      channelList = data;
+      //sort by position
+      channelList.sort((a, b) => (a.position > b.position ? 1 : -1));
+      createChannelList(data, addToHistory);
     });
 };
 const clearChannelList = () => {
@@ -54,9 +54,10 @@ const createChannelList = (channelList, addToHistory) => {
   //show selected channel. if channel is invalid or unspecified,show first channel in list
   if (selectedChannelId) {
     if (!changeChannel(selectedChannelId, addToHistory)) {
-      if(channelList.length > 0) changeChannel(channelList[0].channel_id, addToHistory);
+      if (channelList.length > 0)
+        changeChannel(channelList[0].channel_id, addToHistory);
       else noChannelSelected();
-      }
+    }
   } else noChannelSelected();
 };
 
@@ -73,7 +74,6 @@ const changeChannel = (newChannelId, addToHistory) => {
   });
   //if new channel exists, switch to it
   if (newChannelExists) {
-
     hideNoChannelScreen();
     //Remove selected from all channels
     [...document.getElementById("channelList").children].forEach((channel) => {
@@ -120,15 +120,17 @@ const noChannelSelected = () => {
   updateHistory();
 
   showNoChannelScreen();
-}
+};
 
 const getMessages = () => {
-    fetch(`/api/${APIVERSION}/guilds/${selectedGuildId}/text-channels/${selectedChannelId}/messages?limit=32`)
-    .then(response => response.json())
-    .then(data => {
-        messagesList = data;
-        clearMessagesArea();
-        populateMessages();
+  fetch(
+    `/api/${APIVERSION}/guilds/${selectedGuildId}/text-channels/${selectedChannelId}/messages?limit=32`
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      messagesList = data;
+      clearMessagesArea();
+      populateMessages();
     });
 };
 
@@ -138,113 +140,110 @@ const clearMessagesArea = () => {
 
 //Create message div for each message and append to screen
 const populateMessages = () => {
-    messagesList.forEach(message => {
-        addMessage(message);
-    });
-}
+  messagesList.forEach((message) => {
+    addMessage(message);
+  });
+};
 
-const addMessage = message => {
-    let div = document.createElement("div");
-        div.classList.add("message");
-        div.dataset.messageId = message.message_id;
+const addMessage = (message) => {
+  let div = document.createElement("div");
+  div.classList.add("message");
+  div.dataset.messageId = message.message_id;
 
-        let imgContainer = document.createElement("div");
-        imgContainer.classList.add("img-circle");
+  let imgContainer = document.createElement("div");
+  imgContainer.classList.add("img-circle");
 
-        let image = document.createElement("img");
+  let image = document.createElement("img");
 
-        let currUser = getUserById(message.author_id);
-        image.src = `/api/${APIVERSION}/icons/` + currUser.icon_id;
-        image.classList.add("img");
-        imgContainer.appendChild(image);
+  let currUser = getUserById(message.author_id);
+  image.src = `/api/${APIVERSION}/icons/` + currUser.icon_id;
+  image.classList.add("img");
+  imgContainer.appendChild(image);
 
+  let messageSection = document.createElement("div");
+  messageSection.classList.add("message-section");
 
-        let messageSection = document.createElement("div");
-        messageSection.classList.add("message-section");
+  let titleBar = document.createElement("div");
+  titleBar.classList.add("title-bar");
 
-        let titleBar = document.createElement("div");
-        titleBar.classList.add("title-bar");
+  let userName = document.createElement("p");
+  userName.classList.add("username");
+  userName.innerHTML = currUser.name;
 
-        let userName = document.createElement("p");
-        userName.classList.add("username");
-        userName.innerHTML = currUser.name;
+  let timestamp = document.createElement("span");
+  timestamp.classList.add("timestamp");
+  //TODO: FIX LATER
+  timestamp.innerHTML = "timestamp";
 
-        let timestamp = document.createElement("span");
-        timestamp.classList.add("timestamp");
-        //TODO: FIX LATER
-        timestamp.innerHTML = "timestamp";
+  titleBar.appendChild(userName);
+  titleBar.appendChild(timestamp);
 
-        titleBar.appendChild(userName);
-        titleBar.appendChild(timestamp);
+  let messageContent = document.createElement("p");
+  messageContent.classList.add("content");
+  messageContent.innerHTML = message.body;
 
+  messageSection.appendChild(titleBar);
+  messageSection.appendChild(messageContent);
 
-        let messageContent = document.createElement("p");
-        messageContent.classList.add("content");
-        messageContent.innerHTML = message.body;
+  div.appendChild(imgContainer);
+  div.appendChild(messageSection);
 
-        messageSection.appendChild(titleBar);
-        messageSection.appendChild(messageContent);
-        
+  document.getElementById("chatArea").appendChild(div);
+};
 
-        div.appendChild(imgContainer);
-        div.appendChild(messageSection);
-
-        document.getElementById("chatArea").appendChild(div);
-}
-
-
-const getUserById = userId => {
-    let userObj = {
-        "user_id": "-1",
-        "name": "Deleted User",
-        "icon_id": "1",
-        "email": "",
-        "discriminator": 1234
-    }
-    usersList.forEach(user => {
-        if(user.user_id == userId) userObj = user;
-    });
-    return userObj;
-}
+const getUserById = (userId) => {
+  let userObj = {
+    user_id: "-1",
+    name: "Deleted User",
+    icon_id: "1",
+    email: "",
+    discriminator: 1234,
+  };
+  usersList.forEach((user) => {
+    if (user.user_id == userId) userObj = user;
+  });
+  return userObj;
+};
 
 const changeGuild = (newGuildId, addToHistory) => {
-    let newGuildExists = false;
-    let newGuildName;
-    //Search list for new guild
-    [...document.getElementById("guildCollection").children].forEach(guild => {
-        if(guild.dataset.guildId == newGuildId) {
-            newGuildExists = true;
-            newGuildName = guild.dataset.guildName;
-        }
-    });
-
-    if(newGuildExists) {
-        clearMessagesArea();
-        //Remove selected class from all guilds
-        [...document.getElementById("guildCollection").children].forEach(guild => {
-            guild.classList.remove("selected");
-        });
-        //add selected class to new selected guild
-        document.querySelector('[data-guild-id="'+ newGuildId +'"]').classList.add("selected");
-        //Change current guild name
-        //Change current channel name
-        document.getElementById("guildName").innerHTML = newGuildName;
-        //Update selected channel id
-        selectedGuildId = newGuildId;
-        //Update url and history
-        //if(addToHistory) updateHistory();
-        updateChannelList(addToHistory);
-
-
-        //Hide elements that are displayed when no channel is selected
-        hideEmptyScreen();
+  let newGuildExists = false;
+  let newGuildName;
+  //Search list for new guild
+  [...document.getElementById("guildCollection").children].forEach((guild) => {
+    if (guild.dataset.guildId == newGuildId) {
+      newGuildExists = true;
+      newGuildName = guild.dataset.guildName;
     }
-    else {
-        //Show no channel selected page
-        showEmptyScreen();
-    }
-}
+  });
 
+  if (newGuildExists) {
+    clearMessagesArea();
+    //Remove selected class from all guilds
+    [...document.getElementById("guildCollection").children].forEach(
+      (guild) => {
+        guild.classList.remove("selected");
+      }
+    );
+    //add selected class to new selected guild
+    document
+      .querySelector('[data-guild-id="' + newGuildId + '"]')
+      .classList.add("selected");
+    //Change current guild name
+    //Change current channel name
+    document.getElementById("guildName").innerHTML = newGuildName;
+    //Update selected channel id
+    selectedGuildId = newGuildId;
+    //Update url and history
+    //if(addToHistory) updateHistory();
+    updateChannelList(addToHistory);
+
+    //Hide elements that are displayed when no channel is selected
+    hideEmptyScreen();
+  } else {
+    //Show no channel selected page
+    showEmptyScreen();
+  }
+};
 
 const updateHistory = () => {
   let newURL = `/app/${selectedGuildId}/${selectedChannelId}`;
@@ -253,67 +252,62 @@ const updateHistory = () => {
 
 //Callback when user clicks back button
 window.onpopstate = () => {
-    //get current url, parse it, and load correct guild & channel
-    selectedGuildId = getIdFromURL("guild");
-    selectedChannelId = getIdFromURL("channel");
-    changeGuild(selectedGuildId, false);
-}
-
+  //get current url, parse it, and load correct guild & channel
+  selectedGuildId = getIdFromURL("guild");
+  selectedChannelId = getIdFromURL("channel");
+  changeGuild(selectedGuildId, false);
+};
 
 //Page shown when no channel is selected
 const showEmptyScreen = () => {
-    //hide text channels label
-    document.getElementById("channelListLabel").classList.add("hidden");
-    //show cumpus
-    document.getElementById("cumpusSection").classList.remove("hidden");
-    //disable input field
-    document.getElementById("message-input").disabled = true;
-}
-
-const hideEmptyScreen = () => {
-    //show text channels label
-    document.getElementById("channelListLabel").classList.remove("hidden");
-    //hide cumpus
-    document.getElementById("cumpusSection").classList.add("hidden");
-    //enable input field
-    document.getElementById("message-input").disabled = false;
-}
-
-
-const showNoChannelScreen = () => {
-  if(!document.getElementsByClassName("no-channel-div")[0]) {
-  //create elements and append to view
-  let noChannelDiv = document.createElement("div");
-  noChannelDiv.classList.add("no-channel-div");
-
-  let image = document.createElement("img");
-  image.src="/images/Cat_Wumpus.svg";
-
-  let message = document.createElement("p");
-  message.innerHTML = "There is no channel here";
-
-  noChannelDiv.appendChild(image);
-  noChannelDiv.appendChild(message);
-
-  document.getElementsByClassName("chat-area")[0].appendChild(noChannelDiv);
+  //hide text channels label
+  document.getElementById("channelListLabel").classList.add("hidden");
+  //show cumpus
+  document.getElementById("cumpusSection").classList.remove("hidden");
   //disable input field
   document.getElementById("message-input").disabled = true;
+};
+
+const hideEmptyScreen = () => {
+  //show text channels label
+  document.getElementById("channelListLabel").classList.remove("hidden");
+  //hide cumpus
+  document.getElementById("cumpusSection").classList.add("hidden");
+  //enable input field
+  document.getElementById("message-input").disabled = false;
+};
+
+const showNoChannelScreen = () => {
+  if (!document.getElementsByClassName("no-channel-div")[0]) {
+    //create elements and append to view
+    let noChannelDiv = document.createElement("div");
+    noChannelDiv.classList.add("no-channel-div");
+
+    let image = document.createElement("img");
+    image.src = "/images/Cat_Wumpus.svg";
+
+    let message = document.createElement("p");
+    message.innerHTML = "There is no channel here";
+
+    noChannelDiv.appendChild(image);
+    noChannelDiv.appendChild(message);
+
+    document.getElementsByClassName("chat-area")[0].appendChild(noChannelDiv);
+    //disable input field
+    document.getElementById("message-input").disabled = true;
   }
-}
+};
 
 const hideNoChannelScreen = () => {
   try {
-  document.getElementsByClassName("no-channel-div")[0].remove();
-  } catch(e) {
+    document.getElementsByClassName("no-channel-div")[0].remove();
+  } catch (e) {
     //console.log(e);
   }
   //enable input field
   document.getElementById("message-input").disabled = true;
   console.log("hide no channel screen");
-}
-
-
-
+};
 
 //Make 3 dots icon
 document.getElementById("guildSettingsBtn").innerHTML =
@@ -330,26 +324,27 @@ document.getElementById("createGuildBtn").addEventListener("click", () => {
 });
 
 //Add guild to list of guilds. Pass in a guild object
-const addGuild = guild => {
-    let guildDiv = document.createElement("div");
-    guildDiv.classList.add("guild");
-    guildDiv.dataset.guildId = guild.guild_id;
-    guildDiv.dataset.guildName = guild.name;
-    setupTooltip(guildDiv, guildDiv.dataset.guildName);
-    guild.addEventListener("click", () => {changeGuild(guild.guild_id, true)});
+const addGuild = (guild) => {
+  let guildDiv = document.createElement("div");
+  guildDiv.classList.add("guild");
+  guildDiv.dataset.guildId = guild.guild_id;
+  guildDiv.dataset.guildName = guild.name;
+  setupTooltip(guildDiv, guildDiv.dataset.guildName);
+  guild.addEventListener("click", () => {
+    changeGuild(guild.guild_id, true);
+  });
 
+  let imgContainer = document.createElement("div");
+  imgContainer.classList.add("img-circle");
 
-    let imgContainer = document.createElement("div");
-    imgContainer.classList.add("img-circle");
+  let image = document.createElement("img");
+  image.src = `/api/${APIVERSION}/icons/` + guild.icon_id;
+  image.classList.add("img");
 
-    let image = document.createElement("img");
-    image.src = `/api/${APIVERSION}/icons/` + guild.icon_id;
-    image.classList.add("img");
-
-    imgContainer.appendChild(image);
-    guildDiv.appendChild(imgContainer);
-    document.getElementById("guildCollection").appendChild(guildDiv);
-}
+  imgContainer.appendChild(image);
+  guildDiv.appendChild(imgContainer);
+  document.getElementById("guildCollection").appendChild(guildDiv);
+};
 
 //Delete guild by ID
 const removeGuild = (guildId) => {
@@ -401,10 +396,90 @@ document.getElementById("currentUser").addEventListener("click", () => {
 
 //Get and store list of users
 fetch(`/api/${APIVERSION}/users`)
-.then(response => response.json())
-.then(data => {
+  .then((response) => response.json())
+  .then((data) => {
     usersList = data;
     //get init channel list if guild is selected
-    if(selectedGuildId) changeGuild(selectedGuildId, true);
+    if (selectedGuildId) changeGuild(selectedGuildId, true);
     else showEmptyScreen();
+  });
+
+let main = document.querySelector(".main");
+
+//Displays Servers/Channels -Mobile
+let serverExpanded = false;
+let textChannelsList = document.querySelector(".channel-list");
+let guildNameDisplay = document.querySelector(".guild-name");
+let guildListDisplay = document.querySelector(".guild-list");
+let serverChannelId = document.getElementById("serverChannel");
+
+serverChannelId.addEventListener("click", () => {
+  if (!friendsExpanded) {
+    if (serverExpanded) {
+      serverChannelId.style.transform = "translateX(0em)";
+      guildListDisplay.style.transform = "translateX(0em)";
+      guildNameDisplay.style.transform = "translateX(0em)";
+      textChannelsList.style.transform = "translateX(0em)";
+      serverExpanded = false;
+    } else {
+      serverChannelId.style.transform = "translateX(19em)";
+      guildListDisplay.style.transform = "translateX(5em)";
+      guildNameDisplay.style.transform = "translateX(19em)";
+      textChannelsList.style.transform = "translateX(19em)";
+      serverExpanded = true;
+    }
+  }
+});
+
+//Displays Friends List - Mobile
+let friendsExpanded = false;
+let friendsList = document.querySelector(".user-list");
+let prof = document.querySelector(".profile-area");
+let friendsId = document.getElementById("friends");
+
+friendsId.addEventListener("click", () => {
+  if (!serverExpanded) {
+    if (friendsExpanded) {
+      friendsId.style.transform = "translateX(0em)";
+      friendsList.style.transform = "translateX(0em)";
+      prof.style.transform = "translateX(0em)";
+      friendsExpanded = false;
+    } else {
+      friendsId.style.transform = "translateX(-14em)";
+      friendsList.style.transform = "translateX(-14em)";
+      prof.style.transform = "translateX(-14em)";
+      friendsExpanded = true;
+    }
+  }
+});
+
+//Resets mobile animations and positions if window is 850 or bigger
+window.addEventListener("resize", () => {
+  console.log(document.body.clientWidth);
+  if (document.body.clientWidth > 849) {
+    serverChannelId.style.transition = "none";
+    guildListDisplay.style.transition = "none";
+    guildNameDisplay.style.transition = "none";
+    textChannelsList.style.transition = "none";
+    friendsId.style.transition = "none";
+    friendsList.style.transition = "none";
+    prof.style.transition = "none";
+    serverChannelId.style.transform = "translateX(0em)";
+    guildListDisplay.style.transform = "translateX(0em)";
+    guildNameDisplay.style.transform = "translateX(0em)";
+    textChannelsList.style.transform = "translateX(0em)";
+    friendsId.style.transform = "translateX(0em)";
+    friendsList.style.transform = "translateX(0em)";
+    prof.style.transform = "translateX(0em)";
+    friendsExpanded = false;
+    serverExpanded = false;
+  } else {
+    serverChannelId.style.transition = "transform 1s ease";
+    guildListDisplay.style.transition = "transform 1s ease";
+    guildNameDisplay.style.transition = "transform 1s ease";
+    textChannelsList.style.transition = "transform 1s ease";
+    friendsId.style.transition = "transform 1s ease";
+    friendsList.style.transition = "transform 1s ease";
+    prof.style.transition = "transform 1s ease";
+  }
 });

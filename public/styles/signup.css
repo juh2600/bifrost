@@ -26,6 +26,7 @@ body {
 .form-area {
   background-color: var(--color-bg-3);
   padding-top: 2em;
+  padding-bottom: 2em;
 }
 
 .footer-area {
@@ -106,17 +107,14 @@ button.link {
   color: red;
 }
 
-@media all and (min-width: 400px) {
-  .header-title {
-    font-size: 3.75em;
-  }
-}
 @media all and (min-width: 750px) {
   form {
     max-width: 400px;
+    margin: 0;
   }
   .content {
-    grid-template-columns: 2fr 3fr;
+    grid-template-columns: 2fr 2.5fr;
+    margin-top: 30px;
   }
   .header-title {
     margin-top: 15vh;
@@ -131,5 +129,8 @@ button.link {
 @media all and (min-width: 1000px) {
   .content {
     grid-template-columns: 1fr 1fr;
+  }
+  .preview-area {
+    margin-left: 30%;
   }
 }

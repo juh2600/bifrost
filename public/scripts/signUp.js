@@ -8,14 +8,16 @@ let confirmInputId = document.getElementById("confirmInput");
 let iconInputId = document.getElementById("iconInput");
 let profileImgId = document.getElementById("profileImg");
 
-usernameInputId.addEventListener("input", () => {
+usernameInputId.addEventListener("focusout", () => {
   validateUsername();
 });
 
-let imgURL = `https://www.gravatar.com/avatar/${Math.floor(Math.random() * 15 + 1)}?s=200&d=retro`;
+let imgURL = `https://www.gravatar.com/avatar/${Math.floor(
+  Math.random() * 15 + 1
+)}?s=200&d=retro`;
 
 // TODO inline this
-emailInputId.addEventListener("input", () => {
+emailInputId.addEventListener("focusout", () => {
   validateEmail();
 });
 
@@ -28,7 +30,8 @@ const validateUsername = () => {
   let usernameErrorMsg = document.getElementById("usernameErrorMsg");
 
   if (!isLongEnough) usernameErrorMsg.innerHTML = "Username is too short";
-  else if (!areCharactersValid) usernameErrorMsg.innerHTML = "Invalid character(s)";
+  else if (!areCharactersValid)
+    usernameErrorMsg.innerHTML = "Invalid character(s)";
   else if (!isShortEnough) usernameErrorMsg.innerHTML = "Username is too long";
 
   let isValid = areCharactersValid && isShortEnough && isLongEnough;
@@ -49,9 +52,9 @@ const validateEmail = () => {
   return isValid;
 };
 
-passwordInputId.addEventListener("input", () => {
+passwordInputId.addEventListener("focusout", () => {
   validatePassword();
-  confirmPassword();
+  // confirmPassword();
 });
 
 const validatePassword = () => {
@@ -68,7 +71,7 @@ const validatePassword = () => {
   return passwordIsValid;
 };
 
-confirmInputId.addEventListener("input", () => {
+confirmInputId.addEventListener("focusout", () => {
   confirmPassword();
 });
 
@@ -83,40 +86,43 @@ const confirmPassword = () => {
 };
 
 const updateDefaultImageMaybe = () => {
-	if(imageURL.includes(`https://www.gravatar.com/avatar/`)) updateDefaultImage();
+  if (imageURL.includes(`https://www.gravatar.com/avatar/`))
+    updateDefaultImage();
 };
 
-document.getElementById("usernameInput").addEventListener("focusout", updateDefaultImageMaybe);
+document
+  .getElementById("usernameInput")
+  .addEventListener("focusout", updateDefaultImageMaybe);
 
 const updateDefaultImage = () => {
-    let userName = document.getElementById("usernameInput").value;
-	// FIXME should probably (also) use encodeURIComponent
-    userName = userName.replaceAll(/[ _]/g, "+");
-    console.log(userName);
-    updateUserIcon(imgURL);
+  let userName = document.getElementById("usernameInput").value;
+  // FIXME should probably (also) use encodeURIComponent
+  userName = userName.replaceAll(/[ _]/g, "+");
+  console.log(userName);
+  updateUserIcon(imgURL);
 };
 
-
-
 document.getElementById("iconInput").addEventListener("input", () => {
-    if( validateIcon()) {
-        imageURL = window.URL.createObjectURL(document.getElementById("iconInput").files[0]);
-        updateUserIcon(imageURL);
-    }
-	iconFile = document.getElementById("iconInput").files[0];
-	document.getElementById("iconInput").value = "";
+  if (validateIcon()) {
+    imageURL = window.URL.createObjectURL(
+      document.getElementById("iconInput").files[0]
+    );
+    updateUserIcon(imageURL);
+  }
+  iconFile = document.getElementById("iconInput").files[0];
+  document.getElementById("iconInput").value = "";
 });
 
 const validateIcon = () => {
-	let input = iconInputId.value;
-	console.log(input);
-	let iconRegex = /\.(jpg|png|jpeg|svg|jfif|pjpeg|pjp)$/i;
-	isValid = iconRegex.test(input) || input == "";
-	let iconErrorMsg = document.getElementById("iconErrorMsg");
-	isValid
-		? iconErrorMsg.classList.add("hidden")
-		: iconErrorMsg.classList.remove("hidden");
-	return isValid;
+  let input = iconInputId.value;
+  console.log(input);
+  let iconRegex = /\.(jpg|png|jpeg|svg|jfif|pjpeg|pjp)$/i;
+  isValid = iconRegex.test(input) || input == "";
+  let iconErrorMsg = document.getElementById("iconErrorMsg");
+  isValid
+    ? iconErrorMsg.classList.add("hidden")
+    : iconErrorMsg.classList.remove("hidden");
+  return isValid;
 };
 
 const updateUserIcon = (imgURL) => {
@@ -131,63 +137,63 @@ const validateForm = () => {
     confirmPassword(),
   ];
   let isValid = validators.reduce((a, b) => a && b);
-	return isValid;
+  return isValid;
 };
 
 const removeImage = () => {
-	updateDefaultImage();
-	iconFile = null;
+  updateDefaultImage();
+  iconFile = null;
 };
 
-document.getElementById("removeImageBtn").addEventListener("click", removeImage);
-
-
+document
+  .getElementById("removeImageBtn")
+  .addEventListener("click", removeImage);
 
 //Intercept the form submit and post from here instead
-document.getElementById("signupForm").addEventListener("submit", event => {
-	event.preventDefault();
-	//Post image and get icon_id
-	//TODO: Fix below: Dont know how to post image
+document.getElementById("signupForm").addEventListener("submit", (event) => {
+  event.preventDefault();
+  //Post image and get icon_id
+  //TODO: Fix below: Dont know how to post image
 
+  if (validateForm()) {
+    updateDefaultImageMaybe();
 
-	if (validateForm()) {
-	updateDefaultImageMaybe();
-
-	// If we have an image file, then send that
-	// otherwise, send the image src of the preview
-	// either way, use the snowflake we get back in the user post
-	const formData = new FormData(); // may or may not use this, i know
-	formData.append('icon', iconFile);
-	const iconPostOptions = (iconFile) ? {
-		method: 'POST'
-		, body: formData
-	} : {
-		method: 'POST'
-		, body: JSON.stringify({url: imageURL})
-		, headers: new Headers({'Content-Type': 'application/json'})
-	};
+    // If we have an image file, then send that
+    // otherwise, send the image src of the preview
+    // either way, use the snowflake we get back in the user post
+    const formData = new FormData(); // may or may not use this, i know
+    formData.append("icon", iconFile);
+    const iconPostOptions = iconFile
+      ? {
+          method: "POST",
+          body: formData,
+        }
+      : {
+          method: "POST",
+          body: JSON.stringify({ url: imageURL }),
+          headers: new Headers({ "Content-Type": "application/json" }),
+        };
 
     fetch(`/api/${APIVERSION}/icons`, iconPostOptions)
-		.then(response => response.json())
-		.then(data => {
-			let formData = {
-				"name": document.getElementById("usernameInput").value,
-				"email": document.getElementById("emailInput").value,
-				"password": document.getElementById("passwordInput").value,
-				"icon_id": data.icon_id
-			};
+      .then((response) => response.json())
+      .then((data) => {
+        let formData = {
+          name: document.getElementById("usernameInput").value,
+          email: document.getElementById("emailInput").value,
+          password: document.getElementById("passwordInput").value,
+          icon_id: data.icon_id,
+        };
 
-      return fetch(`/api/${APIVERSION}/users`, {
+        return fetch(`/api/${APIVERSION}/users`, {
           method: "post",
-          body: JSON.stringify(formData)
-					, headers: new Headers({'Content-Type': 'application/json'})
+          body: JSON.stringify(formData),
+          headers: new Headers({ "Content-Type": "application/json" }),
+        });
+      })
+      .then(() => {
+        window.location.href = "/login";
       });
-  })
-		.then(() => {
-      window.location.href = "/login";
-  });
-
-	}
+  }
 });
 
-document.addEventListener('DOMContentLoaded', updateDefaultImage);
+document.addEventListener("DOMContentLoaded", updateDefaultImage);

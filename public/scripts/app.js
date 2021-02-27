@@ -53,9 +53,11 @@ const createChannelList = (channelList, addToHistory) => {
 
   //show selected channel. if channel is invalid or unspecified,show first channel in list
   if (selectedChannelId) {
-    if (!changeChannel(selectedChannelId, addToHistory))
-      changeChannel(channelList[0].channel_id, addToHistory);
-  } else changeChannel(channelList[0].channel_id, addToHistory);
+    if (!changeChannel(selectedChannelId, addToHistory)) {
+      if(channelList.length > 0) changeChannel(channelList[0].channel_id, addToHistory);
+      else noChannelSelected();
+      }
+  } else noChannelSelected();
 };
 
 //Get messages for new channel, change selected channel styles
@@ -71,6 +73,8 @@ const changeChannel = (newChannelId, addToHistory) => {
   });
   //if new channel exists, switch to it
   if (newChannelExists) {
+
+    hideNoChannelScreen();
     //Remove selected from all channels
     [...document.getElementById("channelList").children].forEach((channel) => {
       channel.classList.remove("selected");
@@ -96,6 +100,27 @@ const changeChannel = (newChannelId, addToHistory) => {
 
   return newChannelExists;
 };
+
+const noChannelSelected = () => {
+  console.log("no channel selected");
+  //Remove selected from all channels
+  [...document.getElementById("channelList").children].forEach((channel) => {
+    channel.classList.remove("selected");
+  });
+
+  //Change current channel name
+  document.getElementById("channelName").innerHTML = "";
+
+  //Update selected channel id
+  socket.emit("old room", selectedChannelId);
+  selectedChannelId = 1;
+  socket.emit("new room", selectedChannelId);
+
+  //update url and history
+  updateHistory();
+
+  showNoChannelScreen();
+}
 
 const getMessages = () => {
     fetch(`/api/${APIVERSION}/guilds/${selectedGuildId}/text-channels/${selectedChannelId}/messages?limit=32`)
@@ -129,7 +154,6 @@ const addMessage = message => {
         let image = document.createElement("img");
 
         let currUser = getUserById(message.author_id);
-        console.log(currUser);
         image.src = `/api/${APIVERSION}/icons/` + currUser.icon_id;
         image.classList.add("img");
         imgContainer.appendChild(image);
@@ -178,7 +202,6 @@ const getUserById = userId => {
         "discriminator": 1234
     }
     usersList.forEach(user => {
-        console.log(user.user_id == userId);
         if(user.user_id == userId) userObj = user;
     });
     return userObj;
@@ -196,6 +219,7 @@ const changeGuild = (newGuildId, addToHistory) => {
     });
 
     if(newGuildExists) {
+        clearMessagesArea();
         //Remove selected class from all guilds
         [...document.getElementById("guildCollection").children].forEach(guild => {
             guild.classList.remove("selected");
@@ -240,19 +264,54 @@ window.onpopstate = () => {
 const showEmptyScreen = () => {
     //hide text channels label
     document.getElementById("channelListLabel").classList.add("hidden");
-
     //show cumpus
     document.getElementById("cumpusSection").classList.remove("hidden");
-
+    //disable input field
+    document.getElementById("message-input").disabled = true;
 }
 
 const hideEmptyScreen = () => {
     //show text channels label
     document.getElementById("channelListLabel").classList.remove("hidden");
-
     //hide cumpus
     document.getElementById("cumpusSection").classList.add("hidden");
+    //enable input field
+    document.getElementById("message-input").disabled = false;
 }
+
+
+const showNoChannelScreen = () => {
+  if(!document.getElementsByClassName("no-channel-div")[0]) {
+  //create elements and append to view
+  let noChannelDiv = document.createElement("div");
+  noChannelDiv.classList.add("no-channel-div");
+
+  let image = document.createElement("img");
+  image.src="/images/Cat_Wumpus.svg";
+
+  let message = document.createElement("p");
+  message.innerHTML = "There is no channel here";
+
+  noChannelDiv.appendChild(image);
+  noChannelDiv.appendChild(message);
+
+  document.getElementsByClassName("chat-area")[0].appendChild(noChannelDiv);
+  //disable input field
+  document.getElementById("message-input").disabled = true;
+  }
+}
+
+const hideNoChannelScreen = () => {
+  try {
+  document.getElementsByClassName("no-channel-div")[0].remove();
+  } catch(e) {
+    //console.log(e);
+  }
+  //enable input field
+  document.getElementById("message-input").disabled = false;
+  console.log("hide no channel screen");
+}
+
 
 
 
@@ -344,7 +403,6 @@ document.getElementById("currentUser").addEventListener("click", () => {
 fetch(`/api/${APIVERSION}/users`)
 .then(response => response.json())
 .then(data => {
-    console.log(data);
     usersList = data;
     //get init channel list if guild is selected
     if(selectedGuildId) changeGuild(selectedGuildId, true);

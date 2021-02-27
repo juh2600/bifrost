@@ -1,232 +1,220 @@
 html {
-    background-color: var(--color-bg-3);
+  background-color: var(--color-bg-3);
 }
 
 .main {
-    background-color: var(--color-bg-3);
-    width:100%;
-    font-family: "Rubik", sans-serif;
+  background-color: var(--color-bg-3);
+  width: 100%;
+  font-family: "Rubik", sans-serif;
 }
 
 .content {
-    max-width: 1000px;
-    margin:0 auto;
-    padding: 0 0.75em;
-    position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 0.75em;
+  position: relative;
 }
 
 .title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-
-
-
-label, h1, h2, input[type="file"], p {
-    color:white;
+label,
+h1,
+h2,
+input[type="file"],
+p {
+  color: white;
 }
-
 
 h1 {
-    font-size: 2em;
-    font-weight: 500;
+  font-size: 2em;
+  font-weight: 500;
 }
 h2 {
-    font-weight: 500;
+  font-weight: 500;
 }
 
 .button-area {
-    position: fixed;
-    bottom:0;
-    transform: translateX(-50%);
-    left:50%;
-    background-color: var(--color-bg-4);
-    width:80%;
-    max-width: 600px;
-    display:flex;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 100vh;
-    padding:0 0.4em;
+  position: fixed;
+  bottom: 0;
+  transform: translateX(-50%);
+  left: 50%;
+  background-color: var(--color-bg-4);
+  width: 80%;
+  max-width: 600px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 100vh;
+  padding: 0 0.4em;
 }
-
-
-
 
 .guild-form {
-    display:flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    background-color: var(--color-bg-4);
-    padding:1.4em 1em;
-    margin-top:2em;
-    box-sizing: border-box;
-    border-radius: 10px;
-
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  background-color: var(--color-bg-4);
+  padding: 1.4em 1em;
+  margin-top: 2em;
+  box-sizing: border-box;
+  border-radius: 10px;
 }
-
 
 .input-area {
-    margin-right: 0;
-    flex:1;
-    max-width: 350px;
-    min-width: 175px;
-}
-.image-area {
-    margin-right: 2em;
+  margin-right: 0;
+  flex: 1;
+  max-width: 350px;
+  min-width: 250px;
 }
 
 .input-field {
-    width: 100%;
+  width: 100%;
 }
 
 .channel-area {
-    padding-bottom: 6em;
+  padding-bottom: 6em;
 }
 
 .channel-container {
-    display:flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
 }
 
 .channel {
-    width:100%;
-    background-color: var(--color-bg-2);
-    display:grid;
-    grid-template-columns: 3em 1fr 3em;
-    padding:1em 0.25em;
-    border-bottom: 1px solid var(--color-bg-4);
+  width: 100%;
+  background-color: var(--color-bg-2);
+  display: grid;
+  grid-template-columns: 3em 1fr 3em;
+  padding: 1em 0.25em;
+  border-bottom: 1px solid var(--color-bg-4);
 }
 
 .channel.add {
-    border:none;
-    grid-template-columns:1fr 3em;
+  border: none;
+  grid-template-columns: 1fr 3em;
 }
 .channel.add > label {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 .channel-name {
-    margin:0;
-    align-self: center;
+  margin: 0;
+  align-self: center;
 }
 
 .channel-delete {
-    text-align: center;
-    font-size: 1.25em;
+  text-align: center;
+  font-size: 1.25em;
 }
-
 
 .channel.add > label {
-    color:#fff;
-    background-color: #fff;
-    margin-left:2em;
-    box-sizing: border-box;
-    width:65%;
-    background-color: var(--color-bg-4);
-
+  color: #fff;
+  background-color: #fff;
+  margin-left: 2em;
+  box-sizing: border-box;
+  width: 65%;
+  background-color: var(--color-bg-4);
 }
 .channel.add > label input {
-    color:#fff;
-    width:90%;
-    height:100%;
-    border:none;
-    outline: none;
-    font-family: "Rubik", sans-serif;
-    padding-left: 0;
-    font-size: 1em;
-    background-color: var(--color-bg-4);
+  color: #fff;
+  width: 90%;
+  height: 100%;
+  border: none;
+  outline: none;
+  font-family: "Rubik", sans-serif;
+  padding-left: 0;
+  font-size: 1em;
+  background-color: var(--color-bg-4);
 }
 .channel.add > button {
-    margin: 0 auto;
+  margin: 0 auto;
 }
 
 .btn.btn-outline-white {
-    font-size: 1.1em;
-    padding:5px;
-    width:2em;
+  font-size: 1.1em;
+  padding: 5px;
+  width: 2em;
 }
 
 .button-area > p {
-    display:none;
+  display: none;
 }
 
 .form-block .buttons {
-    display:flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
-.form-block .buttons > .input-label, .form-block .buttons > button {
-    display:inline-block;
+.form-block .buttons > .input-label,
+.form-block .buttons > button {
+  display: inline-block;
 }
-
 
 .hamburger-icon {
-    cursor: pointer;
-    display:flex;
-    flex-direction:column;
-    justify-content: space-around;
-    max-width: 20px;
-    margin: auto;
-    height:100%;
-    box-sizing: border-box;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  max-width: 20px;
+  margin: auto;
+  height: 100%;
+  box-sizing: border-box;
 }
 .hamburger-icon > div {
-    height:2px;
-    width:100%;
-    background-color: #333;
-    box-sizing: border-box;
-    border-radius: 2px;
-
+  height: 2px;
+  width: 100%;
+  background-color: #333;
+  box-sizing: border-box;
+  border-radius: 2px;
 }
 
 .drag {
-    box-sizing: border-box;
-
+  box-sizing: border-box;
 }
-
 
 .link {
-    color:var(--color-danger);
-    text-align: center;
-    display:block;
-    margin:0.5em auto 0 auto;
+  color: var(--color-danger);
+  text-align: center;
+  display: block;
+  margin: 0.5em auto 0 auto;
 }
 
-@media all and (min-height:500px) {
-    .button-area {
-        margin-bottom:1em;
-    }
+@media all and (min-height: 500px) {
+  .button-area {
+    margin-bottom: 1em;
+  }
 }
 
-@media all and (min-width:930px) {
-    .input-area {
-        margin-right: 3em;
-    }
-    .image-area {
-        margin-right: 7em;
-    }
+@media all and (min-width: 930px) {
+  .input-area {
+    margin-right: 3em;
+  }
+  .image-area {
+    margin-right: 7em;
+  }
 }
 
-
-
-@media all and (min-width:500px) {
-    .form-body {
-        max-width:75%;
-        margin:2em auto 0 auto;
-    }
-    .button-area > p {
-        display:inline-block;
-    }
+@media all and (min-width: 500px) {
+  .form-body {
+    max-width: 75%;
+    margin: 2em auto 0 auto;
+  }
+  .button-area > p {
+    display: inline-block;
+  }
 }
 
+@media all and (min-width: 370px) {
+  .content {
+    padding: 0 2em;
+  }
+}
 
-@media all and (min-width:370px) {
-    .content {
-        padding:0 2em;
-    }
-    
-    
+@media all and (min-width: 715px) {
+  .image-area {
+    margin-right: 2em;
+  }
 }

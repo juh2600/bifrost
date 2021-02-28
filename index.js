@@ -30,7 +30,7 @@ const session = require("express-session");
 app.use(
   session({
     secret: "top-secret" // FIXME move to sekrits or .env or something
-    //, resave: false
+    , resave: false
     , saveUninitialized: false
   })
 );

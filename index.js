@@ -40,17 +40,9 @@ app.use((req, res, next) => {
 	console.log(req.session);
 	next();
 });
-
 logger.info("Configured Express.");
 
-logger.info('Instantiating globals...');
-const db = require('./db/dal');
-////////// socket.io
-const socketyBoi = require('./sockets')({db, app});
-///////////
-logger.info('Instantiated globals.');
-
-logger.info('Configuring routes...');
+logger.info("Configuring microservices...");
 let routeFiles = [
 'frontend'
 	, 'api/v0/guilds'
@@ -64,6 +56,34 @@ let routeFiles = [
 	, 'api/v1/users'
 	, 'api/v1/icons'
 ];
+const micros = require('./microservices');
+// whitelist routes
+if (micros.routes)
+	routeFiles = micros.routes;
+
+// configure proxies
+if (micros.proxies) {
+	const logger = require('logger').get('proxy');
+	const { createProxyMiddleware } = require('http-proxy-middleware');
+	for (let route of Object.keys(micros.proxies)) {
+		logger.info(`Installing proxy middleware: ${route} -> ${micros.proxies[route]}`);
+		// TODO actually do that ^
+		app.use(createProxyMiddleware(route, {
+			target: micros.proxies[route]
+			, changeOrigin: true
+		}));
+	}
+}
+logger.info("Configured microservices.");
+
+logger.info('Instantiating globals...');
+const db = require('./db/dal');
+////////// socket.io
+const socketyBoi = require('./sockets')({db, app});
+///////////
+logger.info('Instantiated globals.');
+
+logger.info('Configuring routes...');
 const routeManager = require('./routes/manager');
 routeFiles.forEach((file) => {
 	logger.info(`Adding ${file} routes...`);

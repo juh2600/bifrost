@@ -1,5 +1,4 @@
-CREATE KEYSPACE bifrost WITH replication =
-{'class': 'SimpleStrategy', 'replication_factor': 1};
+# CREATE KEYSPACE bifrost WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
 
 CREATE TABLE bifrost.guilds (
   guild_id bigint,

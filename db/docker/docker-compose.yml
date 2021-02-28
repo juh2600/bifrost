@@ -1,0 +1,17 @@
+services:
+ db:
+  container_name: scylla_head
+  image: scylladb/scylla
+  ports:
+   #- 6001:9042
+   - 9042:9042
+  volumes:
+   - /var/lib/scylla:/var/lib/scylla
+   - ./scylla.yaml:/etc/scylla/scylla.yaml
+  deploy:
+   resources:
+    limits:
+     cpus: '0.70'
+     memory: 2.5G
+    reservations:
+     memory: 1.5G

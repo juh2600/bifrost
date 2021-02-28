@@ -4,6 +4,7 @@ block style
     script(defer, src="/socket.io/socket.io.js")
     script(defer, src="/scripts/app.js")   
     script(defer, src="/scripts/iosocket.js") 
+    script(src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous")
 block content
     div#tooltip
     section.main
@@ -16,7 +17,9 @@ block content
 
 
         div.channel-name
+            p#serverChannel.fas.fa-bars
             p#channelName
+            p#friends.fas.fa-user-friends
 
 
         //- TODO: get data from session

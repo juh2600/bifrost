@@ -1133,7 +1133,7 @@ const executeBatch = async (stmts) => {
 };
 
 module.exports = {
-	Schema, schemas, executeRaw, executeBatch
+	Schema, schemas, executeRaw, executeBatch, db
 	, createGuild, getGuilds, updateGuild, deleteGuild
 	, createChannel, getChannels, updateChannel, deleteChannel, clearChannels, addChannelToGuild // FIXME that last one doesn't work yet
 	, createMessage, getMessages, updateMessage, deleteMessage

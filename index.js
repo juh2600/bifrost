@@ -16,14 +16,23 @@ const bodyParser = require('body-parser');
 const upload = require('multer')({ dest: __dirname + '/public/icons' });
 logger.info('Required packages.');
 
-logger.info("Configuring Express...");
+logger.info('Instantiating globals...');
 const app = express();
+const db = require('./db/dal');
+////////// socket.io
+const socketyBoi = require('./sockets')({db, app});
+///////////
+logger.info('Instantiated globals.');
+
+logger.info("Configuring Express...");
 app.set("view engine", "pug");
 app.set("views", __dirname + "/views");
 app.use(express.static(path.join(__dirname + "/public")));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+logger.info("Configured Express.");
 
+logger.info("Configuring sessions...");
 ////////// express-session
 const session = require("express-session");
 // FIXME implement suggestions at https://blog.jscrambler.com/best-practices-for-secure-session-management-in-node/
@@ -32,6 +41,10 @@ app.use(
     secret: "top-secret" // FIXME move to sekrits or .env or something
     , resave: false
     , saveUninitialized: false
+		, store: new (require('cassandra-store'))({
+			table: 'sessions'
+			, client: db.db
+		})
   })
 );
 ///////////
@@ -40,7 +53,7 @@ app.use((req, res, next) => {
 	console.log(req.session);
 	next();
 });
-logger.info("Configured Express.");
+logger.info("Configured sessions.");
 
 logger.info("Configuring microservices...");
 let routeFiles = [
@@ -75,13 +88,6 @@ if (micros.proxies) {
 	}
 }
 logger.info("Configured microservices.");
-
-logger.info('Instantiating globals...');
-const db = require('./db/dal');
-////////// socket.io
-const socketyBoi = require('./sockets')({db, app});
-///////////
-logger.info('Instantiated globals.');
 
 logger.info('Configuring routes...');
 const routeManager = require('./routes/manager');

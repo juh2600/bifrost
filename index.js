@@ -4,9 +4,7 @@ process.env.NODE_ENV = "debug";
 const package = require("./package.json");
 
 console.log(`Starting ${package.name} v${package.version}`);
-
 require("dotenv").config();
-
 const logger = require("logger").get("main");
 
 logger.info('Requiring packages...');
@@ -14,14 +12,15 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const upload = require('multer')({ dest: __dirname + '/public/icons' });
+const CassandraStore = require('cassandra-store');
+const session = require("express-session");
+const { createProxyMiddleware } = require('http-proxy-middleware');
 logger.info('Required packages.');
 
 logger.info('Instantiating globals...');
 const app = express();
 const db = require('./db/dal');
-////////// socket.io
 const socketyBoi = require('./sockets')({db, app});
-///////////
 logger.info('Instantiated globals.');
 
 logger.info("Configuring Express...");
@@ -33,26 +32,20 @@ app.use(bodyParser.json());
 logger.info("Configured Express.");
 
 logger.info("Configuring sessions...");
-////////// express-session
-const session = require("express-session");
 // FIXME implement suggestions at https://blog.jscrambler.com/best-practices-for-secure-session-management-in-node/
 app.use(
   session({
     secret: "top-secret" // FIXME move to sekrits or .env or something
     , resave: false
     , saveUninitialized: false
-		, store: new (require('cassandra-store'))({
+		, store: new CassandraStore({
 			table: 'sessions'
 			, client: db.db
 		})
   })
 );
-///////////
 
-app.use((req, res, next) => {
-	console.log(req.session);
-	next();
-});
+//app.use((req, res, next) => { console.log(req.session); next(); });
 logger.info("Configured sessions.");
 
 logger.info("Configuring microservices...");
@@ -77,7 +70,6 @@ if (micros.routes)
 // configure proxies
 if (micros.proxies) {
 	const logger = require('logger').get('proxy');
-	const { createProxyMiddleware } = require('http-proxy-middleware');
 	for (let route of Object.keys(micros.proxies)) {
 		logger.info(`Installing proxy middleware: ${route} -> ${micros.proxies[route]}`);
 		// TODO actually do that ^

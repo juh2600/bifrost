@@ -41,3 +41,10 @@ CREATE TABLE bifrost.users (
   ) WITH CLUSTERING ORDER BY (email ASC);
 
 CREATE INDEX user_email_idx ON bifrost.users (email) ;
+
+CREATE TABLE IF NOT EXISTS sessions (
+  sid text,
+  session text,
+  expires timestamp,
+  PRIMARY KEY(sid)
+);

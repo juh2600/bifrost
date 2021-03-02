@@ -83,29 +83,44 @@ const expect = (obj, names, errors) => {
 
 const routes = [
 	{
-		uri: '/api/v1/guilds/:guild_id/text-channels/:channel_id/messages',
-		methods: ['post'],
-		handler: createMessage
+		uri: [
+			'/api/v1/guilds/:guild_id/text-channels/:channel_id/messages'
+			, '/api/v1/text-channels/:channel_id/messages'
+		]
+		, methods: ['post']
+		, handler: createMessage
 	}
 	, {
-		uri: '/api/v1/guilds/:guild_id/text-channels/:channel_id/messages',
-		methods: ['get'],
-		handler: getMessages
+		uri: [
+			'/api/v1/guilds/:guild_id/text-channels/:channel_id/messages'
+			, '/api/v1/text-channels/:channel_id/messages'
+		]
+		, methods: ['get']
+		, handler: getMessages
 	}
 	, {
-		uri: '/api/v1/guilds/:guild_id/text-channels/:channel_id/messages/:message_id',
-		methods: ['get'],
-		handler: getMessage
+		uri: [
+			'/api/v1/guilds/:guild_id/text-channels/:channel_id/messages'
+			, '/api/v1/text-channels/:channel_id/messages'
+		]
+		, methods: ['get']
+		, handler: getMessage
 	}
 	, {
-		uri: '/api/v1/guilds/:guild_id/text-channels/:channel_id/messages/:message_id',
-		methods: ['put'],
-		handler: updateMessage
+		uri: [
+			'/api/v1/guilds/:guild_id/text-channels/:channel_id/messages'
+			, '/api/v1/text-channels/:channel_id/messages'
+		]
+		, methods: ['put']
+		, handler: updateMessage
 	}
 	, {
-		uri: '/api/v1/guilds/:guild_id/text-channels/:channel_id/messages/:message_id',
-		methods: ['delete'],
-		handler: deleteMessage
+		uri: [
+			'/api/v1/guilds/:guild_id/text-channels/:channel_id/messages'
+			, '/api/v1/text-channels/:channel_id/messages'
+		]
+		, methods: ['delete']
+		, handler: deleteMessage
 	}
 ];
 

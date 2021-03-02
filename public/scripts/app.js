@@ -334,8 +334,8 @@ document.getElementById("guildSettingsBtn").innerHTML =
   "<div class='three-dots'><div></div><div></div><div></div></div>";
 
 document.getElementById("guildSettingsBtn").addEventListener("click", () => {
-  //Route to guild settings
-  window.location.href = `/guilds/${selectedGuildId}/settings`;
+  //Route to guild settings if there is a selected guild
+  if(selectedGuildId) window.location.href = `/guilds/${selectedGuildId}/settings`;
 });
 
 document.getElementById("createGuildBtn").addEventListener("click", () => {

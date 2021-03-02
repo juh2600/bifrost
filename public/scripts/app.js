@@ -485,3 +485,17 @@ window.addEventListener("resize", () => {
     prof.style.transition = "transform 1s ease";
   }
 });
+
+
+//Fix discriminator display 
+document.querySelectorAll(".discriminator").forEach(discriminator => {
+  console.log(discriminator.innerHTML);
+  if(discriminator.innerHTML.length < 5) {
+    //remove #
+    discriminator.innerHTML = discriminator.innerHTML.slice(1);
+    for(let i = 0; i < 4-discriminator.innerHTML.length; i++) {
+      discriminator.innerHTML = "0" + discriminator.innerHTML;
+    }
+    discriminator.innerHTML = "#" + discriminator.innerHTML;
+  }
+});

@@ -525,7 +525,7 @@ const createChannel = async (guild_snowflake, name, position = -1) => {
 	if (!(position > 0)) { // this handles strings and bad guys lmao end me // this shouldn't matter; catch type errors above
 		// by default, append the channel to the end of the guild
 		position = await getChannels(guild_snowflake).then(rows => rows.length);
-		console.log('using position ' + position);
+		//console.log('using position ' + position);
 	} else position = position - 0; // coerce number type
 
 	const record = {
@@ -558,7 +558,7 @@ const addChannelToGuild = async (guild_snowflake, channel_snowflake, name, posit
 	if (!(position > 0)) { // this handles strings and bad guys lmao end me // this shouldn't matter; catch type errors above
 		// by default, append the channel to the end of the guild
 		position = await getChannels(guild_snowflake).then(rows => rows.length);
-		console.log('using position ' + position);
+		//console.log('using position ' + position);
 	} else position = position - 0; // coerce number type
 
 	const record = {

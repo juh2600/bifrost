@@ -20,7 +20,7 @@
 	, "_proxies_desc": "List of routes to be forwarded to other instances/hosts"
 	, "proxies":
 	{
-		"/api/v1/icons": "http://bifrost.jtreed.org:6000"
-		, "/icons": "http://bifrost.jtreed.org:6000"
+		"/api/v1/icons": "https://bifrost.jtreed.org"
+		, "/icons": "https://bifrost.jtreed.org"
 	}
 }

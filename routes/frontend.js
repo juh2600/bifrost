@@ -48,14 +48,14 @@ const app = (req, res) => {
 				res.redirect('/');
 				return;
 			}
-			console.log(data);
-			console.log(req.session);
+			//console.log(data);
+			//console.log(req.session);
       res.render("app", data);
     });
   })
 	.catch(handle(500, req, res));
 
-  console.log(JSON.stringify(req.session));
+  //console.log(JSON.stringify(req.session));
 };
 
 const signUp = (req, res) => {
@@ -135,10 +135,10 @@ const userSettings = (req, res) => {
 };
 
 const logout = (req, res) => {
-  console.log(JSON.stringify(req.session));
+  //console.log(JSON.stringify(req.session));
   req.session.destroy();
   res.redirect("/");
-  console.log(JSON.stringify(req.session));
+  //console.log(JSON.stringify(req.session));
 };
 
 //////////

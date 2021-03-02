@@ -10,7 +10,7 @@ const configure = (obj) => {
 
 const handle = (code, req, res) => {
 	return errors => {
-		console.log(errors);
+		console.error(errors);
 		res
 			.status(code)
 			.json(errors);

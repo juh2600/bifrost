@@ -4,6 +4,8 @@ let iconFile = null;
 let imageHasBeenChanged = false;
 let guild_id = document.getElementById("guildIdField").value;
 
+let settingsHaveBeenChanged = false;
+
 document.getElementById("deleteGuildBtn").addEventListener("click", () => {
 	deleteGuild();
 });
@@ -20,10 +22,18 @@ const deleteGuild = () => {
 }
 
 
+const showSaveChangesContainer = () => {
+	if(!settingsHaveBeenChanged) {
+		document.getElementById("saveChangesContainer").classList.remove("hidden");
+		settingsHaveBeenChanged = true;
+	}
+}
+
 
 
 // TODO inline stuff
 document.getElementById("guildNameInput").addEventListener("input", () => {
+	showSaveChangesContainer();
 	validateGuildName();
 });
 const validateGuildName = () => {
@@ -65,6 +75,7 @@ const updateDefaultImage = () => {
 
 
 document.getElementById("iconInput").addEventListener("input", () => {
+	showSaveChangesContainer();
 	if( validateIcon()) {
 		imageURL = window.URL.createObjectURL(document.getElementById("iconInput").files[0]);
 		updateGuildIcon(imageURL);
@@ -105,6 +116,7 @@ const validateForm = () => {
 
 
 const removeImage = () => {
+	showSaveChangesContainer();
 	updateDefaultImage();
 	iconFile = null;
 	imageHasBeenChanged = true;
@@ -149,13 +161,13 @@ document.getElementById("updateGuildForm").addEventListener("submit", event => {
 				.then(updateGuild)
 				.then(updateChannels)
 				.then(() => {
-					//window.location.href = "/app/" + guild_id;
+					window.location.href = "/app/" + guild_id;
 				});
 		} else {
 			updateGuild({})
 				.then(updateChannels)
 				.then(() => {
-					//window.location.href = "/app/" + guild_id;
+					window.location.href = "/app/" + guild_id;
 				});
 		}
 	}

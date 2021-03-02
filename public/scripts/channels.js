@@ -12,6 +12,7 @@ const setupEventListeners = () => {
 }
 
 const clickAddChannelBtn = () => {
+    showSaveChangesContainer();
     formatInputField();
     addChannel({"name":document.getElementById("newChannelName").value});
     updateChannelList();
@@ -100,6 +101,7 @@ const addChannel = (channel) => {
 
 
 const deleteChannel = evt => {
+    showSaveChangesContainer();
     channelContainer.removeChild(evt.toElement.parentElement);
     updatePositions();
     updateChannelList();
@@ -107,6 +109,7 @@ const deleteChannel = evt => {
 }
 
 const updatePositions = () => {
+    showSaveChangesContainer();
     let newPosition = 0;
     [...document.getElementsByClassName('channel-container')[0].children].forEach(channel => {
         channel.dataset.position = newPosition;

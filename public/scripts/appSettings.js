@@ -5,6 +5,12 @@ const setupCancelEventListeners = () => {
             window.location.href = "/app";
         });
     });
+
+    document.querySelectorAll(".reload").forEach(button => {
+        button.addEventListener("click", () => {
+            location.reload();
+        });
+    })
 }
 
 setupCancelEventListeners();

@@ -11,6 +11,10 @@
             Main
 ###############################*/
 
+body {
+  font-size: 1em;
+}
+
 .main {
   display: grid;
   grid-template-areas:
@@ -68,7 +72,6 @@
   grid-area: chat-area;
   background-color: var(--color-bg-3);
   overflow-x: hidden;
-
 }
 .message-area {
   grid-area: message-area;
@@ -456,6 +459,9 @@
 
 /* Mobile */
 @media all and (max-width: 825px) {
+  body {
+    font-size: 0.9em;
+  }
   .main {
     grid-template-columns: 0em 0em 1fr 0em;
     overflow-x: hidden;

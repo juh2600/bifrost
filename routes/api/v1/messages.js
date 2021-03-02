@@ -1,5 +1,5 @@
 const logger = require('logger').get('messages');
-const snowmachine = new (require('snowflake-generator'))(1420070400000);
+const api_ver = require('./api_ver');
 
 let db;
 const configure = (obj) => {
@@ -26,7 +26,7 @@ const createMessage = (req, res) => {
 			.then(message => {
 				res
 					.status(201)
-					.location(`/guilds/${req.params.guild_id}/text-channels/${req.params.channel_id}/messages/${message.message_id}`)
+					.location(`${api_ver}/guilds/${req.params.guild_id}/text-channels/${req.params.channel_id}/messages/${message.message_id}`)
 					.json(message);
 			})
 			.catch(handle(500, req, res));

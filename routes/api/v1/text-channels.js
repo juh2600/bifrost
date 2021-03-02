@@ -1,5 +1,5 @@
 const logger = require('logger').get('text-channels');
-const snowmachine = new (require('snowflake-generator'))(1420070400000);
+const api_ver = require('./api_ver');
 
 const numericSort = (a,b) => a < b ? -1 : 1;
 
@@ -27,7 +27,7 @@ const createTextChannel = (req, res) => {
 			.then(channel => {
 				res
 					.status(201)
-					.location(`/guilds/${channel.guild_id}/text-channels/${channel.channel_id}`)
+					.location(`${api_ver}/guilds/${channel.guild_id}/text-channels/${channel.channel_id}`)
 					.json(channel);
 			})
 			.catch(handle(500, req, res));

@@ -1,7 +1,7 @@
 const logger = require('logger').get('icons');
 const path = require('path');
 const snowmachine = new (require('snowflake-generator'))(1420070400000);
-const api_ver = '/api/v1';
+const api_ver = require('./api_ver');
 
 let db;
 let upload;

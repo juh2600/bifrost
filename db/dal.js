@@ -736,10 +736,13 @@ const getMessages = async (channel_snowflake, options = {
 	}
 	// we now certainly have a channel_snowflake and an options object
 	// next let's ensure that all options are either undefined or of a correct type
+	// ok. so. before and after are good names for parameters, but very hard to use throughout the method.
+	// so we're gonna rename them to "latest" and "earliest"
+	let earliest, latest;
 	if (options.before !== undefined)
-		options.before = coerceToLong(options.before, errors);
+		earliest = coerceToLong(options.before, errors);
 	if (options.after !== undefined)
-		options.after = coerceToLong(options.after, errors);
+		latest = coerceToLong(options.after, errors);
 	if (options.message_id !== undefined)
 		options.message_id = coerceToLong(options.message_id, errors);
 	if (options.limit !== undefined) {
@@ -791,12 +794,12 @@ const getMessages = async (channel_snowflake, options = {
 	// next let's ensure that our start and end times are both defined and reasonable
 	const now = coerceToLong(snowmachine.generate().snowflake);
 	const dawn = channel_snowflake;
-	if (!options.before || options.before.greaterThan(now))
-		options.before = now;
-	if (!options.after || options.after.lessThan(dawn))
-		options.after = dawn;
-	if (options.before.lessThan(options.after))
-		errors.push(`The 'before' timestamp (${options.before}) occurs after the 'after' timestamp (${options.after}), which is an impossible scenario`);
+	if (!latest || latest.greaterThan(now))
+		latest = now;
+	if (!earliest || earliest.lessThan(dawn))
+		earliest = dawn;
+	if (earliest.greaterThan(latest))
+		errors.push(`The earliest acceptable timestamp (${earliest}) occurs after the latest acceptable timestamp (${latest}), which is an impossible scenario`);
 	// we now certainly know:
 	// - all of the above items
 	// - our before and after times are defined and reasonable
@@ -809,8 +812,8 @@ const getMessages = async (channel_snowflake, options = {
 	// - all of the above items
 	// - we will only receive messages from within the time boundaries
 	// next let's determine our earliest, latest, and starting buckets
-	const earliest_bucket = getBucket(options.after, errors);
-	const latest_bucket = getBucket(options.before, errors);
+	const earliest_bucket = getBucket(earliest, errors);
+	const latest_bucket = getBucket(latest, errors);
 	const starting_bucket = search_direction === 1 ? earliest_bucket : latest_bucket;
 	// this was the last opportunity for pre-database errors to be pushed, so let's flush them out one last time
 	if (errors.length) {

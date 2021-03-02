@@ -131,7 +131,7 @@ const getMessages = () => {
       messagesList = data.sort((a, b) =>
         a.message_id < b.message_id ? -1 : 1
       );
-      clearMessagesArea();
+      addNoMessagesImage();
       populateMessages();
     });
 };
@@ -140,8 +140,26 @@ const clearMessagesArea = () => {
   document.getElementById("chatArea").innerHTML = "";
 };
 
+const addNoMessagesImage = () => {
+  let imageDiv = document.createElement("div");
+  imageDiv.classList.add("no-message-div");
+
+    let image = document.createElement("img");
+    image.src = "/images/Cat_Friend.svg";
+
+    let message = document.createElement("p");
+    message.innerHTML = "Start up the chat by sending a message!";
+
+    imageDiv.appendChild(image);
+    imageDiv.appendChild(message);
+
+  document.getElementById("chatArea").appendChild(imageDiv);
+}
+
 //Create message div for each message and append to screen
 const populateMessages = () => {
+  console.log(messagesList);
+  if(messagesList.length > 0) clearMessagesArea();
   messagesList.forEach((message) => {
     addMessage(message);
   });
@@ -286,7 +304,7 @@ const showNoChannelScreen = () => {
     noChannelDiv.classList.add("no-channel-div");
 
     let image = document.createElement("img");
-    image.src = "/images/Cat_Wumpus.svg";
+    image.src = "/images/Cat_Compass.svg";
 
     let message = document.createElement("p");
     message.innerHTML = "There is no channel here";
@@ -489,7 +507,6 @@ window.addEventListener("resize", () => {
 
 //Fix discriminator display 
 document.querySelectorAll(".discriminator").forEach(discriminator => {
-  console.log(discriminator.innerHTML);
   if(discriminator.innerHTML.length < 5) {
     //remove #
     discriminator.innerHTML = discriminator.innerHTML.slice(1);

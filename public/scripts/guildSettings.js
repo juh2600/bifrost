@@ -161,13 +161,13 @@ document.getElementById("updateGuildForm").addEventListener("submit", event => {
 				.then(updateGuild)
 				.then(updateChannels)
 				.then(() => {
-					//window.location.href = "/app/" + guild_id;
+					window.location.href = "/app/" + guild_id;
 				});
 		} else {
 			updateGuild({})
 				.then(updateChannels)
 				.then(() => {
-					//window.location.href = "/app/" + guild_id;
+					window.location.href = "/app/" + guild_id;
 				});
 		}
 	}

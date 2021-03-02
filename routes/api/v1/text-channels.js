@@ -84,8 +84,9 @@ const updateTextChannels = (req, res) => {
 	};
 	db.clearChannels(req.params.guild_id).then(async () => {
 		for (let channel of req.body.sort((a,b) => a.position < b.position ? -1 : 1)) {
-			if (req.body.channel_id) {
+			if (channel.channel_id) {
 				// FIXME verify that the channel exists
+				// FIXME this lets The Outside put IDs into our database. has big Security Hole energy
 				await db.addChannelToGuild(req.params.guild_id, channel.channel_id, channel.name, channel.position).catch(e => errors.push(...e));
 			}
 			else {

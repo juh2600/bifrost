@@ -448,7 +448,7 @@ body {
 }
 
 #cumpusSection,
-.no-channel-div {
+.no-channel-div, .no-message-div {
   width: 80%;
   position: absolute;
   top: 45%;

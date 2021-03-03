@@ -96,6 +96,7 @@ const changeChannel = (newChannelId, addToHistory) => {
 
     //Repopulate messages
     getMessages();
+
   }
 
   return newChannelExists;
@@ -134,6 +135,10 @@ const getMessages = () => {
       );
       if(messagesList.length == 0) addNoMessagesImage();
       populateMessages();
+
+      //scroll browswer to bottom of messages list
+      const chatArea = document.getElementsByClassName("chat-area")[0];
+      chatArea.scrollTop = chatArea.scrollHeight;
     });
 };
 

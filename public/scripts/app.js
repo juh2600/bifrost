@@ -58,7 +58,8 @@ const createChannelList = (channelList, addToHistory) => {
         changeChannel(channelList[0].channel_id, addToHistory);
       else noChannelSelected();
     }
-  } else noChannelSelected();
+  } else if (channelList.length > 0) changeChannel(channelList[0].channel_id, addToHistory);
+    else noChannelSelected();
 };
 
 //Get messages for new channel, change selected channel styles
@@ -96,6 +97,7 @@ const changeChannel = (newChannelId, addToHistory) => {
 
     //Repopulate messages
     getMessages();
+
   }
 
   return newChannelExists;
@@ -123,6 +125,7 @@ const noChannelSelected = () => {
 };
 
 const getMessages = () => {
+  clearMessagesArea();
   fetch(
     `/api/${APIVERSION}/guilds/${selectedGuildId}/text-channels/${selectedChannelId}/messages?limit=32`
   )
@@ -131,8 +134,12 @@ const getMessages = () => {
       messagesList = data.sort((a, b) =>
         a.message_id < b.message_id ? -1 : 1
       );
-      addNoMessagesImage();
+      if(messagesList.length == 0) addNoMessagesImage();
       populateMessages();
+
+      //scroll browswer to bottom of messages list
+      const chatArea = document.getElementsByClassName("chat-area")[0];
+      chatArea.scrollTop = chatArea.scrollHeight;
     });
 };
 
@@ -209,6 +216,9 @@ const addMessage = (message) => {
   div.appendChild(messageSection);
 
   document.getElementById("chatArea").appendChild(div);
+
+  //Add message to messagesList
+  messagesList.push(message);
 };
 
 const getUserById = (userId) => {
@@ -249,7 +259,6 @@ const changeGuild = (newGuildId, addToHistory) => {
       .querySelector('[data-guild-id="' + newGuildId + '"]')
       .classList.add("selected");
     //Change current guild name
-    //Change current channel name
     document.getElementById("guildName").innerHTML = newGuildName;
     //Update selected channel id
     selectedGuildId = newGuildId;

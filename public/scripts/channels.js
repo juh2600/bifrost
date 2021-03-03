@@ -79,6 +79,12 @@ const populateData = (data) => {
     for(let i = 0; i < data.length; i++) {
         addChannel(data[i]);
     }
+    
+    document.querySelectorAll(".drag").forEach(dragBtn => {
+        dragBtn.addEventListener("mousedown", () => {
+            showSaveChangesContainer();
+        });
+    });
     updateChannelList();
 }
 
@@ -165,6 +171,9 @@ Sortable.create(channelListContainer, {
     handle: '.drag',
     animation: 100
 });
+
+
+
 
 
 

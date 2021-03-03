@@ -106,10 +106,10 @@ body {
 .chat-area {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
-  -webkit-transition: transform 1s ease;
-  -moz-transition: transform 1s ease;
-  -o-transition: transform 1s ease;
-  transition: transform 1s ease;
+  -webkit-transition: transform 0.15s ease;
+  -moz-transition: transform 0.15s ease;
+  -o-transition: transform 0.15s ease;
+  transition: transform 0.15s ease;
 }
 
 /*#############################
@@ -203,10 +203,10 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   box-sizing: border-box;
-  -webkit-transition: transform 1s ease;
-  -moz-transition: transform 1s ease;
-  -o-transition: transform 1s ease;
-  transition: transform 1s ease;
+  -webkit-transition: transform 0.15s ease;
+  -moz-transition: transform 0.15s ease;
+  -o-transition: transform 0.15s ease;
+  transition: transform 0.15s ease;
 }
 
 #guildName {
@@ -248,10 +248,10 @@ body {
   align-items: center;
   justify-content: center;
   padding: 1.5em 0.5em 0.5em 0.5em;
-  -webkit-transition: transform 1s ease;
-  -moz-transition: transform 1s ease;
-  -o-transition: transform 1s ease;
-  transition: transform 1s ease;
+  -webkit-transition: transform 0.15s ease;
+  -moz-transition: transform 0.15s ease;
+  -o-transition: transform 0.15s ease;
+  transition: transform 0.15s ease;
 }
 .profile-area > .user {
   cursor: pointer;
@@ -267,10 +267,10 @@ body {
 .user-list {
   padding: 0.5em;
   overflow-x: hidden;
-  -webkit-transition: transform 1s ease;
-  -moz-transition: transform 1s ease;
-  -o-transition: transform 1s ease;
-  transition: transform 1s ease;
+  -webkit-transition: transform 0.15s ease;
+  -moz-transition: transform 0.15s ease;
+  -o-transition: transform 0.15s ease;
+  transition: transform 0.15s ease;
 }
 .user {
   width: 100%;
@@ -375,10 +375,10 @@ body {
   display: none;
   padding-right: 0.75em;
   cursor: pointer;
-  -webkit-transition: transform 1s ease;
-  -moz-transition: transform 1s ease;
-  -o-transition: transform 1s ease;
-  transition: transform 1s ease;
+  -webkit-transition: transform 0.15s ease;
+  -moz-transition: transform 0.15s ease;
+  -o-transition: transform 0.15s ease;
+  transition: transform 0.15s ease;
 }
 /* #friends:hover {
   transform: translateX(-300px);
@@ -387,10 +387,10 @@ body {
   display: none;
   padding-left: 0.75em;
   cursor: pointer;
-  -webkit-transition: transform 1s ease;
-  -moz-transition: transform 1s ease;
-  -o-transition: transform 1s ease;
-  transition: transform 1s ease;
+  -webkit-transition: transform 0.15s ease;
+  -moz-transition: transform 0.15s ease;
+  -o-transition: transform 0.15s ease;
+  transition: transform 0.15s ease;
 	height: 1em;
 	width: 0.875em;
 }

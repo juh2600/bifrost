@@ -1,9 +1,10 @@
 const logger = require('logger').get('guilds');
 const api_ver = require('./api_ver');
 
-let db;
+let db, io;
 const configure = (obj) => {
 	db = obj['db'];
+	io = obj['io'];
 };
 
 const handle = (code, req, res) => {
@@ -26,6 +27,11 @@ const createGuild = (req, res) => {
 					.status(201)
 					.location(`${api_ver}/guilds/${guild.guild_id}`)
 					.json(guild);
+				return guild;
+			})
+			.then(guild => {
+				io.emit("create guild", guild);
+				return guild;
 			})
 			.catch(handle(500, req, res));
 	}
@@ -58,6 +64,9 @@ const updateGuild = (req, res) => {
 			res.statusMessage = 'Updated';
 			res.status(204).end();
 		})
+		.then(() => {
+			io.emit("update guild");
+		})
 		.catch(handle(400, req, res));
 };
 
@@ -66,6 +75,9 @@ const deleteGuild = (req, res) => {
 		.then(() => {
 			res.statusMessage = 'Deleted';
 			res.status(204).end();
+		})
+		.then(() => {
+			io.emit("delete guild");
 		})
 		.catch(handle(500, req, res));
 };

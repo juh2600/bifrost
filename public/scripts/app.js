@@ -470,6 +470,7 @@ const removeUserFromList = user_id => {
 }
 
 const updateUserDisplay = () => {
+	console.log('doing users');
   usersList.sort((a, b) => (a.user_id > b.user_id ? 1 : -1));
 
   document.getElementById("userListContainer").innerHTML = "";

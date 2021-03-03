@@ -6,6 +6,7 @@ const numericSort = (a,b) => a < b ? -1 : 1;
 let db;
 const configure = (obj) => {
 	db = obj['db'];
+	io = obj['io'];
 };
 
 const handle = (code, req, res) => {
@@ -29,6 +30,12 @@ const createTextChannel = (req, res) => {
 					.status(201)
 					.location(`${api_ver}/guilds/${channel.guild_id}/text-channels/${channel.channel_id}`)
 					.json(channel);
+				return channel;
+			})
+		// FIXME put clients in socket.io rooms based on guilds as well as channels, so only people viewing a guild will have their list updated
+			.then(channel => {
+				io.emit("create channel", channel);
+				return channel;
 			})
 			.catch(handle(500, req, res));
 	}
@@ -61,6 +68,9 @@ const updateTextChannel = (req, res) => {
 			res.statusMessage = 'Updated';
 			res.sendStatus(204);
 		})
+		.then(() => {
+			io.emit("update channel");
+		})
 		.catch(handle(400, req, res));
 };
 
@@ -82,24 +92,30 @@ const updateTextChannels = (req, res) => {
 		return;
 		// FIXME ugly??
 	};
-	db.clearChannels(req.params.guild_id).then(async () => {
-		for (let channel of req.body.sort((a,b) => a.position < b.position ? -1 : 1)) {
-			if (channel.channel_id) {
-				// FIXME verify that the channel exists
-				// FIXME this lets The Outside put IDs into our database. has big Security Hole energy
-				await db.addChannelToGuild(req.params.guild_id, channel.channel_id, channel.name, channel.position).catch(e => errors.push(...e));
+	db.clearChannels(req.params.guild_id)
+		.then(async () => {
+			for (let channel of req.body.sort((a,b) => a.position < b.position ? -1 : 1)) {
+				if (channel.channel_id) {
+					// FIXME verify that the channel exists
+					// FIXME this lets The Outside put IDs into our database. has big Security Hole energy
+					await db.addChannelToGuild(req.params.guild_id, channel.channel_id, channel.name, channel.position).catch(e => errors.push(...e));
+				}
+				else {
+					await db.createChannel(req.params.guild_id, channel.name, channel.position).catch(e => errors.push(...e));
+				}
 			}
-			else {
-				await db.createChannel(req.params.guild_id, channel.name, channel.position).catch(e => errors.push(...e));
+			if (errors.length) {
+				throw errors;
 			}
-		}
-		if (errors.length) {
-			throw errors;
-		}
-	}).then(() => {
-		res.statusMessage = 'Updated';
-		res.sendStatus(204);
-	}).catch(handle(500, req, res));
+		})
+		.then(() => {
+			res.statusMessage = 'Updated';
+			res.sendStatus(204);
+		})
+		.then(() => {
+			io.emit("update channel");
+		})
+		.catch(handle(500, req, res));
 };
 
 const deleteTextChannel = (req, res) => {
@@ -107,6 +123,9 @@ const deleteTextChannel = (req, res) => {
 		.then(() => {
 			res.statusMessage = 'Deleted';
 			res.sendStatus(204);
+		})
+		.then(() => {
+			io.emit("delete channel");
 		})
 		.catch(handle(500, req, res));
 };

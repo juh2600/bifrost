@@ -29,7 +29,7 @@ const configure = (obj) => {
 				.catch(console.error);
 		});
 	});
-	return server;
+	return {server, io};
 };
 
 

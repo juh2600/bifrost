@@ -58,7 +58,8 @@ const createChannelList = (channelList, addToHistory) => {
         changeChannel(channelList[0].channel_id, addToHistory);
       else noChannelSelected();
     }
-  } else noChannelSelected();
+  } else if (channelList.length > 0) changeChannel(channelList[0].channel_id, addToHistory);
+    else noChannelSelected();
 };
 
 //Get messages for new channel, change selected channel styles
@@ -258,7 +259,6 @@ const changeGuild = (newGuildId, addToHistory) => {
       .querySelector('[data-guild-id="' + newGuildId + '"]')
       .classList.add("selected");
     //Change current guild name
-    //Change current channel name
     document.getElementById("guildName").innerHTML = newGuildName;
     //Update selected channel id
     selectedGuildId = newGuildId;

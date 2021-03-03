@@ -536,7 +536,7 @@ friendsId.addEventListener("click", () => {
 
 //Resets mobile animations and positions if window is 850 or bigger
 window.addEventListener("resize", () => {
-  console.log(document.body.clientWidth);
+  //console.log(document.body.clientWidth);
   if (document.body.clientWidth > 849) {
     serverChannelId.style.transition = "none";
     guildListDisplay.style.transition = "none";

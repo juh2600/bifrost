@@ -1,5 +1,5 @@
 const logger = require('logger').get('users');
-const snowmachine = new (require('snowflake-generator'))(1420070400000);
+const api_ver = require('./api_ver');
 
 let db;
 const configure = (obj) => {
@@ -24,7 +24,7 @@ const createUser = (req, res) => {
 			.then(user => {
 				res
 					.status(201)
-					.location(`/users/${user.user_id}`)
+					.location(`${api_ver}/users/${user.user_id}`)
 					.json(user);
 			})
 			.catch(handle(500, req, res));

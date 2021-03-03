@@ -1,19 +1,26 @@
 {
-    "routes": [
-        "frontend"
-        , "api/v0/guilds"
-        , "api/v0/text-channels"
-        , "api/v0/messages"
-        , "api/v0/users"
-        , "api/v0/icons"
-        , "api/v1/guilds"
-        , "api/v1/text-channels"
-        , "api/v1/messages"
-        , "api/v1/users"
-    ]
-    , "proxies":
-    {
-        "/api/v1/icons": "http://bifrost.jtreed.org:6000"
-        , "/icons": "http://bifrost.jtreed.org:6000"
-    }
+	"_comment_0": "Use this file to configure microservices (in this case, using multiple instances with subsets of the full functionality). To whitelist routes, add the containing files to the routes array. To create proxies to other instances, add the routes to proxy and the hosts to forward requests to to the proxies object."
+	, "_comment_2": "If you wish to use the app as a monolith, either leave both of these blocks commented or remove them. This file may contain an empty object, but it must be present."
+	, "_comment_3": "The provided configuration spins up almost all routes, but forwards icon requests to another server."
+
+	, "_routes_desc": "List of route files to load on this instance"
+	, "routes": [
+		"frontend"
+		, "api/v0/guilds"
+		, "api/v0/text-channels"
+		, "api/v0/messages"
+		, "api/v0/users"
+		, "api/v0/icons"
+		, "api/v1/guilds"
+		, "api/v1/text-channels"
+		, "api/v1/messages"
+		, "api/v1/users"
+	]
+
+	, "_proxies_desc": "List of routes to be forwarded to other instances/hosts"
+	, "proxies":
+	{
+		"/api/v1/icons": "https://bifrost.jtreed.org"
+		, "/icons": "https://bifrost.jtreed.org"
+	}
 }

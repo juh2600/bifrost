@@ -1,5 +1,5 @@
 const logger = require('logger').get('text-channels');
-const snowmachine = new (require('snowflake-generator'))(1420070400000);
+const api_ver = require('./api_ver');
 
 const numericSort = (a,b) => a < b ? -1 : 1;
 
@@ -10,7 +10,7 @@ const configure = (obj) => {
 
 const handle = (code, req, res) => {
 	return errors => {
-		console.log(errors);
+		console.error(errors);
 		res
 			.status(code)
 			.json(errors);
@@ -27,7 +27,7 @@ const createTextChannel = (req, res) => {
 			.then(channel => {
 				res
 					.status(201)
-					.location(`/guilds/${channel.guild_id}/text-channels/${channel.channel_id}`)
+					.location(`${api_ver}/guilds/${channel.guild_id}/text-channels/${channel.channel_id}`)
 					.json(channel);
 			})
 			.catch(handle(500, req, res));
@@ -84,8 +84,9 @@ const updateTextChannels = (req, res) => {
 	};
 	db.clearChannels(req.params.guild_id).then(async () => {
 		for (let channel of req.body.sort((a,b) => a.position < b.position ? -1 : 1)) {
-			if (req.body.channel_id) {
+			if (channel.channel_id) {
 				// FIXME verify that the channel exists
+				// FIXME this lets The Outside put IDs into our database. has big Security Hole energy
 				await db.addChannelToGuild(req.params.guild_id, channel.channel_id, channel.name, channel.position).catch(e => errors.push(...e));
 			}
 			else {

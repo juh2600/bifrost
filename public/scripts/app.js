@@ -343,6 +343,25 @@ document.getElementById("createGuildBtn").addEventListener("click", () => {
   window.location.href = "/guilds/create";
 });
 
+
+const updateGuildDisplay = () => {
+  //Clear out previous guilds
+  document.getElementById("guildCollection").innerHTML = "";
+  fetch(`/api/${APIVERSION}/guilds`)
+  .then((response) => response.json())
+  .then((data) => {
+    //sort data
+    data.sort((a, b) => (a.guild_id > b.guild_id ? 1 : -1));
+    data.forEach(guild => {
+      console.log(guild);
+      addGuild(guild);
+    });
+    //add selected class back to selected guild
+    document.querySelector('[data-guild-id="' + selectedGuildId + '"]').classList.add("selected");
+    
+  });
+} 
+
 //Add guild to list of guilds. Pass in a guild object
 const addGuild = (guild) => {
   let guildDiv = document.createElement("div");
@@ -350,7 +369,7 @@ const addGuild = (guild) => {
   guildDiv.dataset.guildId = guild.guild_id;
   guildDiv.dataset.guildName = guild.name;
   setupTooltip(guildDiv, guildDiv.dataset.guildName);
-  guild.addEventListener("click", () => {
+  guildDiv.addEventListener("click", () => {
     changeGuild(guild.guild_id, true);
   });
 
@@ -443,7 +462,7 @@ const removeUserFromList = user_id => {
 
 const updateUserDisplay = () => {
   usersList.sort((a, b) => (a.user_id > b.user_id ? 1 : -1));
-  
+
   document.getElementById("userListContainer").innerHTML = "";
   for(let i = 0; i < usersList.length; i++) {
     let container = document.createElement("div");

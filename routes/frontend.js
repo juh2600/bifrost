@@ -46,6 +46,7 @@ const app = (req, res) => {
           apiVersion,
         };
         data.userList.sort((a, b) => (a.user_id > b.user_id ? 1 : -1));
+        data.guildList.sort((a, b) => (a.guild_id > b.guild_id ? 1 : -1));
         if (!data.user) {
           res.redirect("/");
           return;

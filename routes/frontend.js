@@ -37,7 +37,7 @@ const app = (req, res) => {
   db.getGuilds()
     .then((dbGuildList) => {
       return db.getUsers().then((dbUsersList) => {
-        const data = {
+        let data = {
           guildList: dbGuildList,
           userList: dbUsersList,
           user: dbUsersList.filter(
@@ -45,6 +45,7 @@ const app = (req, res) => {
           )[0],
           apiVersion,
         };
+        data.userList.sort((a, b) => (a.user_id > b.user_id ? 1 : -1));
         if (!data.user) {
           res.redirect("/");
           return;

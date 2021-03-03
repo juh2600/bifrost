@@ -424,6 +424,67 @@ fetch(`/api/${APIVERSION}/users`)
     else showEmptyScreen();
   });
 
+
+
+//Add user into usersList
+const addUserToList = user => {
+  usersList.push(user);
+}
+
+//Remove user from usersList
+const removeUserFromList = user_id => {
+  for(let i = 0; i < usersList.length; i++) {
+    if(usersList[i].user_id == user_id) {
+      usersList.splice(i, 1);
+      break;
+    }
+  }
+}
+
+const updateUserDisplay = () => {
+  usersList.sort((a, b) => (a.user_id > b.user_id ? 1 : -1));
+  
+  document.getElementById("userListContainer").innerHTML = "";
+  for(let i = 0; i < usersList.length; i++) {
+    let container = document.createElement("div");
+    container.classList.add("user");
+    
+    let imageContainer = document.createElement("div");
+    imageContainer.classList.add("icon");
+    imageContainer.classList.add("img-circle");
+
+    let image = document.createElement("img");
+    image.src=`/api/${APIVERSION}/icons/` + usersList[i].icon_id;
+    image.classList.add("img");
+    imageContainer.appendChild(image);
+
+    let nameContainer = document.createElement("div");
+    nameContainer.classList.add("name-container");
+
+    let name = document.createElement("p");
+    name.classList.add("name");
+    name.innerHTML = usersList[i].name;
+    nameContainer.appendChild(name);
+
+    let discriminator = document.createElement("p");
+    discriminator.classList.add("discriminator");
+    discriminator.innerHTML = `#${usersList[i].discriminator}`;
+    nameContainer.appendChild(discriminator);
+
+    container.appendChild(imageContainer);
+    container.appendChild(nameContainer);
+
+    document.getElementById("userListContainer").appendChild(container);
+  }
+}
+
+
+
+
+
+
+
+
 let main = document.querySelector(".main");
 
 //Displays Servers/Channels -Mobile

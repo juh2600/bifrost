@@ -22,7 +22,7 @@ block content
             p#friends.fas.fa-user-friends
 
 
-        //- TODO: get data from session
+        
         div.profile-area
             div#currentUser.user(data-user-id = user.user_id)
                 div.icon.img-circle
@@ -53,7 +53,7 @@ block content
                 p There is no channel here. Select a guild on the left.
             div#chatArea
 
-        div.user-list
+        div.user-list#userListContainer
             each user in userList
                 div.user(data-user-id = user.user_id)
                     div.icon.img-circle

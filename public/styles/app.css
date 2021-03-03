@@ -391,10 +391,12 @@ body {
   -moz-transition: transform 1s ease;
   -o-transition: transform 1s ease;
   transition: transform 1s ease;
+	height: 1em;
+	width: 0.875em;
 }
 
-.fas {
-  color: var(--color-text-3);
+.fa-icon path {
+  fill: var(--color-text-3);
   background-color: var(--color-bg-3);
   padding: 13px;
 }
@@ -508,6 +510,8 @@ body {
     display: block;
     position: absolute;
     right: 0em;
+		width: 1.25em;
+		height: 1em;
   }
 
   #serverChannel {

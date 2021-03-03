@@ -123,6 +123,7 @@ const noChannelSelected = () => {
 };
 
 const getMessages = () => {
+  clearMessagesArea();
   fetch(
     `/api/${APIVERSION}/guilds/${selectedGuildId}/text-channels/${selectedChannelId}/messages?limit=32`
   )

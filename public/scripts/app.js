@@ -132,7 +132,7 @@ const getMessages = () => {
       messagesList = data.sort((a, b) =>
         a.message_id < b.message_id ? -1 : 1
       );
-      addNoMessagesImage();
+      if(messagesList.length == 0) addNoMessagesImage();
       populateMessages();
     });
 };
@@ -210,6 +210,9 @@ const addMessage = (message) => {
   div.appendChild(messageSection);
 
   document.getElementById("chatArea").appendChild(div);
+
+  //Add message to messagesList
+  messagesList.push(message);
 };
 
 const getUserById = (userId) => {

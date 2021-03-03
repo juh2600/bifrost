@@ -109,7 +109,7 @@ const validateForm = () => {
 };
 
 const logout = () => {
-  location.replace("http://localhost:3000/logout");
+  location.replace("/logout");
 };
 
 const removeImage = () => {

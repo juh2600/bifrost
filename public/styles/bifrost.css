@@ -4,6 +4,7 @@
   --color-bg-3: #292b2f;
   --color-bg-4: #40444b;
   --color-accent: #7148ff;
+	--color-accent-light: #a186ff;
   --color-success: #21af6f;
   --color-danger: #dc3545;
 }
@@ -26,6 +27,8 @@ body {
   background:none;
   display:inline-block;
   cursor: pointer;
+	text-decoration: none;
+	color: var(--color-accent-light);
 }
 
 .btn {

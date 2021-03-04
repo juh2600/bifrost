@@ -182,6 +182,12 @@ h2 {
   margin: 0.5em auto 0 auto;
 }
 
+#guildImgTooLarge {
+  color: var(--color-danger);
+  margin-top: 1em;
+  text-align: center;
+}
+
 @media all and (min-height: 500px) {
   .button-area {
     margin-bottom: 1em;

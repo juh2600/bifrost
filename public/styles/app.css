@@ -464,6 +464,18 @@ body {
   display: block;
 }
 
+.iframely-embed {
+  max-width: 500px;
+}
+
+
+
+@media all and (max-width: 1150px) {
+  .iframely-embed {
+    width: 90%;
+  }
+}
+
 /* Mobile */
 @media all and (max-width: 825px) {
   body {

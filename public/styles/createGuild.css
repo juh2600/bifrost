@@ -72,6 +72,12 @@ h1 {
     margin:0.5em auto 0 auto;
 }
 
+#createImgTooLarge{
+    color: var(--color-danger);
+  margin-top: 1em;
+  text-align: center;
+}
+
 @media all and (min-height:500px) {
     .button-area {
         align-items: flex-start;

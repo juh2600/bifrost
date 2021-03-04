@@ -17,6 +17,7 @@ block content
                         div.img-container
                             div.img-circle.img-large
                                 img#userImage(src=`/api/${apiVersion}/icons/${currUser.icon_id}` alt="User Icon").img
+                            div#userImgTooLarge
                             button#removeImageBtn(type="button").link remove
                             p#usernamePreview #{currUser.name}
                             p#discriminatorPreview ##{currUser.discriminator}

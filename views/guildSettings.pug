@@ -22,6 +22,7 @@ block content
                                 div.img-circle.img-large
                                     //- img#guildImage(src='guild.icon_id, alt="Guild Icon", value=guild.icon_id).img
                                     img#guildImage(src=`/api/${apiVersion}/icons/` + guild.icon_id, alt="Guild Icon", value=guild.icon_id).img
+                                div#guildImgTooLarge
                                 button#removeImageBtn(type="button").link remove
                             div.input-area
                                 div.form-block

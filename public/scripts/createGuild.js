@@ -141,7 +141,7 @@ document.getElementById("createGuildForm").addEventListener("submit", event => {
 			.then(response => response.json())
 			.then(channel => {
 				window.location.href = "/app/" + channel.guild_id + '/' + channel.channel_id;
-			});
+			}).catch(document.getElementById("createImgTooLarge").innerHTML = "Image Too Large");
 	}
 
 });

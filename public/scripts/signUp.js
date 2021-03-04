@@ -193,7 +193,7 @@ document.getElementById("signupForm").addEventListener("submit", event => {
 			})
 			.then(() => {
 				window.location.href = "/login";
-			});
+			}).catch(document.getElementById("signUpImgTooLarge").innerHTML = "Image Too Large");
 	}
 
 });

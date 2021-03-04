@@ -224,11 +224,13 @@ const addMessage = (message) => {
   messageArray.forEach((message) => {
     if (message.startsWith("https://")) {
       //Adds Link below message
-      let linkTag = document.createElement("a");
-      linkTag.classList.add("link");
-      linkTag.href = message;
-      linkTag.innerHTML = message;
-      messageContent.appendChild(linkTag);
+      if (!message.startsWith("https://tenor.com")) {
+        let linkTag = document.createElement("a");
+        linkTag.classList.add("link");
+        linkTag.href = message;
+        linkTag.innerHTML = message;
+        messageContent.appendChild(linkTag);
+      }
 
       //Adds IFrame Image/Video
       let embeddedContent = document.createElement("div");

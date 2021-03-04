@@ -75,6 +75,11 @@ const getIcon = (req, res) => {
 			if (!icon) {
 				if (req.params.icon_id < snowmachine.generate().snowflake)
 					res.sendStatus(410);
+					//res.redirect(301, '/images/Cat_Broken_Icon.svg');
+					// don't do this; fix broken images in CSS
+					// this is because we'd rather
+					// 1) preserve the semantics: the icon has not been moved permanently; it's gone and will never be there
+					// 2) i know i had another reason but idr what it was
 				else
 					res.sendStatus(404);
 			}

@@ -192,3 +192,18 @@ button:focus {
 .form-block {
   margin-bottom: 1rem;
 }
+
+img {
+	position: relative;
+}
+img::after {
+	content: '';
+	background-image: url(/images/Cat_Broken_Icon.svg);
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background-size: 110%;
+	background-position: center;
+}

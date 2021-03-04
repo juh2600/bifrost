@@ -567,11 +567,7 @@ let serverChannelId = document.getElementById("serverChannel");
 serverChannelId.addEventListener("click", () => {
   if (!friendsExpanded) {
     if (serverExpanded) {
-      serverChannelId.style.transform = "translateX(0em)";
-      guildListDisplay.style.transform = "translateX(0em)";
-      guildNameDisplay.style.transform = "translateX(0em)";
-      textChannelsList.style.transform = "translateX(0em)";
-      serverExpanded = false;
+      resetServerPanel();
     } else {
       serverChannelId.style.transform = "translateX(19em)";
       guildListDisplay.style.transform = "translateX(5em)";
@@ -591,10 +587,7 @@ let friendsId = document.getElementById("friends");
 friendsId.addEventListener("click", () => {
   if (!serverExpanded) {
     if (friendsExpanded) {
-      friendsId.style.transform = "translateX(0em)";
-      friendsList.style.transform = "translateX(0em)";
-      prof.style.transform = "translateX(0em)";
-      friendsExpanded = false;
+      resetFriendsPanel();
     } else {
       friendsId.style.transform = "translateX(-14em)";
       friendsList.style.transform = "translateX(-14em)";
@@ -606,7 +599,6 @@ friendsId.addEventListener("click", () => {
 
 //Resets mobile animations and positions if window is 850 or bigger
 window.addEventListener("resize", () => {
-  //console.log(document.body.clientWidth);
   if (document.body.clientWidth > 849) {
     serverChannelId.style.transition = "none";
     guildListDisplay.style.transition = "none";
@@ -615,15 +607,8 @@ window.addEventListener("resize", () => {
     friendsId.style.transition = "none";
     friendsList.style.transition = "none";
     prof.style.transition = "none";
-    serverChannelId.style.transform = "translateX(0em)";
-    guildListDisplay.style.transform = "translateX(0em)";
-    guildNameDisplay.style.transform = "translateX(0em)";
-    textChannelsList.style.transform = "translateX(0em)";
-    friendsId.style.transform = "translateX(0em)";
-    friendsList.style.transform = "translateX(0em)";
-    prof.style.transform = "translateX(0em)";
-    friendsExpanded = false;
-    serverExpanded = false;
+    resetServerPanel();
+    resetFriendsPanel();
   } else {
     serverChannelId.style.transition = "transform 1s ease";
     guildListDisplay.style.transition = "transform 1s ease";
@@ -634,6 +619,31 @@ window.addEventListener("resize", () => {
     prof.style.transition = "transform 1s ease";
   }
 });
+
+//Resets Panels when chat or message area is clicked
+document.querySelector(".chat-area").addEventListener("click", () => {
+  resetFriendsPanel();
+  resetServerPanel();     
+})
+document.querySelector(".message-area").addEventListener("click", () => {
+  resetFriendsPanel();
+  resetServerPanel();     
+})
+
+const resetServerPanel = () => {
+  serverChannelId.style.transform = "translateX(0em)";
+  guildListDisplay.style.transform = "translateX(0em)";
+  guildNameDisplay.style.transform = "translateX(0em)";
+  textChannelsList.style.transform = "translateX(0em)";
+  serverExpanded = false;
+}
+
+const resetFriendsPanel = () => {
+  friendsId.style.transform = "translateX(0em)";
+  friendsList.style.transform = "translateX(0em)";
+  prof.style.transform = "translateX(0em)";
+  friendsExpanded = false;
+}
 
 //Fix discriminator display
 document.querySelectorAll(".discriminator").forEach((discriminator) => {

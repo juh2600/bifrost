@@ -7,6 +7,10 @@ let usersList = [];
 
 let IsEmbedded;
 
+const getPrettyTimestamp = (snowflake) => {
+		return new Date(((BigInt(snowflake) >> 22n).toString() - 0) + 1420070400000);
+}
+
 //Get current guild and channel ids out of the URL if they are present
 const getIdFromURL = (typeOfID) => {
   let url = window.location.href;
@@ -202,7 +206,7 @@ const addMessage = (message) => {
   let timestamp = document.createElement("span");
   timestamp.classList.add("timestamp");
   //TODO: FIX LATER
-  timestamp.innerHTML = "timestamp";
+  timestamp.innerHTML = getPrettyTimestamp(message.message_id);
 
   titleBar.appendChild(userName);
   titleBar.appendChild(timestamp);

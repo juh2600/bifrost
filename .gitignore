@@ -1,3 +1,4 @@
+.env
 secrets.json
 microservices.json
 public/icons/*

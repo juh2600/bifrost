@@ -25,10 +25,11 @@ selectedGuildId = getIdFromURL("guild");
 selectedChannelId = getIdFromURL("channel");
 
 const updateChannelList = (addToHistory) => {
-  clearChannelList();
+  
   fetch(`/api/${APIVERSION}/guilds/${selectedGuildId}/text-channels`)
     .then((response) => response.json())
     .then((data) => {
+      clearChannelList();
       channelList = data;
       //sort by position
       channelList.sort((a, b) => (a.position > b.position ? 1 : -1));

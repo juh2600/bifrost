@@ -395,18 +395,19 @@ document.getElementById("createGuildBtn").addEventListener("click", () => {
 
 const updateGuildDisplay = () => {
   //Clear out previous guilds
-  document.getElementById("guildCollection").innerHTML = "";
   fetch(`/api/${APIVERSION}/guilds`)
   .then((response) => response.json())
   .then((data) => {
+    document.getElementById("guildCollection").innerHTML = "";
     //sort data
     data.sort((a, b) => (a.guild_id > b.guild_id ? 1 : -1));
     data.forEach(guild => {
-      console.log(guild);
+      //console.log(guild);
       addGuild(guild);
     });
     //add selected class back to selected guild
     document.querySelector('[data-guild-id="' + selectedGuildId + '"]').classList.add("selected");
+    changeGuild(selectedGuildId, true);
     
   });
 } 

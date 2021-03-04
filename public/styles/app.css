@@ -448,13 +448,18 @@ body {
 }
 
 #cumpusSection,
-.no-channel-div, .no-message-div {
+.no-channel-div,
+.no-message-div {
   width: 80%;
   position: absolute;
   top: 45%;
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
+}
+
+.link {
+  display: block;
 }
 
 /* Mobile */

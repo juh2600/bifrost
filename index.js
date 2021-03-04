@@ -47,7 +47,6 @@ if (micros.proxies) {
 	const logger = require('logger').get('proxy');
 	for (let route of Object.keys(micros.proxies)) {
 		logger.info(`Installing proxy middleware: ${route} -> ${micros.proxies[route]}`);
-		// TODO actually do that ^
 		app.use(createProxyMiddleware(route, {
 			target: micros.proxies[route]
 			, changeOrigin: true
@@ -57,6 +56,7 @@ if (micros.proxies) {
 logger.info("Configured microservices.");
 
 logger.info("Configuring Express...");
+app.set("trust proxy", 1);
 app.set("view engine", "pug");
 app.set("views", __dirname + "/views");
 app.use(express.static(path.join(__dirname + "/public")));
@@ -65,17 +65,21 @@ app.use(bodyParser.json());
 logger.info("Configured Express.");
 
 logger.info("Configuring sessions...");
-// FIXME implement suggestions at https://blog.jscrambler.com/best-practices-for-secure-session-management-in-node/
+// https://blog.jscrambler.com/best-practices-for-secure-session-management-in-node/
 app.use(
   session({
-    secret: "top-secret" // FIXME move to sekrits or .env or something
+    secret: require('./secrets').session.secret
+		, name: 'bifrost.session'
     , resave: false
     , saveUninitialized: false
 		, cookie: {
-			maxAge: 1000 * 60 * 60 * 24 * 90 // ms; this is 90 days
+			httpOnly: true
+			, secure: process.env.REVERSE_PROXY_SSL == 'true' // .env doesn't like boolean; has returned to string
+			, sameSite: true
+			, maxAge: 1000 * 60 * 60 * 24 * process.env.SESSION_LIFETIME_DAYS // ms; this is 90 days
 		}
 		, store: new CassandraStore({
-			table: 'sessions'
+			table: require('./secrets').session.store_table
 			, client: db.db
 		})
   })

@@ -460,6 +460,10 @@ body {
   text-align: center;
 }
 
+.link {
+  display: block;
+}
+
 /* Mobile */
 @media all and (max-width: 825px) {
   body {

@@ -5,6 +5,8 @@ let channelList;
 let messagesList = [];
 let usersList = [];
 
+let IsEmbedded;
+
 //Get current guild and channel ids out of the URL if they are present
 const getIdFromURL = (typeOfID) => {
   let url = window.location.href;
@@ -151,22 +153,22 @@ const addNoMessagesImage = () => {
   let imageDiv = document.createElement("div");
   imageDiv.classList.add("no-message-div");
 
-    let image = document.createElement("img");
-    image.src = "/images/Cat_Friend.svg";
+  let image = document.createElement("img");
+  image.src = "/images/Cat_Friend.svg";
 
-    let message = document.createElement("p");
-    message.innerHTML = "Start up the chat by sending a message!";
+  let message = document.createElement("p");
+  message.innerHTML = "Start up the chat by sending a message!";
 
-    imageDiv.appendChild(image);
-    imageDiv.appendChild(message);
+  imageDiv.appendChild(image);
+  imageDiv.appendChild(message);
 
   document.getElementById("chatArea").appendChild(imageDiv);
-}
+};
 
 //Create message div for each message and append to screen
 const populateMessages = () => {
   console.log(messagesList);
-  if(messagesList.length > 0) clearMessagesArea();
+  if (messagesList.length > 0) clearMessagesArea();
   messagesList.forEach((message) => {
     addMessage(message);
   });
@@ -207,7 +209,45 @@ const addMessage = (message) => {
 
   let messageContent = document.createElement("p");
   messageContent.classList.add("content");
-  messageContent.innerHTML = message.body;
+
+  //Removes Link Texts And Applies To A-tag
+  let msgArray = message.body.split(" ");
+  msgArray.forEach((message, index) => {
+    if (message.startsWith("https://")) {
+      msgArray.splice(index, 1);
+    }
+  });
+
+  messageContent.innerHTML = msgArray.join(" ");
+
+  let messageArray = message.body.split(" ");
+  messageArray.forEach((message) => {
+    if (message.startsWith("https://")) {
+      //Adds Link below message
+      let linkTag = document.createElement("a");
+      linkTag.classList.add("link");
+      linkTag.href = message;
+      linkTag.innerHTML = message;
+      messageContent.appendChild(linkTag);
+
+      //Adds IFrame Image/Video
+      let embeddedContent = document.createElement("div");
+      embeddedContent.classList.add("iframely-embed");
+
+      let embeddedResponsive = document.createElement("div");
+      embeddedResponsive.classList.add("iframely-responsive");
+
+      let urlContent = document.createElement("a");
+      urlContent.href = message;
+
+      messageContent.appendChild(embeddedContent);
+      embeddedContent.appendChild(embeddedResponsive);
+      embeddedResponsive.appendChild(urlContent);
+
+      //Needs to check if it is valid
+      iframely.load(urlContent);
+    }
+  });
 
   messageSection.appendChild(titleBar);
   messageSection.appendChild(messageContent);
@@ -607,13 +647,12 @@ window.addEventListener("resize", () => {
   }
 });
 
-
-//Fix discriminator display 
-document.querySelectorAll(".discriminator").forEach(discriminator => {
-  if(discriminator.innerHTML.length < 5) {
+//Fix discriminator display
+document.querySelectorAll(".discriminator").forEach((discriminator) => {
+  if (discriminator.innerHTML.length < 5) {
     //remove #
     discriminator.innerHTML = discriminator.innerHTML.slice(1);
-    for(let i = 0; i < 4-discriminator.innerHTML.length; i++) {
+    for (let i = 0; i < 4 - discriminator.innerHTML.length; i++) {
       discriminator.innerHTML = "0" + discriminator.innerHTML;
     }
     discriminator.innerHTML = "#" + discriminator.innerHTML;

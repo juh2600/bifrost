@@ -76,7 +76,7 @@ const getIcon = (req, res) => {
 		.then(icon => {
 			if (!icon) res.sendStatus(404);
 			//else res.sendFile('bolb.png', {root: path.join('./', 'icons')});
-			else res.redirect(icon.url);
+			else res.redirect(301, icon.url);
 		})
 		.catch(handle(500, req, res));
 };

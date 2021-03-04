@@ -71,6 +71,9 @@ app.use(
     secret: "top-secret" // FIXME move to sekrits or .env or something
     , resave: false
     , saveUninitialized: false
+		, cookie: {
+			maxAge: 1000 * 60 * 60 * 24 * 90 // ms; this is 90 days
+		}
 		, store: new CassandraStore({
 			table: 'sessions'
 			, client: db.db

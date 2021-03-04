@@ -285,7 +285,7 @@ const changeGuild = (newGuildId, addToHistory) => {
       newGuildName = guild.dataset.guildName;
     }
   });
-
+  console.log("guild exists", newGuildExists);
   if (newGuildExists) {
     clearMessagesArea();
     //Remove selected class from all guilds
@@ -329,6 +329,16 @@ window.onpopstate = () => {
 
 //Page shown when no channel is selected
 const showEmptyScreen = () => {
+  console.log("show empty screen");
+  //set history to just app page
+  history.pushState("", "", "/app");
+
+  //clear out elements 
+  document.getElementById("guildName").innerHTML = "";
+  document.getElementById("channelName").innerHTML = "";
+  document.getElementById("channelList").innerHTML = "";
+
+
   //hide text channels label
   document.getElementById("channelListLabel").classList.add("hidden");
   //show cumpus
@@ -406,7 +416,8 @@ const updateGuildDisplay = () => {
       addGuild(guild);
     });
     //add selected class back to selected guild
-    document.querySelector('[data-guild-id="' + selectedGuildId + '"]').classList.add("selected");
+    //document.querySelector('[data-guild-id="' + selectedGuildId + '"]').classList.add("selected");
+    clearMessagesArea();
     changeGuild(selectedGuildId, true);
     
   });

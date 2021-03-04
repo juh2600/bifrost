@@ -77,7 +77,7 @@ const deleteGuild = (req, res) => {
 			res.status(204).end();
 		})
 		.then(() => {
-			io.emit("delete guild");
+			io.emit("delete guild", req.params.guild_id);
 		})
 		.catch(handle(500, req, res));
 };

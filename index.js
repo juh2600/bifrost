@@ -74,7 +74,7 @@ app.use(
     , saveUninitialized: false
 		, cookie: {
 			httpOnly: true
-			, secure: process.env.REVERSE_PROXY_SSL == 'true' // .env doesn't like boolean; has returned to string
+			, secure: false // only run this behind a secure proxy i guess
 			, sameSite: true
 			, maxAge: 1000 * 60 * 60 * 24 * process.env.SESSION_LIFETIME_DAYS // ms; this is 90 days
 		}

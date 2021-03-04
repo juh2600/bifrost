@@ -1,10 +1,11 @@
 const logger = require('logger').get('guilds');
 const api_ver = require('./api_ver');
 
-let db, io;
+let db, io, snowmachine;
 const configure = (obj) => {
 	db = obj['db'];
 	io = obj['io'];
+	snowmachine = obj['snowmachine'];
 };
 
 const handle = (code, req, res) => {
@@ -49,7 +50,12 @@ const getGuilds = (req, res) => {
 const getGuild = (req, res) => {
 	db.getGuilds({guild_id: req.params.guild_id})
 		.then(guilds => {
-			if (!guilds.length) res.sendStatus(404);
+			if (!guilds.length) {
+				if (req.params.guild_id < snowmachine.generate().snowflake)
+					res.sendStatus(410);
+				else
+					res.sendStatus(404);
+			}
 			else res.json(guilds[0]);
 		})
 		.catch(handle(500, req, res));

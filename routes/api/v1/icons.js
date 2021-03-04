@@ -1,16 +1,14 @@
 const logger = require('logger').get('icons');
 const path = require('path');
-const snowmachine = new (require('snowflake-generator'))(1420070400000);
 const api_ver = require('./api_ver');
 
-let db;
-let upload;
+let db, upload, snowmachine;
 const configure = (obj) => {
 	db = obj['db'];
+	snowmachine = obj['snowmachine'];
 	upload = obj['upload'];
 	routes.filter(route => route.id === 'Upload Here')
 		.forEach(route => route.handler.unshift(upload.single('icon')));
-	//file_target_thingy = upload.single('icon');
 };
 
 const handle = (code, req, res) => {
@@ -74,7 +72,13 @@ const uploadImageFile = (file) => {
 const getIcon = (req, res) => {
 	db.getIcon(req.params.icon_id)
 		.then(icon => {
-			if (!icon) res.sendStatus(404);
+			if (!icon) {
+				if (req.params.icon_id < snowmachine.generate().snowflake)
+					res.sendStatus(410);
+				else
+					res.sendStatus(404);
+			}
+			// FIXME should we respond 404 or supply a default icon?
 			//else res.sendFile('bolb.png', {root: path.join('./', 'icons')});
 			else res.redirect(301, icon.url);
 		})

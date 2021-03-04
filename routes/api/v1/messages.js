@@ -1,9 +1,11 @@
 const logger = require('logger').get('messages');
 const api_ver = require('./api_ver');
 
-let db;
+let db, io, snowmachine;
 const configure = (obj) => {
 	db = obj['db'];
+	io = obj['io'];
+	snowmachine = obj['snowmachine'];
 };
 
 const handle = (code, req, res) => {
@@ -47,7 +49,12 @@ const getMessages = (req, res) => {
 const getMessage = (req, res) => {
 	db.getMessages(req.params.channel_id, {message_id: req.params.message_id})
 		.then(message => {
-			if (!messages.length) res.sendStatus(404);
+			if (!messages.length) {
+				if (req.params.message_id < snowmachine.generate().snowflake)
+					res.sendStatus(410);
+				else
+					res.sendStatus(404);
+			}
 			else res.json(messages[0]);
 		})
 		.catch(handle(500, req, res));

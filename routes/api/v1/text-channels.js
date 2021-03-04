@@ -1,12 +1,13 @@
 const logger = require('logger').get('text-channels');
 const api_ver = require('./api_ver');
 
-const numericSort = (a,b) => a < b ? -1 : 1;
+let db, io, snowmachine;
 
-let db;
+const numericSort = (a,b) => a < b ? -1 : 1;
 const configure = (obj) => {
 	db = obj['db'];
 	io = obj['io'];
+	snowmachine = obj['snowmachine'];
 };
 
 const handle = (code, req, res) => {
@@ -53,7 +54,12 @@ const getTextChannels = (req, res) => {
 const getTextChannel = (req, res) => {
 	db.getChannels(req.params.guild_id, {channel_id: req.params.channel_id})
 		.then(channels => {
-			if (!channels.length) res.sendStatus(404);
+			if (!channels.length) {
+				if (req.params.channel_id < snowmachine.generate().snowflake)
+					res.sendStatus(410);
+				else
+					res.sendStatus(404);
+			}
 			else res.json(channels[0]);
 		})
 		.catch(handle(500, req, res));

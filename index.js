@@ -21,6 +21,7 @@ logger.info('Instantiating globals...');
 const app = express();
 const db = require('./db/dal');
 const { server, io } = require('./sockets')({db, app});
+const snowmachine = new (require('snowflake-generator'))(1420070400000);
 logger.info('Instantiated globals.');
 
 logger.info("Configuring microservices...");
@@ -98,6 +99,7 @@ routeFiles.forEach((file) => {
 		// dependency injection :tm:
 		db
 		, io
+		, snowmachine
 		, upload
 	});
 	routeManager.apply(app, component);

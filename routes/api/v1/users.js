@@ -1,10 +1,11 @@
 const logger = require('logger').get('users');
 const api_ver = require('./api_ver');
 
-let db;
+let db, io, snowmachine;
 const configure = (obj) => {
 	db = obj['db'];
 	io = obj['io'];
+	snowmachine = obj['snowmachine'];
 };
 
 const handle = (code, req, res) => {
@@ -49,7 +50,12 @@ const getUsers = (req, res) => {
 const getUser = (req, res) => {
 	db.getUsers({user_id: req.params.user_id})
 		.then(users => {
-			if (!users.length) res.sendStatus(404);
+			if (!users.length) {
+				if (req.params.user_id < snowmachine.generate().snowflake)
+					res.sendStatus(410);
+				else
+					res.sendStatus(404);
+			}
 			else res.json(users[0]);
 		})
 		.catch(handle(500, req, res));

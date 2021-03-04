@@ -33,6 +33,15 @@ const requireAuth = (req, res, next) => {
   }
 };
 
+// if they're already logged in, redirect them to /app
+const requireNotAuth = (req, res, next) => {
+  if (req.session.user_id) {
+    res.redirect("/app");
+  } else {
+    next();
+  }
+};
+
 const app = (req, res) => {
   db.getGuilds()
     .then((dbGuildList) => {
@@ -146,7 +155,7 @@ const routes = [
   {
     uri: "/",
     methods: ["get"],
-    handler: index,
+    handler: [requireNotAuth, index]
   },
   {
     uri: ["/app", "/app/:guild_id", "/app/:guild_id/:channel_id"],
@@ -156,13 +165,13 @@ const routes = [
   {
     uri: "/signup",
     methods: ["get"],
-    handler: signUp,
+    handler: [requireNotAuth, signUp]
   },
   {
     desc: "Accepts nothing; returns 200 OK with login page",
     uri: "/login",
     methods: ["get"],
-    handler: logIn,
+    handler: [requireNotAuth, logIn]
   },
   {
     desc:

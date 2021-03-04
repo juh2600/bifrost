@@ -1,7 +1,7 @@
 const logger = require('logger').get('icons');
 const path = require('path');
 const snowmachine = new (require('snowflake-generator'))(1420070400000);
-const api_ver = '/api/v1';
+const api_ver = require('./api_ver');
 
 let db;
 let upload;
@@ -76,7 +76,7 @@ const getIcon = (req, res) => {
 		.then(icon => {
 			if (!icon) res.sendStatus(404);
 			//else res.sendFile('bolb.png', {root: path.join('./', 'icons')});
-			else res.redirect(icon.url);
+			else res.redirect(301, icon.url);
 		})
 		.catch(handle(500, req, res));
 };

@@ -18,12 +18,12 @@ const configure = (obj) => {
 		});
 
 		socket.on("message", (msg) => {
-			console.log(msg);
+			//console.log(msg);
 		});
 		socket.on("chatMessage", (msg) => {
 			db.createMessage(msg.channel_id, msg.author_id, msg.body)
 				.then(msgInDb => {
-					console.log(msgInDb);
+					//console.log(msgInDb);
 					io.to(msg.channel_id).emit("message", msgInDb);
 				})
 				.catch(console.error);

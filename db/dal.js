@@ -525,7 +525,7 @@ const createChannel = async (guild_snowflake, name, position = -1) => {
 	if (!(position > 0)) { // this handles strings and bad guys lmao end me // this shouldn't matter; catch type errors above
 		// by default, append the channel to the end of the guild
 		position = await getChannels(guild_snowflake).then(rows => rows.length);
-		console.log('using position ' + position);
+		//console.log('using position ' + position);
 	} else position = position - 0; // coerce number type
 
 	const record = {
@@ -558,7 +558,7 @@ const addChannelToGuild = async (guild_snowflake, channel_snowflake, name, posit
 	if (!(position > 0)) { // this handles strings and bad guys lmao end me // this shouldn't matter; catch type errors above
 		// by default, append the channel to the end of the guild
 		position = await getChannels(guild_snowflake).then(rows => rows.length);
-		console.log('using position ' + position);
+		//console.log('using position ' + position);
 	} else position = position - 0; // coerce number type
 
 	const record = {
@@ -736,10 +736,13 @@ const getMessages = async (channel_snowflake, options = {
 	}
 	// we now certainly have a channel_snowflake and an options object
 	// next let's ensure that all options are either undefined or of a correct type
+	// ok. so. before and after are good names for parameters, but very hard to use throughout the method.
+	// so we're gonna rename them to "latest" and "earliest"
+	let earliest, latest;
 	if (options.before !== undefined)
-		options.before = coerceToLong(options.before, errors);
+		latest = coerceToLong(options.before, errors);
 	if (options.after !== undefined)
-		options.after = coerceToLong(options.after, errors);
+		earliest = coerceToLong(options.after, errors);
 	if (options.message_id !== undefined)
 		options.message_id = coerceToLong(options.message_id, errors);
 	if (options.limit !== undefined) {
@@ -755,17 +758,20 @@ const getMessages = async (channel_snowflake, options = {
 	// we now certainly know:
 	// - channel_snowflake is a Long
 	// - options is an object
-	// - options.before is either a Long or undefined
-	// - options.after is either a Long or undefined
+	// - earliest is either a Long or undefined
+	// - latest is either a Long or undefined
 	// - options.message_id is either a Long or undefined
 	// - options.limit is either a number or undefined
 	// next let's verify that we have at least one of message_id and limit
 	if (options.message_id !== undefined) {
 		options.limit = 1;
-		constraints.push('message_id = ?');
+		constraints.push('message_id = ?'); // TODO test this
 		params.push(options.message_id);
 	} else if (options.limit === undefined) {
 		errors.push(`One of 'message_id' or 'limit' must be specified in the search options object, but neither was supplied`);
+	}
+	if (errors.length) {
+		throw errors;
 	}
 	// we now certainly know:
 	// - all of the above items
@@ -776,7 +782,7 @@ const getMessages = async (channel_snowflake, options = {
 	// - otherwise, if there's an after, then we search forward
 	// - otherwise, we search backward
 	// we'll add this value to our bucket to move through time: +1 means a later bucket (forward); -1 means an earlier bucket (backward)
-	//           before    is less than    after
+	//          earliest   is less than   latest
 	// earlier <---|-------------------------|---> later
 	//     backward                           forward
 	//        -1                                 +1
@@ -791,26 +797,38 @@ const getMessages = async (channel_snowflake, options = {
 	// next let's ensure that our start and end times are both defined and reasonable
 	const now = coerceToLong(snowmachine.generate().snowflake);
 	const dawn = channel_snowflake;
-	if (!options.before || options.before.greaterThan(now))
-		options.before = now;
-	if (!options.after || options.after.lessThan(dawn))
-		options.after = dawn;
-	if (options.before.lessThan(options.after))
-		errors.push(`The 'before' timestamp (${options.before}) occurs after the 'after' timestamp (${options.after}), which is an impossible scenario`);
+	if (!latest || latest.greaterThan(now))
+		latest = now;
+	if (!earliest || earliest.lessThan(dawn))
+		earliest = dawn;
+	if (earliest.greaterThan(latest))
+		errors.push(`The earliest acceptable timestamp (${earliest}) occurs after the latest acceptable timestamp (${latest}), which is an impossible scenario`);
+	if (errors.length) {
+		throw errors;
+	}
+	//console.log('Dawn:\t\t\t', dawn.toString(), getBucket(dawn));
+	//console.log('Earliest (after):\t', earliest.toString(), getBucket(earliest));
+	//console.log('Latest (before):\t', latest.toString(), getBucket(latest));
+	//console.log('Now:\t\t\t', now.toString(), getBucket(now));
 	// we now certainly know:
 	// - all of the above items
 	// - our before and after times are defined and reasonable
 	// next let's add them to our list of constraints
+	/*
+	// WEATHER UPDATE
+	// We're not doing this on the database anymore, because of Big Hole
+	// instead we're gonna get full buckets and filter server-side
 	constraints.push('message_id <= ?');
-	params.push(options.before);
+	params.push(latest);
 	constraints.push('message_id >= ?');
-	params.push(options.after);
+	params.push(earliest);
+	*/
 	// we now certainly know:
 	// - all of the above items
 	// - we will only receive messages from within the time boundaries
 	// next let's determine our earliest, latest, and starting buckets
-	const earliest_bucket = getBucket(options.after, errors);
-	const latest_bucket = getBucket(options.before, errors);
+	const earliest_bucket = getBucket(earliest, errors);
+	const latest_bucket = getBucket(latest, errors);
 	const starting_bucket = search_direction === 1 ? earliest_bucket : latest_bucket;
 	// this was the last opportunity for pre-database errors to be pushed, so let's flush them out one last time
 	if (errors.length) {
@@ -821,9 +839,9 @@ const getMessages = async (channel_snowflake, options = {
 	// - the bucket we're starting in
 	// - the buckets to stay between (inclusive)
 	// next let's define our query string
-	const query = 'SELECT * FROM messages_by_channel_bucket WHERE ' + constraints.join(' AND ') + ' LIMIT ?;';
+	const query = 'SELECT * FROM messages_by_channel_bucket WHERE ' + constraints.join(' AND ');// + ' LIMIT ?;';
 	// we still haven't pushed the limit, so let's do that now
-	params.push(options.limit);
+	// params.push(options.limit);
 	// Q: this is a limit on how many messages we want total, right? not how many we want per bucket? so why include it?
 	// A: that's a great question! while we may have to scan more than one bucket, we still won't ever want more than n messages
 	//    from a single bucket, so it's okay to include this. it helps in the case that we find all of our messages in one bucket,
@@ -835,6 +853,8 @@ const getMessages = async (channel_snowflake, options = {
 	// A: ...yes it would! let's do that!
 	// take note, ye intrepid reader! the limit shall henceforth be specially-located at the _end_ of the params array, so we can push and pop it
 	// when we want to change it. we'll do this whenever we get some messages back.
+	// WEATHER UPDATE
+	// Due to Big Hole, this plan is cancelled. We'll be fetching entire buckets and filtering server-side.
 
 	// keep in mind that the bucket and channel_id were in the params and constraints arrays to start with.
 	// we'll overwrite the bucket (at index 0) each loop, and we'll overwrite the result limit (at last index) whenever we find messages
@@ -850,10 +870,14 @@ const getMessages = async (channel_snowflake, options = {
 	while (earliest_bucket <= bucket && bucket <= latest_bucket && options.limit > 0) { // options.limit will decrease as we gather messages
 		params[0] = bucket;
 		//logger.debug(`Looking for ${options.limit} messages in ${bucket}`);
-		//console.log(params.map(param => param.toString()));
+		//console.log('Params:', params);//.map(param => param.toString()));
 		new_messages = await db
 			.execute(query, params, { prepare: true })
 			.then(res => res.rows)
+			.then(rows => rows.filter(a => a.message_id.lessThanOrEqual(latest)))
+			.then(rows => rows.filter(a => a.message_id.greaterThanOrEqual(earliest)))
+			.then(rows => rows.sort((a, b) => a.message_id.lessThan(b.message_id) ? -1 : 1))
+			//.then(rows => { rows.map(JSON.stringify).map(console.log); return rows; })
 			.catch(error => errors.push(error));
 		// so yeah. it's possible that the db will throw an error somehow, still...idk how but i'd rather be prepared-ish
 		// so if we see an error, we'll happily forward it on to the unsuspecting caller, who will now know about our database's
@@ -862,15 +886,22 @@ const getMessages = async (channel_snowflake, options = {
 			throw errors;
 		}
 		messages.push(...new_messages);
-		//console.log(new_messages);
-		//console.log(new_messages.length);
+		//console.log('======================================================================================================');
+		//console.log('New messages:', new_messages);
+		//console.log('Count of new messages:', new_messages.length);
 		options.limit -= new_messages.length; // yeah, i think that was a pretty good idea! good job, question-asker
-		params.pop();
-		params.push(options.limit);
+		//params.pop();                //
+		//params.push(options.limit);  // these two lines are kil because we grab whole buckets now. see notes on Big Hole
 		//logger.debug(`Leaving ${bucket}; still need ${options.limit} messages`);
 		bucket += search_direction;
 	}
 	// so by now we've either gathered enough messages or checked all the buckets in our time frame
+	// let's trim the result set down to the message limit
+	messages.sort((a, b) => a.message_id.lessThan(b.message_id) ? -1 : 1);
+	while (options.limit < 0) {
+		messages[search_direction > 0 ? 'pop' : 'shift']();
+		options.limit++;
+	}
 	// let's blow this popsicle stand
 	//console.log(messages.map(convertTypesForDistribution));
 	return messages;

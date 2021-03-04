@@ -1,5 +1,5 @@
 const logger = require('logger').get('guilds');
-const snowmachine = new (require('snowflake-generator'))(1420070400000);
+const api_ver = require('./api_ver');
 
 let db;
 const configure = (obj) => {
@@ -24,7 +24,7 @@ const createGuild = (req, res) => {
 			.then(guild => {
 				res
 					.status(201)
-					.location(`/guilds/${guild.guild_id}`)
+					.location(`${api_ver}/guilds/${guild.guild_id}`)
 					.json(guild);
 			})
 			.catch(handle(500, req, res));

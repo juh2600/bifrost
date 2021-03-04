@@ -23,31 +23,6 @@ const db = require('./db/dal');
 const socketyBoi = require('./sockets')({db, app});
 logger.info('Instantiated globals.');
 
-logger.info("Configuring Express...");
-app.set("view engine", "pug");
-app.set("views", __dirname + "/views");
-app.use(express.static(path.join(__dirname + "/public")));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-logger.info("Configured Express.");
-
-logger.info("Configuring sessions...");
-// FIXME implement suggestions at https://blog.jscrambler.com/best-practices-for-secure-session-management-in-node/
-app.use(
-  session({
-    secret: "top-secret" // FIXME move to sekrits or .env or something
-    , resave: false
-    , saveUninitialized: false
-		, store: new CassandraStore({
-			table: 'sessions'
-			, client: db.db
-		})
-  })
-);
-
-//app.use((req, res, next) => { console.log(req.session); next(); });
-logger.info("Configured sessions.");
-
 logger.info("Configuring microservices...");
 let routeFiles = [
 'frontend'
@@ -80,6 +55,31 @@ if (micros.proxies) {
 	}
 }
 logger.info("Configured microservices.");
+
+logger.info("Configuring Express...");
+app.set("view engine", "pug");
+app.set("views", __dirname + "/views");
+app.use(express.static(path.join(__dirname + "/public")));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+logger.info("Configured Express.");
+
+logger.info("Configuring sessions...");
+// FIXME implement suggestions at https://blog.jscrambler.com/best-practices-for-secure-session-management-in-node/
+app.use(
+  session({
+    secret: "top-secret" // FIXME move to sekrits or .env or something
+    , resave: false
+    , saveUninitialized: false
+		, store: new CassandraStore({
+			table: 'sessions'
+			, client: db.db
+		})
+  })
+);
+
+//app.use((req, res, next) => { console.log(req.session); next(); });
+logger.info("Configured sessions.");
 
 logger.info('Configuring routes...');
 const routeManager = require('./routes/manager');

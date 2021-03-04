@@ -60,7 +60,8 @@ const createChannelList = (channelList, addToHistory) => {
         changeChannel(channelList[0].channel_id, addToHistory);
       else noChannelSelected();
     }
-  } else noChannelSelected();
+  } else if (channelList.length > 0) changeChannel(channelList[0].channel_id, addToHistory);
+    else noChannelSelected();
 };
 
 //Get messages for new channel, change selected channel styles
@@ -98,6 +99,7 @@ const changeChannel = (newChannelId, addToHistory) => {
 
     //Repopulate messages
     getMessages();
+
   }
 
   return newChannelExists;
@@ -125,6 +127,7 @@ const noChannelSelected = () => {
 };
 
 const getMessages = () => {
+  clearMessagesArea();
   fetch(
     `/api/${APIVERSION}/guilds/${selectedGuildId}/text-channels/${selectedChannelId}/messages?limit=32`
   )
@@ -133,8 +136,12 @@ const getMessages = () => {
       messagesList = data.sort((a, b) =>
         a.message_id < b.message_id ? -1 : 1
       );
-      addNoMessagesImage();
+      if(messagesList.length == 0) addNoMessagesImage();
       populateMessages();
+
+      //scroll browswer to bottom of messages list
+      const chatArea = document.getElementsByClassName("chat-area")[0];
+      chatArea.scrollTop = chatArea.scrollHeight;
     });
 };
 
@@ -249,6 +256,9 @@ const addMessage = (message) => {
   div.appendChild(messageSection);
 
   document.getElementById("chatArea").appendChild(div);
+
+  //Add message to messagesList
+  messagesList.push(message);
 };
 
 const getUserById = (userId) => {
@@ -289,7 +299,6 @@ const changeGuild = (newGuildId, addToHistory) => {
       .querySelector('[data-guild-id="' + newGuildId + '"]')
       .classList.add("selected");
     //Change current guild name
-    //Change current channel name
     document.getElementById("guildName").innerHTML = newGuildName;
     //Update selected channel id
     selectedGuildId = newGuildId;
@@ -374,14 +383,33 @@ document.getElementById("guildSettingsBtn").innerHTML =
   "<div class='three-dots'><div></div><div></div><div></div></div>";
 
 document.getElementById("guildSettingsBtn").addEventListener("click", () => {
-  //Route to guild settings
-  window.location.href = `/guilds/${selectedGuildId}/settings`;
+  //Route to guild settings if there is a selected guild
+  if(selectedGuildId) window.location.href = `/guilds/${selectedGuildId}/settings`;
 });
 
 document.getElementById("createGuildBtn").addEventListener("click", () => {
   //Route to createGuild page
   window.location.href = "/guilds/create";
 });
+
+
+const updateGuildDisplay = () => {
+  //Clear out previous guilds
+  document.getElementById("guildCollection").innerHTML = "";
+  fetch(`/api/${APIVERSION}/guilds`)
+  .then((response) => response.json())
+  .then((data) => {
+    //sort data
+    data.sort((a, b) => (a.guild_id > b.guild_id ? 1 : -1));
+    data.forEach(guild => {
+      console.log(guild);
+      addGuild(guild);
+    });
+    //add selected class back to selected guild
+    document.querySelector('[data-guild-id="' + selectedGuildId + '"]').classList.add("selected");
+    
+  });
+} 
 
 //Add guild to list of guilds. Pass in a guild object
 const addGuild = (guild) => {
@@ -390,7 +418,7 @@ const addGuild = (guild) => {
   guildDiv.dataset.guildId = guild.guild_id;
   guildDiv.dataset.guildName = guild.name;
   setupTooltip(guildDiv, guildDiv.dataset.guildName);
-  guild.addEventListener("click", () => {
+  guildDiv.addEventListener("click", () => {
     changeGuild(guild.guild_id, true);
   });
 
@@ -464,6 +492,67 @@ fetch(`/api/${APIVERSION}/users`)
     else showEmptyScreen();
   });
 
+
+
+//Add user into usersList
+const addUserToList = user => {
+  usersList.push(user);
+}
+
+//Remove user from usersList
+const removeUserFromList = user_id => {
+  for(let i = 0; i < usersList.length; i++) {
+    if(usersList[i].user_id == user_id) {
+      usersList.splice(i, 1);
+      break;
+    }
+  }
+}
+
+const updateUserDisplay = () => {
+  usersList.sort((a, b) => (a.user_id > b.user_id ? 1 : -1));
+
+  document.getElementById("userListContainer").innerHTML = "";
+  for(let i = 0; i < usersList.length; i++) {
+    let container = document.createElement("div");
+    container.classList.add("user");
+    
+    let imageContainer = document.createElement("div");
+    imageContainer.classList.add("icon");
+    imageContainer.classList.add("img-circle");
+
+    let image = document.createElement("img");
+    image.src=`/api/${APIVERSION}/icons/` + usersList[i].icon_id;
+    image.classList.add("img");
+    imageContainer.appendChild(image);
+
+    let nameContainer = document.createElement("div");
+    nameContainer.classList.add("name-container");
+
+    let name = document.createElement("p");
+    name.classList.add("name");
+    name.innerHTML = usersList[i].name;
+    nameContainer.appendChild(name);
+
+    let discriminator = document.createElement("p");
+    discriminator.classList.add("discriminator");
+    discriminator.innerHTML = `#${usersList[i].discriminator}`;
+    nameContainer.appendChild(discriminator);
+
+    container.appendChild(imageContainer);
+    container.appendChild(nameContainer);
+
+    document.getElementById("userListContainer").appendChild(container);
+  }
+}
+
+
+
+
+
+
+
+
 let main = document.querySelector(".main");
 
 //Displays Servers/Channels -Mobile
@@ -515,7 +604,7 @@ friendsId.addEventListener("click", () => {
 
 //Resets mobile animations and positions if window is 850 or bigger
 window.addEventListener("resize", () => {
-  console.log(document.body.clientWidth);
+  //console.log(document.body.clientWidth);
   if (document.body.clientWidth > 849) {
     serverChannelId.style.transition = "none";
     guildListDisplay.style.transition = "none";

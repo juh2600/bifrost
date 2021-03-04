@@ -37,7 +37,7 @@ const app = (req, res) => {
   db.getGuilds()
     .then((dbGuildList) => {
       return db.getUsers().then((dbUsersList) => {
-        const data = {
+        let data = {
           guildList: dbGuildList,
           userList: dbUsersList,
           user: dbUsersList.filter(
@@ -45,18 +45,17 @@ const app = (req, res) => {
           )[0],
           apiVersion,
         };
+        data.userList.sort((a, b) => (a.user_id > b.user_id ? 1 : -1));
+        data.guildList.sort((a, b) => (a.guild_id > b.guild_id ? 1 : -1));
         if (!data.user) {
           res.redirect("/");
           return;
         }
-        console.log(data);
-        console.log(req.session);
         res.render("app", data);
       });
     })
     .catch(handle(500, req, res));
 
-  console.log(JSON.stringify(req.session));
 };
 
 const signUp = (req, res) => {
@@ -135,10 +134,10 @@ const userSettings = (req, res) => {
 };
 
 const logout = (req, res) => {
-  console.log(JSON.stringify(req.session));
+  //console.log(JSON.stringify(req.session));
   req.session.destroy();
   res.redirect("/");
-  console.log(JSON.stringify(req.session));
+  //console.log(JSON.stringify(req.session));
 };
 
 //////////

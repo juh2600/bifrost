@@ -7,6 +7,43 @@ let usersList = [];
 
 let IsEmbedded;
 
+const getPrettyTime = (date) => {
+	const time = date.toLocaleTimeString();
+	//return (p => `${p[0]}:${p[1]} ${p[2]}`)(date.toLocaleTimeString().split(':').map(a => a.split(' ').pop()));
+	const out = time.slice(0, -6) + time.slice(-3); // credit to Jessica Creighton: https://discord.com/channels/717878806248947785/718369600906985474/816911423572803595, https://jsben.ch/wLz8J
+	console.log(date, time, out);
+	return out;
+};
+const getPrettyTimestamp = (snowflake) => {
+	const day = 24 * 60 * 60 * 1000;
+	const today = new Date();
+	for (let comp of ['Hour', 'Minute', 'Second', 'Millisecond'])
+		today[`set${comp}s`](0);
+	const datetime = new Date(((BigInt(snowflake) >> 22n).toString() - 0) + 1420070400000);
+	const time = getPrettyTime(datetime);
+	const date = new Date(datetime);
+	for (let comp of ['Hour', 'Minute', 'Second', 'Millisecond'])
+		date[`set${comp}s`](0);
+	const diff = (today - date)/day; // positive means message is from the past; negative is from the future; one day is 86400000
+	// if it's today, it'll definitely have the same date and month and year
+	if (diff === 0) return 'Today at ' + time;
+	// if it's yesterday or tomorrow, it could have a different month and/or year
+	// essentially, we check that it's less than two days away
+	if (diff ===  1) return 'Yesterday at ' + time;
+	if (diff === -1) return 'Tomorrow at ' + time; // you never know
+	if (diff <= 7) // within the last week
+		switch (date.getDay()) {
+			case 0: return 'Sunday at ' + time;
+			case 1: return 'Monday at ' + time;
+			case 2: return 'Tuesday at ' + time;
+			case 3: return 'Wednesday at ' + time;
+			case 4: return 'Thursday at ' + time;
+			case 5: return 'Friday at ' + time;
+			case 6: return 'Saturday at ' + time;
+		}
+	return date.toLocaleDateString();
+};
+
 //Get current guild and channel ids out of the URL if they are present
 const getIdFromURL = (typeOfID) => {
   let url = window.location.href;
@@ -203,7 +240,7 @@ const addMessage = (message) => {
   let timestamp = document.createElement("span");
   timestamp.classList.add("timestamp");
   //TODO: FIX LATER
-  timestamp.innerHTML = "timestamp";
+  timestamp.innerHTML = getPrettyTimestamp(message.message_id);
 
   titleBar.appendChild(userName);
   titleBar.appendChild(timestamp);

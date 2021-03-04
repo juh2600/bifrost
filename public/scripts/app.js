@@ -442,16 +442,26 @@ document.getElementById("currentUser").addEventListener("click", () => {
   }/settings`;
 });
 
+
+
 //Get and store list of users
-fetch(`/api/${APIVERSION}/users`)
+const fetchUserList = (updateSelectedGuild) => {
+  fetch(`/api/${APIVERSION}/users`)
   .then((response) => response.json())
   .then((data) => {
     usersList = data;
     //get init channel list if guild is selected
-    if (selectedGuildId) changeGuild(selectedGuildId, true);
-    else showEmptyScreen();
+    if(updateSelectedGuild) {
+      if (selectedGuildId) changeGuild(selectedGuildId, true);
+      else showEmptyScreen();
+    }
+    else{
+      updateUserList();
+    }
   });
+}
 
+fetchUserList(true);
 
 
 //Add user into usersList
@@ -471,6 +481,9 @@ const removeUserFromList = user_id => {
 
 const updateUserDisplay = () => {
 	console.log('doing users');
+  fetchUserList(false);
+}
+const updateUserList = () => {
   usersList.sort((a, b) => (a.user_id > b.user_id ? 1 : -1));
 
   document.getElementById("userListContainer").innerHTML = "";

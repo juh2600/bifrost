@@ -4,6 +4,7 @@ const api_ver = require('./api_ver');
 let db;
 const configure = (obj) => {
 	db = obj['db'];
+	io = obj['io'];
 };
 
 const handle = (code, req, res) => {
@@ -26,6 +27,11 @@ const createUser = (req, res) => {
 					.status(201)
 					.location(`${api_ver}/users/${user.user_id}`)
 					.json(user);
+				return user;
+			})
+			.then(user => {
+				io.emit('create user', user);
+				return user;
 			})
 			.catch(handle(500, req, res));
 	}
@@ -60,6 +66,9 @@ const updateUser = (req, res) => {
 			res.statusMessage = 'Updated';
 			res.status(204).end();
 		})
+		.then(() => {
+			io.emit('update user');
+		})
 		.catch(handle(400, req, res));
 };
 
@@ -68,6 +77,9 @@ const deleteUser = (req, res) => {
 		.then(() => {
 			res.statusMessage = 'Deleted';
 			res.status(204).end();
+		})
+		.then(() => {
+			io.emit('delete user');
 		})
 		.catch(handle(500, req, res));
 };

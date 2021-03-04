@@ -25,10 +25,11 @@ selectedGuildId = getIdFromURL("guild");
 selectedChannelId = getIdFromURL("channel");
 
 const updateChannelList = (addToHistory) => {
-  clearChannelList();
+  
   fetch(`/api/${APIVERSION}/guilds/${selectedGuildId}/text-channels`)
     .then((response) => response.json())
     .then((data) => {
+      clearChannelList();
       channelList = data;
       //sort by position
       channelList.sort((a, b) => (a.position > b.position ? 1 : -1));
@@ -287,7 +288,7 @@ const changeGuild = (newGuildId, addToHistory) => {
       newGuildName = guild.dataset.guildName;
     }
   });
-
+  console.log("guild exists", newGuildExists);
   if (newGuildExists) {
     clearMessagesArea();
     //Remove selected class from all guilds
@@ -331,6 +332,16 @@ window.onpopstate = () => {
 
 //Page shown when no channel is selected
 const showEmptyScreen = () => {
+  console.log("show empty screen");
+  //set history to just app page
+  history.pushState("", "", "/app");
+
+  //clear out elements 
+  document.getElementById("guildName").innerHTML = "";
+  document.getElementById("channelName").innerHTML = "";
+  document.getElementById("channelList").innerHTML = "";
+
+
   //hide text channels label
   document.getElementById("channelListLabel").classList.add("hidden");
   //show cumpus
@@ -397,18 +408,20 @@ document.getElementById("createGuildBtn").addEventListener("click", () => {
 
 const updateGuildDisplay = () => {
   //Clear out previous guilds
-  document.getElementById("guildCollection").innerHTML = "";
   fetch(`/api/${APIVERSION}/guilds`)
   .then((response) => response.json())
   .then((data) => {
+    document.getElementById("guildCollection").innerHTML = "";
     //sort data
     data.sort((a, b) => (a.guild_id > b.guild_id ? 1 : -1));
     data.forEach(guild => {
-      console.log(guild);
+      //console.log(guild);
       addGuild(guild);
     });
     //add selected class back to selected guild
-    document.querySelector('[data-guild-id="' + selectedGuildId + '"]').classList.add("selected");
+    //document.querySelector('[data-guild-id="' + selectedGuildId + '"]').classList.add("selected");
+    clearMessagesArea();
+    changeGuild(selectedGuildId, true);
     
   });
 } 
@@ -484,16 +497,26 @@ document.getElementById("currentUser").addEventListener("click", () => {
   }/settings`;
 });
 
+
+
 //Get and store list of users
-fetch(`/api/${APIVERSION}/users`)
+const fetchUserList = (updateSelectedGuild) => {
+  fetch(`/api/${APIVERSION}/users`)
   .then((response) => response.json())
   .then((data) => {
     usersList = data;
     //get init channel list if guild is selected
-    if (selectedGuildId) changeGuild(selectedGuildId, true);
-    else showEmptyScreen();
+    if(updateSelectedGuild) {
+      if (selectedGuildId) changeGuild(selectedGuildId, true);
+      else showEmptyScreen();
+    }
+    else{
+      updateUserList();
+    }
   });
+}
 
+fetchUserList(true);
 
 
 //Add user into usersList
@@ -512,6 +535,10 @@ const removeUserFromList = user_id => {
 }
 
 const updateUserDisplay = () => {
+	console.log('doing users');
+  fetchUserList(false);
+}
+const updateUserList = () => {
   usersList.sort((a, b) => (a.user_id > b.user_id ? 1 : -1));
 
   document.getElementById("userListContainer").innerHTML = "";

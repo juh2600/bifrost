@@ -2,7 +2,6 @@ const socket = io();
 
 const chatAreaId = document.getElementsByClassName("chat-area")[0];
 
-// done! -- jtreed
 //Adds message to chat area
 socket.on("message", (message) => {
   if (messagesList.length == 0) {
@@ -34,4 +33,32 @@ messageInput.addEventListener("keypress", (evt) => {
       messageInput.value = "";
     }
   }
+});
+
+// if you choose to use incremental updates in the future (e.g. just adding or removing something without refreshing the whole list),
+// feel free to unroll these loops to make use of the data passed into each callback
+for (let operation of ['create', 'update'])
+socket.on(operation + ' guild', () => {
+	updateGuildDisplay();
+});
+
+socket.on("delete guild", (guild_id) => {
+  console.log("guild deleted");
+  if(selectedGuildId == guild_id) {
+    console.log("reset ids")
+    selectedGuildId = null;
+    selectedChannelId = null;
+  }
+  updateGuildDisplay();
+
+});
+
+for (let operation of ['create', 'update', 'delete'])
+socket.on(operation + ' channel', () => {
+	updateChannelList();
+});
+
+for (let operation of ['create', 'update', 'delete'])
+socket.on(operation + ' user', () => {
+	updateUserDisplay();
 });

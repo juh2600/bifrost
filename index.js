@@ -20,7 +20,7 @@ logger.info('Required packages.');
 logger.info('Instantiating globals...');
 const app = express();
 const db = require('./db/dal');
-const socketyBoi = require('./sockets')({db, app});
+const { server, io } = require('./sockets')({db, app});
 logger.info('Instantiated globals.');
 
 logger.info("Configuring microservices...");
@@ -90,6 +90,7 @@ routeFiles.forEach((file) => {
 		// pass stuff to routing files here
 		// dependency injection :tm:
 		db
+		, io
 		, upload
 	});
 	routeManager.apply(app, component);
@@ -101,4 +102,4 @@ logger.info("Configured routes.");
 
 logger.info(`Listening on port ${process.env.PORT}`);
 
-socketyBoi.listen(process.env.PORT); // ??
+server.listen(process.env.PORT); // ??

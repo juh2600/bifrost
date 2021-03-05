@@ -96,8 +96,7 @@ const updateTextChannels = (req, res) => {
 	if (errors.length) {
 		handle(400, req, res)(errors);
 		return;
-		// FIXME ugly??
-	};
+	}
 	db.clearChannels(req.params.guild_id)
 		.then(async () => {
 			for (let channel of req.body.sort((a,b) => a.position < b.position ? -1 : 1)) {

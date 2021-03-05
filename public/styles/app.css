@@ -307,7 +307,9 @@ body {
   height: 40px;
   margin-right: 0.5em;
 }
-
+.img {
+  object-fit: cover;
+}
 /*#############################
           Channel List
 ###############################*/

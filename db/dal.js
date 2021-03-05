@@ -263,7 +263,7 @@ const schemas = {
 			, 'name': ''
 		}
 		, [ // validators
-			(record, isUpdate) => {return ((isUpdate && record.name === undefined) || (/^[a-z-]{1,64}$/.test(record.name) && /^[a-z]/.test(record.name) && /[a-z]$/.test(record.name) && !(/--/.test(record.name))))? [] : [`Channel name must be composed only of lowercase a-z and hyphens, with no more than one consecutive hyphen, starting and ending with a letter, but ${record.name} was supplied`]}
+			(record, isUpdate) => {return ((isUpdate && record.name === undefined) || (/^[a-z0-9-]{1,64}$/.test(record.name) && /^[a-z0-9]/.test(record.name) && /[a-z0-9]$/.test(record.name) && !(/--/.test(record.name))))? [] : [`Channel name must be composed only of lowercase a-z and hyphens, with no more than one consecutive hyphen, starting and ending with a letter, but ${record.name} was supplied`]}
 		])
 	, messages_by_channel_bucket: new Schema('messages_by_channel_bucket'
 		, ['channel_id', 'bucket', 'message_id', 'author_id', 'body'] // keys

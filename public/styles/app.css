@@ -473,13 +473,11 @@ body {
   display: block;
 }
 
-.iframely-embed {
-  max-width: 500px;
+.iframely-embed{
+  width: 400px;
 }
 
-
-
-@media all and (max-width: 1150px) {
+@media all and (max-width: 1050px) {
   .iframely-embed {
     width: 90%;
   }
@@ -490,6 +488,11 @@ body {
   body {
     font-size: 0.9em;
   }
+
+  .iframely-embed {
+    width: 300px;
+  }
+
   .main {
     grid-template-columns: 0em 0em 1fr 0em;
     overflow-x: hidden;

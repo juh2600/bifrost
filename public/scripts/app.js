@@ -661,9 +661,10 @@ friendsId.addEventListener("click", () => {
   }
 });
 
-//Resets mobile animations and positions if window is 850 or bigger
+//Resets mobile animations and positions if window is larger than 825 px
+// changed from 850 to match the media query that sets the grid
 window.addEventListener("resize", () => {
-  if (document.body.clientWidth > 849) {
+  if (document.body.clientWidth > 825) {
      serverChannelId.style.transition = "none";
     guildListDisplay.style.transition = "none";
     guildNameDisplay.style.transition = "none";
@@ -675,8 +676,7 @@ window.addEventListener("resize", () => {
     resetServerPanel();
     resetFriendsPanel();
 
-
-		setTimeout(1, () => {
+		setTimeout(() => {
      serverChannelId.style.transition = "";
     guildListDisplay.style.transition = "";
     guildNameDisplay.style.transition = "";
@@ -684,7 +684,7 @@ window.addEventListener("resize", () => {
            friendsId.style.transition = "";
          friendsList.style.transition = "";
                 prof.style.transition = "";
-		});
+		}, 10);
   } else {
 		/*
     serverChannelId.style.transition = "transform 1s ease";

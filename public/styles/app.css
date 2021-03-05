@@ -379,6 +379,7 @@ body {
   -moz-transition: transform 0.15s ease;
   -o-transition: transform 0.15s ease;
   transition: transform 0.15s ease;
+	border-radius: 0.5em 0 0 0.5em;
 }
 /* #friends:hover {
   transform: translateX(-300px);
@@ -393,6 +394,12 @@ body {
   transition: transform 0.15s ease;
 	height: 1em;
 	width: 0.875em;
+	border-radius: 0 0.5em 0.5em 0;
+}
+
+#friends, #serverChannel {
+	padding: 1em;
+	background: var(--color-bg-2);
 }
 
 .fa-icon path {

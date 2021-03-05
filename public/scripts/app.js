@@ -664,16 +664,29 @@ friendsId.addEventListener("click", () => {
 //Resets mobile animations and positions if window is 850 or bigger
 window.addEventListener("resize", () => {
   if (document.body.clientWidth > 849) {
-    serverChannelId.style.transition = "none";
+     serverChannelId.style.transition = "none";
     guildListDisplay.style.transition = "none";
     guildNameDisplay.style.transition = "none";
     textChannelsList.style.transition = "none";
-    friendsId.style.transition = "none";
-    friendsList.style.transition = "none";
-    prof.style.transition = "none";
+           friendsId.style.transition = "none";
+         friendsList.style.transition = "none";
+                prof.style.transition = "none";
+
     resetServerPanel();
     resetFriendsPanel();
+
+
+		setTimeout(1, () => {
+     serverChannelId.style.transition = "";
+    guildListDisplay.style.transition = "";
+    guildNameDisplay.style.transition = "";
+    textChannelsList.style.transition = "";
+           friendsId.style.transition = "";
+         friendsList.style.transition = "";
+                prof.style.transition = "";
+		});
   } else {
+		/*
     serverChannelId.style.transition = "transform 1s ease";
     guildListDisplay.style.transition = "transform 1s ease";
     guildNameDisplay.style.transition = "transform 1s ease";
@@ -681,6 +694,7 @@ window.addEventListener("resize", () => {
     friendsId.style.transition = "transform 1s ease";
     friendsList.style.transition = "transform 1s ease";
     prof.style.transition = "transform 1s ease";
+		*/
   }
 });
 

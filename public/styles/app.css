@@ -489,6 +489,19 @@ body {
     font-size: 0.9em;
   }
 
+  .main {
+    display: grid;
+    grid-template-areas:
+      "guild-list  guild-name    channel-name  profile-area"
+      "guild-list  channel-list  chat-area     user-list"
+      "guild-list  channel-list  message-area  user-list";
+    background-color: var(--color-bg-2);
+    grid-template-columns: 5em 14em 1fr 14em;
+    grid-template-rows: 3em 1fr 3em;
+  }
+
+  .bar-area
+
   .iframely-embed {
     width: 300px;
   }
@@ -502,12 +515,15 @@ body {
     position: absolute;
     width: 13em;
     right: -14em;
+    z-index: 10;
+    padding: 0.5em;
   }
   .user-list {
     position: absolute;
     width: 13em;
     right: -14em;
-    height: calc(100% - 1em);
+    top: 1.5em;
+    height: calc(100% - 2.5em);
   }
 
   .guild-name {
@@ -529,7 +545,7 @@ body {
     position: absolute;
     width: 14em;
     height: calc(100% - 5em);
-    top: 5em;
+    top: 2em;
     left: -14em;
     z-index: 5;
     background-color: var(--color-bg-2);

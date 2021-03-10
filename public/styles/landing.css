@@ -86,6 +86,7 @@ body {
   z-index: 6;
   width: auto;
   height: 75%;
+  min-width: 300px;
 }
 
 .content {

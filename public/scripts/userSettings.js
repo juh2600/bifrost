@@ -181,3 +181,19 @@ const updateUser = async (icon) => {
     headers: new Headers({ "Content-Type": "application/json" }),
   });
 };
+
+
+const updateDiscriminators = () => {
+  let discriminator = document.getElementById("discriminatorPreview");
+    if (discriminator.innerHTML.length < 5) {
+      //remove #
+      discriminator.innerHTML = discriminator.innerHTML.slice(1);
+      for (let i = 0; i < 4 - discriminator.innerHTML.length; i++) {
+        discriminator.innerHTML = "0" + discriminator.innerHTML;
+      }
+      discriminator.innerHTML = "#" + discriminator.innerHTML;
+    
+  }
+
+}
+updateDiscriminators();

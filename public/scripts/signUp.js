@@ -193,9 +193,17 @@ document.getElementById("signupForm").addEventListener("submit", event => {
 			})
 			.then(() => {
 				window.location.href = "/login";
-			}).catch(document.getElementById("signUpImgTooLarge").innerHTML = "Image Too Large");
+			}).catch(defaultImgCheck());
 	}
-
+	const defaultImgCheck = () =>{
+		if(document.getElementById("profileImg").src.contains("https://www.gravatar.com/avatar/")){
+			document.getElementById("signUpImgTooLarge").innerHTML = "";
+		}
+		else{
+			document.getElementById("signUpImgTooLarge").innerHTML = "Image Too Large";
+		}
+	}
+	
 });
 
 document.addEventListener("DOMContentLoaded", updateDefaultImage);

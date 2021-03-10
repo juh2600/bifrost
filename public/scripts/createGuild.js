@@ -27,7 +27,7 @@ const validateGuildName = () => {
 };
 
 const updateDefaultImageMaybe = () => {
-	if (imageURL.includes("https://ui-avatars.com/api/?")) updateDefaultImage();
+	if (imageURL.includes("https://ui-avatars.com/api/?") || imageURL.includes("/images/noImage.png")) updateDefaultImage();
 };
 
 document.getElementById("guildNameInput").addEventListener("focusout", updateDefaultImageMaybe);

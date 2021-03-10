@@ -119,6 +119,7 @@ const removeImage = () => {
   updateDefaultImage();
   iconFile = null;
   imageHasBeenChanged = true;
+  document.getElementById("userImgTooLarge").innerHTML = "";
 };
 
 document
@@ -157,16 +158,30 @@ document
         .then(() => {
           window.location.href = "/app";
         })
-        .catch(
-          (document.getElementById("userImgTooLarge").innerHTML =
-            "Image Too Large")
+        .catch((err) => {
+          defaultImgCheck(err)
+        }          
         );
+        
     } else {
       updateUser({}).then(() => {
         window.location.href = "/app";
       });
     }
   });
+
+const defaultImgCheck = (err) =>{
+  if(err){  
+    document.getElementById("userImgTooLarge").innerHTML = "Image Too Large";
+  }
+  else{
+    document.getElementById("userImgTooLarge").innerHTML = "";
+  }  
+}
+
+document.querySelector(".file-input").addEventListener("click", () => {
+  document.getElementById("userImgTooLarge").innerHTML = "";
+});
 
 const updateUser = async (icon) => {
   let formData = {

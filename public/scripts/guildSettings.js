@@ -118,7 +118,12 @@ const removeImage = () => {
   updateDefaultImage();
   iconFile = null;
   imageHasBeenChanged = true;
+  document.getElementById("guildImgTooLarge").innerHTML = "";
 };
+
+document.querySelector(".file-input").addEventListener("click", () => {
+	document.getElementById("guildImgTooLarge").innerHTML = "";
+  });
 
 document
   .getElementById("removeImageBtn")
@@ -165,8 +170,7 @@ document
             window.location.href = "/app/" + guild_id;
           })
           .catch(
-            (document.getElementById("guildImgTooLarge").innerHTML =
-              "Image Too Large")
+            (err) => {defaultImgCheck(err)}
           );
       } else {
         updateGuild({})
@@ -177,6 +181,15 @@ document
       }
     }
   });
+
+const defaultImgCheck = (err) =>{
+  if(err){  
+    document.getElementById("guildImgTooLarge").innerHTML = "Image Too Large";
+  }
+  else{
+    document.getElementById("guildImgTooLarge").innerHTML = "";
+  }  
+};
 
 const updateGuild = async (icon) => {
   let formData = {

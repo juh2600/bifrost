@@ -83,11 +83,14 @@ const validateForm = () => {
 const removeImage = () => {
 	updateDefaultImage();
 	iconFile = null;
+	document.getElementById("createImgTooLarge").innerHTML = "";
 };
 
 document.getElementById("removeImageBtn").addEventListener("click", removeImage);
 
-
+document.querySelector(".file-input").addEventListener("click", () => {
+	document.getElementById("createImgTooLarge").innerHTML = "";
+  });
 
 
 //Intercept the form submit and post from here instead
@@ -141,7 +144,16 @@ document.getElementById("createGuildForm").addEventListener("submit", event => {
 			.then(response => response.json())
 			.then(channel => {
 				window.location.href = "/app/" + channel.guild_id + '/' + channel.channel_id;
-			}).catch(document.getElementById("createImgTooLarge").innerHTML = "Image Too Large");
+			}).catch((err) => {defaultImgCheck(err)});
 	}
 
 });
+
+const defaultImgCheck = (err) =>{
+	if(err){  
+		document.getElementById("createImgTooLarge").innerHTML = "Image Too Large";
+	}
+	else{
+		document.getElementById("createImgTooLarge").innerHTML = "";
+	}  
+  };

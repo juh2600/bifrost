@@ -144,12 +144,15 @@ const validateForm = () => {
 const removeImage = () => {
 	updateDefaultImage();
 	iconFile = null;
+	document.getElementById("signUpImgTooLarge").innerHTML = "";
 };
 
 document.getElementById("removeImageBtn").addEventListener("click", removeImage);
 
 
-
+document.querySelector(".file-input").addEventListener("click", () => {
+	document.getElementById("signUpImgTooLarge").innerHTML = "";
+  });
 
 //Intercept the form submit and post from here instead
 document.getElementById("signupForm").addEventListener("submit", event => {
@@ -193,17 +196,17 @@ document.getElementById("signupForm").addEventListener("submit", event => {
 			})
 			.then(() => {
 				window.location.href = "/login";
-			}).catch(defaultImgCheck());
-	}
-	const defaultImgCheck = () =>{
-		if(document.getElementById("profileImg").src.contains("https://www.gravatar.com/avatar/")){
-			document.getElementById("signUpImgTooLarge").innerHTML = "";
-		}
-		else{
-			document.getElementById("signUpImgTooLarge").innerHTML = "Image Too Large";
-		}
-	}
-	
+			}).catch((err) => {defaultImgCheck(err)});
+	}	
 });
+
+const defaultImgCheck = (err) =>{
+	if(err){  
+	  document.getElementById("signUpImgTooLarge").innerHTML = "Image Too Large";
+	}
+	else{
+	  document.getElementById("signUpImgTooLarge").innerHTML = "";
+	}  
+  }
 
 document.addEventListener("DOMContentLoaded", updateDefaultImage);

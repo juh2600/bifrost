@@ -310,6 +310,10 @@ body {
 .img {
   object-fit: cover;
 }
+
+#tooltip {
+  top:-20px;
+}
 /*#############################
           Channel List
 ###############################*/

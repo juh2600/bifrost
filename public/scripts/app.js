@@ -628,39 +628,38 @@ let textChannelsList = document.querySelector(".channel-list");
 let guildNameDisplay = document.querySelector(".guild-name");
 let guildListDisplay = document.querySelector(".guild-list");
 let serverChannelId = document.getElementById("serverChannel");
+const guildsElms = [serverChannelId, guildListDisplay, guildNameDisplay, textChannelsList];
 
-serverChannelId.addEventListener("click", () => {
+const toggleChannelsPane = () => {
+	if (friendsExpanded) resetFriendsPanel();
   if (!friendsExpanded) {
     if (serverExpanded) {
       resetServerPanel();
     } else {
-      serverChannelId.style.transform = "translateX(19em)";
-      guildListDisplay.style.transform = "translateX(5em)";
-      guildNameDisplay.style.transform = "translateX(19em)";
-      textChannelsList.style.transform = "translateX(19em)";
-      serverExpanded = true;
+			openServerPanel();
     }
   }
-});
+};
+serverChannelId.addEventListener("click", toggleChannelsPane);
 
 //Displays Friends List - Mobile
 let friendsExpanded = false;
 let friendsList = document.querySelector(".user-list");
 let prof = document.querySelector(".profile-area");
 let friendsId = document.getElementById("friends");
+const friendsElms = [friendsId, friendsList, prof];
 
-friendsId.addEventListener("click", () => {
+const toggleFriendsPane = () => {
+	if (serverExpanded) resetServerPanel();
   if (!serverExpanded) {
     if (friendsExpanded) {
       resetFriendsPanel();
     } else {
-      friendsId.style.transform = "translateX(-14em)";
-      friendsList.style.transform = "translateX(-14em)";
-      prof.style.transform = "translateX(-14em)";
-      friendsExpanded = true;
+			openFriendsPanel();
     }
   }
-});
+};
+friendsId.addEventListener("click", toggleFriendsPane);
 
 //Resets mobile animations and positions if window is larger than 825 px
 // changed from 850 to match the media query that sets the grid
@@ -709,18 +708,32 @@ document.querySelector(".message-area").addEventListener("click", () => {
   resetServerPanel();     
 })
 
+const openServerPanel = () => {
+			for (let elm of guildsElms)
+				elm.classList.add('open');
+      serverExpanded = true;
+};
 const resetServerPanel = () => {
-  serverChannelId.style.transform = "translateX(0em)";
-  guildListDisplay.style.transform = "translateX(0em)";
-  guildNameDisplay.style.transform = "translateX(0em)";
-  textChannelsList.style.transform = "translateX(0em)";
+			for (let elm of guildsElms)
+				elm.classList.remove('open');
+  //serverChannelId.style.transform = "translateX(0em)";
+  //guildListDisplay.style.transform = "translateX(0em)";
+  //guildNameDisplay.style.transform = "translateX(0em)";
+  //textChannelsList.style.transform = "translateX(0em)";
   serverExpanded = false;
 }
 
+const openFriendsPanel = () => {
+	for (let elm of friendsElms)
+		elm.classList.add('open');
+	friendsExpanded = true;
+};
 const resetFriendsPanel = () => {
-  friendsId.style.transform = "translateX(0em)";
-  friendsList.style.transform = "translateX(0em)";
-  prof.style.transform = "translateX(0em)";
+			for (let elm of friendsElms)
+				elm.classList.remove('open');
+  //friendsId.style.transform = "translateX(0em)";
+  //friendsList.style.transform = "translateX(0em)";
+  //prof.style.transform = "translateX(0em)";
   friendsExpanded = false;
 }
 
@@ -739,3 +752,137 @@ const updateDiscriminators = () => {
 
 }
 updateDiscriminators();
+
+
+///////////////////////////
+// swipey things
+let swipeStart = {};
+let swipeLast = {};
+
+let swipeOpenStartMargin = 48; //px; how close to the edge must the swipe start to open a pane
+let swipeOpenMinWidth = 32; //px; how far to the side must they swipe to open a pane
+let swipeCloseMinWidth = 32; //px; how far to the side must they swipe to close a pane
+
+const invertSwipe = (swipe) => {
+	return Object.assign({}, swipe, {clientX: document.body.clientWidth - swipe.clientX});
+};
+
+const setSwipeStart = (touch) => {
+	if(touch.touches) {
+		swipeStart = touch.touches[0];
+		setSwipeLast(touch.touches[0]);
+	}
+};
+
+const setSwipeLast  = (touch) => {
+	if(touch.touches) {
+		swipeLast = touch.touches[0];
+	}
+};
+
+const isSwipeOpenFromLeft = (start, last) => {
+	const out = (
+		   /*start.target != nav_toggle_btn // FIXME check that we're not tapping a button
+		&&*/ start.clientX                 <= swipeOpenStartMargin
+		&& last .clientX - start.clientX >= swipeOpenMinWidth
+	);
+	console.log('Is swipe open from left:', out);
+	return out;
+};
+
+const isSwipeCloseToLeft = (start, last) => {
+	const out = (
+	/*swipeStart.target != nav_toggle_btn // FIXME like above
+	&&*/ swipeStart.clientX - swipeLast.clientX >= swipeCloseMinWidth
+	);
+	console.log('Is swipe close to left:', out);
+	return out;
+};
+
+const isSwipeOpenFromRight = (start, last) => {
+	const out = isSwipeOpenFromLeft(invertSwipe(start), invertSwipe(last));
+	console.log('Is swipe open from right:', out);
+	return out;
+};
+
+const isSwipeCloseToRight  = (start, last) => {
+	const out = isSwipeCloseToLeft(invertSwipe(start), invertSwipe(last));
+	console.log('Is swipe open from right:', out);
+	return out;
+};
+
+/*
+const handleSwipeOpenFromLeft = (evt) => {
+	if(isSwipeOpenFromLeft(swipeStart, swipeLast)) {
+		resetFriendsPanel();
+		openServerPanel();
+	}
+};
+
+const handleSwipeCloseToLeft = (evt) => {
+	if(isSwipeCloseToLeft(swipeStart, swipeLast) && !isSwipeOpenFromRight(swipeStart, swipeLast)) {
+		resetServerPanel();
+	}
+};
+
+const handleSwipeOpenFromRight = (evt) => {
+	if(isSwipeOpenFromRight(swipeStart, swipeLast)) {
+		resetServerPanel();
+		openFriendsPanel();
+	}
+};
+
+const handleSwipeCloseToRight = (evt) => {
+	if(isSwipeCloseToRight(swipeStart, swipeLast) && !isSwipeOpenFromLeft(swipeStart, swipeLast)) {
+		resetFriendsPanel();
+	}
+};
+*/
+
+const handleSwipe = (evt) => {
+	const isOpenLeft = isSwipeOpenFromLeft(swipeStart, swipeLast);
+	const isOpenRight = isSwipeOpenFromRight(swipeStart, swipeLast);
+	const isCloseLeft = isSwipeCloseToLeft(swipeStart, swipeLast);
+	const isCloseRight = isSwipeCloseToRight(swipeStart, swipeLast);
+	if (isOpenRight) {
+		resetServerPanel();
+		openFriendsPanel();
+	} else if (isOpenLeft) {
+		resetFriendsPanel();
+		openServerPanel();
+	} else if (isCloseRight) {
+		resetFriendsPanel();
+	} else if (isCloseLeft) {
+		resetServerPanel();
+	}
+};
+
+const handleSwipes = () => {
+	/*
+	nav = document.getElementById('main-nav');
+	nav_toggle_btn = document.getElementById('nav-btn-ctr');
+	nav_toggle_btn.addEventListener('click', toggleNav);
+	// if nav is open and we tap somewhere outside of it, close it
+	document.addEventListener('click', (evt) => {
+		if (evt.target.closest('nav#main-nav') == null || evt.target.closest('#nav-click-catcher')) closeNav();
+	});
+	document.addEventListener('touchstart', (evt) => {
+		if (evt.target.closest('nav#main-nav') == null || evt.target.closest('#nav-click-catcher')) closeNav();
+	});
+	document.addEventListener('keyup', (evt) => {
+		if(evt.key === 'Escape') closeNav();
+	});
+	*/
+
+	document.addEventListener('touchstart', setSwipeStart);
+	document.addEventListener('touchmove', setSwipeLast);
+	document.addEventListener('touchmove', handleSwipe);
+	/*
+	document.addEventListener('touchmove', handleSwipeCloseToRight);
+	document.addEventListener('touchmove', handleSwipeOpenFromRight);
+	document.addEventListener('touchmove', handleSwipeCloseToLeft);
+	document.addEventListener('touchmove', handleSwipeOpenFromLeft);
+	*/
+};
+
+document.addEventListener('DOMContentLoaded', handleSwipes);

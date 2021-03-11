@@ -122,6 +122,7 @@ body {
   align-items: center;
   flex-wrap: nowrap;
 }
+
 .guild {
   width: 3.2em;
   height: 3.2em;
@@ -574,3 +575,13 @@ body {
     margin-left: 4em;
   }
 }
+
+/* uhhhhh mobile things */
+#serverChannel.open { transform: translateX(19em); }
+.guild-list.open { transform: translateX(5em); }
+.guild-name.open { transform: translateX(19em); }
+.channel-list.open { transform: translateX(19em); }
+
+.user-list.open { transform: translateX(-14em); }
+.profile-area.open { transform: translateX(-14em); }
+#friends.open { transform: translateX(-14em); }

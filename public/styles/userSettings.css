@@ -93,6 +93,9 @@ input[type="text"]:disabled {
   margin-top: 1em;
   text-align: center;
 }
+.img {
+  object-fit: cover;
+}
 
 @media all and (min-height: 500px) {
   .button-area {

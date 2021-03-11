@@ -70,6 +70,7 @@ form {
   display: grid;
 }
 
+
 @media all and (min-width: 750px) {
   .content {
     grid-template-columns: 1fr 1fr;

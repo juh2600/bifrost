@@ -63,7 +63,9 @@ h1 {
 .input-field {
     width: 100%;
 }
-
+.img {
+    object-fit: cover;
+  }
 
 .link {
     color:var(--color-danger);

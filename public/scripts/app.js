@@ -11,7 +11,6 @@ const getPrettyTime = (date) => {
 	const time = date.toLocaleTimeString();
 	//return (p => `${p[0]}:${p[1]} ${p[2]}`)(date.toLocaleTimeString().split(':').map(a => a.split(' ').pop()));
 	const out = time.slice(0, -6) + time.slice(-3); // credit to Jessica Creighton: https://discord.com/channels/717878806248947785/718369600906985474/816911423572803595, https://jsben.ch/wLz8J
-	console.log(date, time, out);
 	return out;
 };
 const getPrettyTimestamp = (snowflake) => {
@@ -144,7 +143,6 @@ const changeChannel = (newChannelId, addToHistory) => {
 };
 
 const noChannelSelected = () => {
-  console.log("no channel selected");
   //Remove selected from all channels
   [...document.getElementById("channelList").children].forEach((channel) => {
     channel.classList.remove("selected");
@@ -205,7 +203,6 @@ const addNoMessagesImage = () => {
 
 //Create message div for each message and append to screen
 const populateMessages = () => {
-  console.log(messagesList);
   if (messagesList.length > 0) clearMessagesArea();
   messagesList.forEach((message) => {
     addMessage(message);
@@ -325,7 +322,6 @@ const changeGuild = (newGuildId, addToHistory) => {
       newGuildName = guild.dataset.guildName;
     }
   });
-  console.log("guild exists", newGuildExists);
   if (newGuildExists) {
     clearMessagesArea();
     //Remove selected class from all guilds
@@ -369,7 +365,6 @@ window.onpopstate = () => {
 
 //Page shown when no channel is selected
 const showEmptyScreen = () => {
-  console.log("show empty screen");
   //set history to just app page
   history.pushState("", "", "/app");
 
@@ -425,7 +420,6 @@ const hideNoChannelScreen = () => {
   }
   //enable input field
   document.getElementById("message-input").disabled = false;
-  console.log("hide no channel screen");
 };
 
 //Make 3 dots icon
@@ -452,7 +446,6 @@ const updateGuildDisplay = () => {
     //sort data
     data.sort((a, b) => (a.guild_id > b.guild_id ? 1 : -1));
     data.forEach(guild => {
-      //console.log(guild);
       addGuild(guild);
     });
     //add selected class back to selected guild
@@ -573,7 +566,6 @@ const removeUserFromList = user_id => {
 }
 
 const updateUserDisplay = () => {
-	console.log('doing users');
   fetchUserList(false);
 }
 const updateUserList = () => {

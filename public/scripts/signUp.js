@@ -60,7 +60,7 @@ passwordInputId.addEventListener("focusout", () => {
 const validatePassword = () => {
 	let input = passwordInputId.value;
 	//Minimum eight characters, at least one letter and one number
-	let passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+	let passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).*{8,}$/;
 	let passwordIsValid = passwordRegex.test(input);
 	let passwordErrorMsg = document.getElementById("passwordErrorMsg");
 
